@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
 
-public class CharControlSimple : MonoBehaviour
+public class CharControlSimple : NetworkBehaviour
 {
     [Header("[Char Properties]")]
     public float WalkSpeed = 5f;

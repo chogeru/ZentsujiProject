@@ -5,9 +5,15 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Hayashi/Scene/OnlineScene.unity
+    guid: 15af4ce319d91084690d0abdb44c2593
+  - enabled: 1
+    path: Assets/Hayashi/Scene/TitleScene.unity
+    guid: a8bf18d31b4ac144fa1a36ca38b58f8b
   m_configObjects:
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 594d53f6c7bca4340b3ab0fdb7539dad,
       type: 2}

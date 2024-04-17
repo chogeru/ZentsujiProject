@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using SQLite4Unity3d;
 using Cysharp.Threading.Tasks;
+using Mirror;
 
 public class MySceneManager : MonoBehaviour
 {
@@ -37,6 +38,10 @@ public class MySceneManager : MonoBehaviour
         nextScene = GetNextSceneNameFromDB(currentSceneName);
         if (!string.IsNullOrEmpty(nextScene))
         {
+            // Mirrorを使用してネットワーク接続を開始
+            NetworkManager.singleton.StartClient();
+
+            // シーンを非同期でロード
             await UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(nextScene, LoadSceneMode.Single);
         }
         else

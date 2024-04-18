@@ -16,5 +16,9 @@ public class OnlinePlayerSpawner : MonoBehaviour
             // オンライン用プレイヤープレハブを生成
             Instantiate(m_PlayerPrefabs,m_PlyerSpownPoint);
         }
+        else
+        {
+            Debug.Log("接続できていない");
+        }
     }
 }

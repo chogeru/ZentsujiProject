@@ -1,24 +1,48 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-4975328223245614240
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 5
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: ETPGrass00
-  m_Shader: {fileID: 4800000, guid: 1943d357ba4d6c8438f2b80309da5570, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 4
+  m_Shader: {fileID: 4800000, guid: b7839dad95683814aa64166edc107ae2, type: 3}
+  m_ValidKeywords:
+  - _ALPHATEST_ON
+  - _EMISSION
+  - _NORMALMAP
+  m_InvalidKeywords:
+  - _FLIPBOOKBLENDING_OFF
+  m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  m_DoubleSidedGI: 1
+  m_CustomRenderQueue: 2450
+  stringTagMap:
+    RenderType: TransparentCutout
+  disabledShaderPasses:
+  - GRABPASS
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: 280a31791c2cf5541a0c2fa6b2ded834, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: c2eeb6ae00ab3ac4786b0d18f730edd1, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -67,37 +91,52 @@ Material:
         m_Texture: {fileID: 2800000, guid: c3715659aaeb1604090700e84c4054cb, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _texcoord:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
-    - _AOPower: 0.5
+    - _AlphaClip: 1
     - _AnimIntensity: 1
+    - _Blend: 0
+    - _BlendOp: 0
     - _BumpScale: 2
+    - _CameraFadingEnabled: 0
+    - _CameraFarFadeDistance: 2
+    - _CameraNearFadeDistance: 1
     - _ColorMask: 1.01
-    - _Cutoff: 0.64
+    - _ColorMode: 0
+    - _Cull: 0
+    - _Cutoff: 0.296
     - _DetailNormalMapScale: 1
+    - _DistortionBlend: 0.5
+    - _DistortionEnabled: 0
+    - _DistortionStrength: 1
+    - _DistortionStrengthScaled: 0
     - _DstBlend: 0
+    - _EmissionEnabled: 0
     - _EmissionLM: 0
+    - _FlipbookBlending: 0
+    - _FlipbookMode: 0
     - _Fresnel: 2
     - _Glossiness: 0
     - _LenghtAnim: 0
     - _LengthOffset: 0
+    - _LightingEnabled: 1
     - _MaskHeight: -0.32
     - _MetalAlphaGloss: 0
     - _Metallic: 0
-    - _Mode: 0
+    - _Mode: 1
     - _MovementAOMask: -0.02
-    - _NoiseScale: 1
-    - _Noisespeed: 1
-    - _NormalScale: 1
     - _OcclusionStrenght: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _QueueOffset: 0
+    - _ReceiveShadows: 1
     - _RimPower: 0
-    - _Smoothness: 0.2
+    - _Smoothness: 0
+    - _SoftParticlesEnabled: 0
+    - _SoftParticlesFarFadeDistance: 1
+    - _SoftParticlesNearFadeDistance: 0
     - _SrcBlend: 1
+    - _Surface: 0
     - _TimeChangeColor: 0
     - _UVSec: 0
     - _UpDownVelocity: 12
@@ -107,16 +146,16 @@ Material:
     - _WorldNoiseColor: 0
     - _WorldNoiseVelocity: 1000
     - _ZWrite: 1
-    - __dirty: 1
     m_Colors:
-    - _Color: {r: 0.19607845, g: 0.227451, b: 0.10980393, a: 1}
-    - _ColorA: {r: 0.5943396, g: 0.5943396, b: 0.5943396, a: 0}
-    - _ColorB: {r: 1, g: 1, b: 1, a: 0}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
+    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorFade: {r: 0.6465152, g: 0.75735295, b: 0.54017085, a: 1}
     - _ColorRoot: {r: 0.21783088, g: 0.375, b: 0.34880513, a: 1}
     - _ColorTime: {r: 1, g: 1, b: 1, a: 1}
     - _ColorUp: {r: 0.09758868, g: 0.6985294, b: 0.32553172, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LeavesGradientxy: {r: 0, g: 1, b: 0, a: 0}
-    - _MotionValue: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _RimColor: {r: 0.45588237, g: 0.45588237, b: 0.45588237, a: 1}
+    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
+  m_BuildTextureStacks: []

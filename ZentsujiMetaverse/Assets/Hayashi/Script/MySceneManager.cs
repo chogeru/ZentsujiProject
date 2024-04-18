@@ -39,10 +39,26 @@ public class MySceneManager : MonoBehaviour
         if (!string.IsNullOrEmpty(nextScene))
         {
             // Mirrorを使用してネットワーク接続を開始
-            NetworkManager.singleton.StartClient();
+            NetworkManager networkManager = NetworkManager.singleton;
+            if (networkManager == null)
+            {
+                Debug.LogError("NetworkManagerが見つかりませんでした。");
+                return;
+            }
+
+            if (!networkManager.isNetworkActive)
+            {
+                // サーバーがない場合、自身がホストとして接続
+                networkManager.StartHost();
+            }
+            else
+            {
+                // サーバーがある場合、クライアントとして接続
+                networkManager.StartClient();
+            }
 
             // シーンを非同期でロード
-            await UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(nextScene, LoadSceneMode.Single);
+         //   await UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(nextScene, LoadSceneMode.Single);
         }
         else
         {

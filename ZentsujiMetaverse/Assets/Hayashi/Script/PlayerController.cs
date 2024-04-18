@@ -38,10 +38,14 @@ public class PlayerController : NetworkBehaviour
     public float m_JumpForce = 300f;
 
     private Rigidbody m_Rigidbody;
+    [SerializeField]
+    private Transform m_CameraTransform;
+
     // ローカルプレイヤーが開始した時に呼び出されるメソッド
     public override void OnStartLocalPlayer()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+        m_CameraTransform = Camera.main.transform;
         base.OnStartLocalPlayer();
         InitializeMovement();
     }
@@ -70,7 +74,16 @@ public class PlayerController : NetworkBehaviour
     // プレイヤーを指定の速度で移動
     public void Move(Vector3 movement, float speed)
     {
-        m_Rigidbody.MovePosition(transform.position + movement * speed * Time.deltaTime);
+        Vector3 relativeMovement = m_CameraTransform.TransformDirection(movement);
+        relativeMovement.y = 0; 
+
+        if (movement != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(relativeMovement, Vector3.up);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10);
+        }
+
+        m_Rigidbody.MovePosition(transform.position + relativeMovement * speed * Time.deltaTime);
     }
 
     // プレイヤーが地面に触れているかどうかを判断

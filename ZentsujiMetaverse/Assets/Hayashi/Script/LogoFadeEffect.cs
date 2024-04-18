@@ -38,24 +38,31 @@ public class LogoFadeEffect : MonoBehaviour
 
     private async void Start()
     {
-        // オブジェクトが破棄されたときにキャンセルされるCancellationTokenを取得
-        CancellationToken ct =this.GetCancellationTokenOnDestroy();
+        try
+        {
+            // オブジェクトが破棄されたときにキャンセルされるCancellationTokenを取得
+            CancellationToken ct = this.GetCancellationTokenOnDestroy();
 
-        //最初は透明状態に
-        m_CanvasGroup.alpha = 0;
+            //最初は透明状態に
+            m_CanvasGroup.alpha = 0;
 
-        // 3秒かけて不透明にする
-        await FadeCanvasGroup(m_CanvasGroup, 1f, m_FadeInDuration, ct);
+            // 3秒かけて不透明にする
+            await FadeCanvasGroup(m_CanvasGroup, 1f, m_FadeInDuration, ct);
 
-        // 不透明の状態で2秒間待つ
-        await UniTask.Delay((int)(m_VisibleDuration * 1000), cancellationToken: ct);
+            // 不透明の状態で2秒間待つ
+            await UniTask.Delay((int)(m_VisibleDuration * 1000), cancellationToken: ct);
 
-        // 3秒かけて再度透明にする
-        await FadeCanvasGroup(m_CanvasGroup, 0f, m_FadeOutDuration, ct);
+            // 3秒かけて再度透明にする
+            await FadeCanvasGroup(m_CanvasGroup, 0f, m_FadeOutDuration, ct);
 
-        // R3のSubjectを通じてイベントを発行
-        OnFadeOutCompleted.OnNext(Unit.Default);
-        OnFadeOutCompleted.OnCompleted();
+            // R3のSubjectを通じてイベントを発行
+            OnFadeOutCompleted.OnNext(Unit.Default);
+            OnFadeOutCompleted.OnCompleted();
+        }
+        catch (OperationCanceledException)
+        {
+            Debug.Log("フェード操作がキャンセルされた");
+        }
     }
     private async UniTask FadeCanvasGroup(CanvasGroup cg, float targetAlpha, float duration, CancellationToken ct)
     {

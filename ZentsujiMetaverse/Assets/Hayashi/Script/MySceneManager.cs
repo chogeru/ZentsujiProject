@@ -38,31 +38,32 @@ public class MySceneManager : MonoBehaviour
         nextScene = GetNextSceneNameFromDB(currentSceneName);
         if (!string.IsNullOrEmpty(nextScene))
         {
-            // Mirror‚ğg—p‚µ‚Äƒlƒbƒgƒ[ƒNÚ‘±‚ğŠJn
+            // Mirrorï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Äƒlï¿½bï¿½gï¿½ï¿½ï¿½[ï¿½Nï¿½Ú‘ï¿½ï¿½ï¿½ï¿½Jï¿½n
             NetworkManager networkManager = NetworkManager.singleton;
             if (networkManager == null)
             {
-                Debug.LogError("NetworkManager‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½B");
+                Debug.LogError("NetworkManagerï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½Å‚ï¿½ï¿½ï¿½ï¿½B");
                 return;
             }
 
             if (!networkManager.isNetworkActive)
             {
-                // ƒT[ƒo[‚ª‚È‚¢ê‡A©g‚ªƒzƒXƒg‚Æ‚µ‚ÄÚ‘±
+                // ï¿½Tï¿½[ï¿½oï¿½[ï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½Aï¿½ï¿½ï¿½gï¿½ï¿½ï¿½zï¿½Xï¿½gï¿½Æ‚ï¿½ï¿½ÄÚ‘ï¿½
                 networkManager.StartHost();
             }
             else
             {
-                // ƒT[ƒo[‚ª‚ ‚éê‡AƒNƒ‰ƒCƒAƒ“ƒg‚Æ‚µ‚ÄÚ‘±
+                // ï¿½Tï¿½[ï¿½oï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Aï¿½Nï¿½ï¿½ï¿½Cï¿½Aï¿½ï¿½ï¿½gï¿½Æ‚ï¿½ï¿½ÄÚ‘ï¿½
                 networkManager.StartClient();
             }
 
-            // ƒV[ƒ“‚ğ”ñ“¯Šú‚Åƒ[ƒh
+            // ï¿½Vï¿½[ï¿½ï¿½ï¿½ï¿½ñ“¯Šï¿½ï¿½Åƒï¿½ï¿½[ï¿½h
          //   await UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(nextScene, LoadSceneMode.Single);
+         
         }
         else
         {
-            Debug.LogError("Ÿ‚Ìscene‚ªnull‚©w’è‚³‚ê‚Ä‚¢‚È‚¢");
+            Debug.LogError("ï¿½ï¿½ï¿½ï¿½sceneï¿½ï¿½nullï¿½ï¿½ï¿½wï¿½è‚³ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½");
         }
     }
 
@@ -78,7 +79,7 @@ public class MySceneManager : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("ƒf[ƒ^ƒx[ƒXƒAƒNƒZƒX‚ÉƒGƒ‰[: " + ex.Message);
+            Debug.LogError("ï¿½fï¿½[ï¿½^ï¿½xï¿½[ï¿½Xï¿½Aï¿½Nï¿½Zï¿½Xï¿½ï¿½ï¿½ÉƒGï¿½ï¿½ï¿½[: " + ex.Message);
         }
         return null;
     }

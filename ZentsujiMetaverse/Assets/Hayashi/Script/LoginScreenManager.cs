@@ -5,44 +5,45 @@ using System;
 
 public class LoginScreenManager : MonoBehaviour
 {
-    [SerializeField,Header("LoginCanvas‚ÌLogoFadeEffect ƒRƒ“ƒ|[ƒlƒ“ƒg‚ÌQÆ")]
+    [SerializeField,Header("LoginCanvasã®LogoFadeEffect ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®å‚ç…§")]
     private LogoFadeEffect m_LogoFadeEffect;
-    [SerializeField,Header("ƒƒOƒCƒ“‰æ–Ê‚ğ§Œä‚·‚é‚½‚ß‚ÌCanvasGroup")]
+    [SerializeField,Header("ãƒ­ã‚°ã‚¤ãƒ³ç”»é¢ã‚’åˆ¶å¾¡ã™ã‚‹ãŸã‚ã®CanvasGroup")]
     private CanvasGroup m_LoginCanvasGroup;
-    [SerializeField,Header("ƒtƒF[ƒhƒCƒ“‚ÉŠ|‚©‚éŠÔ")]
+    [SerializeField,Header("ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ã«æ›ã‹ã‚‹æ™‚é–“")]
     private float m_FadeInDuration = 3.0f;
 
     private void Start()
     {
-        //nullƒ`ƒFƒbƒN
+        m_LoginCanvasGroup.alpha = 0f;
+        //nullãƒã‚§ãƒƒã‚¯
         if (m_LogoFadeEffect != null)
         {
-            // LogoFadeEffect ‚Ì OnFadeOutCompleted ƒCƒxƒ“ƒg‚É‘Î‚µ‚Äw“Ç‚µ‚Ü‚·B
-            // R3‚ğg—p‚µ‚ÄƒCƒxƒ“ƒg‚ª”­¶‚µ‚½Û‚É StartLoginFadeIn ƒƒ\ƒbƒh‚ğŒÄ‚Ño‚µ‚Ü‚·B
-            // AddTo(this) ‚ÍA‚±‚Ì MonoBehaviour ‚ª”jŠü‚³‚ê‚½‚Æ‚«‚Éw“Ç‚ğ©“®“I‚É‰ğœ‚µ‚Ü‚·B
+            // LogoFadeEffect ã® OnFadeOutCompleted ã‚¤ãƒ™ãƒ³ãƒˆã«å¯¾ã—ã¦è³¼èª­ã—ã¾ã™ã€‚
+            // R3ã‚’ä½¿ç”¨ã—ã¦ã‚¤ãƒ™ãƒ³ãƒˆãŒç™ºç”Ÿã—ãŸéš›ã« StartLoginFadeIn ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã³å‡ºã—ã¾ã™ã€‚
+            // AddTo(this) ã¯ã€ã“ã® MonoBehaviour ãŒç ´æ£„ã•ã‚ŒãŸã¨ãã«è³¼èª­ã‚’è‡ªå‹•çš„ã«è§£é™¤ã—ã¾ã™ã€‚
             m_LogoFadeEffect.OnFadeOutCompleted.Subscribe(_ => StartLoginFadeIn()).AddTo(this);
         }
     }
 
     private async void StartLoginFadeIn()
     {
-        Debug.Log("ƒƒOƒCƒ“‰æ–Ê‚ÌƒtƒF[ƒhƒCƒ“‚ğŠJn‚µ‚Ü‚·B");
-        // CanvasGroup‚Ì“§–¾“x‚ğ”ñ“¯Šú“I‚É•s“§–¾‚É•ÏXB
+        Debug.Log("ãƒ­ã‚°ã‚¤ãƒ³ç”»é¢ã®ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ã‚’é–‹å§‹ã—ã¾ã™ã€‚");
+        // CanvasGroupã®é€æ˜åº¦ã‚’éåŒæœŸçš„ã«ä¸é€æ˜ã«å¤‰æ›´ã€‚
         await FadeCanvasGroup(m_LoginCanvasGroup, 1f, m_FadeInDuration);
     }
 
     private async UniTask FadeCanvasGroup(CanvasGroup cg, float targetAlpha, float duration)
     {
-        // ƒtƒF[ƒhˆ—ŠJn‚Ì“§–¾“x‚ğ‹L˜^B
+        // ãƒ•ã‚§ãƒ¼ãƒ‰å‡¦ç†é–‹å§‹æ™‚ã®é€æ˜åº¦ã‚’è¨˜éŒ²ã€‚
         float startAlpha = cg.alpha;
         float time = 0;
-        // Œo‰ßŠÔ‚ªİ’è‚³‚ê‚½‘±ŠÔ‚É’B‚·‚é‚Ü‚Åƒ‹[ƒv‚ğ‘±‚¯‚éB
+        // çµŒéæ™‚é–“ãŒè¨­å®šã•ã‚ŒãŸæŒç¶šæ™‚é–“ã«é”ã™ã‚‹ã¾ã§ãƒ«ãƒ¼ãƒ—ã‚’ç¶šã‘ã‚‹ã€‚
         while (time < duration)
         {
-            // Mathf.Lerp ‚ğg—p‚µ‚ÄAŒ»İ‚Ì“§–¾“x‚©‚ç–Ú•W‚Ì“§–¾“x‚Ö‚Æ™X‚É•Ï‰»‚³‚¹‚éB
+            // Mathf.Lerp ã‚’ä½¿ç”¨ã—ã¦ã€ç¾åœ¨ã®é€æ˜åº¦ã‹ã‚‰ç›®æ¨™ã®é€æ˜åº¦ã¸ã¨å¾ã€…ã«å¤‰åŒ–ã•ã›ã‚‹ã€‚
             cg.alpha = Mathf.Lerp(startAlpha, targetAlpha, time / duration);
-            // UniTask.Yield ‚ÅŸ‚ÌƒtƒŒ[ƒ€‚Ü‚Å‘Ò‹@B
-            // PlayerLoopTiming.Update ‚ğw’è‚µ‚ÄA–ˆƒtƒŒ[ƒ€‚ÌXVƒ^ƒCƒ~ƒ“ƒO‚Åˆ—‚ğÄŠJB
+            // UniTask.Yield ã§æ¬¡ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§å¾…æ©Ÿã€‚
+            // PlayerLoopTiming.Update ã‚’æŒ‡å®šã—ã¦ã€æ¯ãƒ•ãƒ¬ãƒ¼ãƒ ã®æ›´æ–°ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§å‡¦ç†ã‚’å†é–‹ã€‚
             await UniTask.Yield(PlayerLoopTiming.Update);
 
             time += Time.deltaTime;

@@ -38,32 +38,28 @@ public class MySceneManager : MonoBehaviour
         nextScene = GetNextSceneNameFromDB(currentSceneName);
         if (!string.IsNullOrEmpty(nextScene))
         {
-            // Mirror���g�p���ăl�b�g���[�N�ڑ����J�n
             NetworkManager networkManager = NetworkManager.singleton;
             if (networkManager == null)
             {
-                Debug.LogError("NetworkManager��������܂���ł����B");
+                Debug.LogError("");
                 return;
             }
 
             if (!networkManager.isNetworkActive)
             {
-                // �T�[�o�[���Ȃ��ꍇ�A���g���z�X�g�Ƃ��Đڑ�
                 networkManager.StartHost();
             }
             else
             {
-                // �T�[�o�[������ꍇ�A�N���C�A���g�Ƃ��Đڑ�
                 networkManager.StartClient();
             }
 
-            // �V�[����񓯊��Ń��[�h
          //   await UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(nextScene, LoadSceneMode.Single);
          
         }
         else
         {
-            Debug.LogError("����scene��null���w�肳��Ă��Ȃ�");
+            Debug.LogError("");
         }
     }
 
@@ -79,7 +75,7 @@ public class MySceneManager : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("�f�[�^�x�[�X�A�N�Z�X���ɃG���[: " + ex.Message);
+            Debug.LogError("" + ex.Message);
         }
         return null;
     }

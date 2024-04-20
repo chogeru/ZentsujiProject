@@ -6,72 +6,73 @@ using UnityEngine;
 #region
 /*
 .Subscribe
-Subscribe�́A�C�x���g�����������Ƃ��ɉ�������̃A�N�V�����i�Ⴆ�΁A�v���C���[�𓮂����j���N�������߂Ɏg��
-���̃��\�b�h���g���āA�C�x���g�X�g���[�����Ď����A�C�x���g���������邽�тɃA�N�V���������s�����
+Subscribeは、イベントが発生したときに何か特定のアクション（例えば、プレイヤーを動かす）を起こすために使う
+このメソッドを使って、イベントストリームを監視し、イベントが発生するたびにアクションが実行される
 
 .Where
-Where�́A����̏����Ɋ�Â��ăC�x���g���t�B���^�����O���邽�߂Ɏg��
-�W�����v�{�^���������ꂽ�Ƃ���,�v���C���[���n�ʂɐG��Ă���Ƃ��ȂǁA
-�����ɍ����ꍇ�̂݃A�N�V�������N�������߂Ɏg�p
+Whereは、特定の条件に基づいてイベントをフィルタリングするために使う
+ジャンプボタンが押されたときや,プレイヤーが地面に触れているときなど、
+条件に合う場合のみアクションを起こすために使用
 
 .Select
-Select�́A���̃f�[�^��V�����`�ɕϊ����邽�߂Ɏg��
-���̏������ƁA���[�U�[�̓��͂�V����Vector3�I�u�W�F�N�g�ɕϊ����āA������g�p���ăv���C���[�𓮂���
+Selectは、元のデータを新しい形に変換するために使う
+この処理だと、ユーザーの入力を新しいVector3オブジェクトに変換して、それを使用してプレイヤーを動かす
 
  .Share
-�f�[�^�̏d����h�����߂̂���
-�ϑ��\�ȃX�g���[���𕡐��̏ꏊ�ŋ��L����Ƃ��ɁA�����f�[�^�����x�����������̂�h��
+データの重複を防ぐためのもの
+観測可能なストリームを複数の場所で共有するときに、同じデータが何度も生成されるのを防ぐ
 
-�ϑ��\�ȃX�g���[���iObservable�j
-���Ԃ̌o�߂ƂƂ��ɒl��C�x���g�𐶐�����f�[�^�̃X�g���[����\��
-��̓I�ɂ́A�}�E�X�̈ړ��A�{�^���̃N���b�N�A�L�[�{�[�h�̓��́A�O���T�[�o�[����̃f�[�^�̎擾�ȂǁA
+観測可能なストリーム（Observable）
+時間の経過とともに値やイベントを生成するデータのストリームを表す
+具体的には、マウスの移動、ボタンのクリック、キーボードの入力、外部サーバーからのデータの取得など、
 */
 #endregion
 
 public class PlayerController : NetworkBehaviour
 {
-    [SerializeField, Header("�������x")]
+    [SerializeField, Header("歩き速度")]
     private float m_WalkSpeed = 5.0f;
-    [SerializeField, Header("����X�s�[�h")]
+    [SerializeField, Header("走りスピード")]
     private float m_RunSpeed = 10.0f;
-    [SerializeField, Header("�W�����v��")]
+    [SerializeField, Header("ジャンプ力")]
     public float m_JumpForce = 300f;
 
     private Rigidbody m_Rigidbody;
     [SerializeField]
     private Transform m_CameraTransform;
 
-    // ���[�J���v���C���[���J�n�������ɌĂяo����郁�\�b�h
+    // ローカルプレイヤーが開始した時に呼び出されるメソッド
     public override void OnStartLocalPlayer()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
         m_CameraTransform = Camera.main.transform;
+        m_Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic; 
         base.OnStartLocalPlayer();
         InitializeMovement();
     }
-    // �v���C���[�̓��������������邽�߂̃��\�b�h
+    // プレイヤーの動きを初期化するためのメソッド
     void InitializeMovement()
     {
-        // �v���C���[�̈ړ����͂����A�N�e�B�u�ɊĎ�
+        // プレイヤーの移動入力をリアクティブに監視
         var moveStream = this.UpdateAsObservable()
              .Select(_ => new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")))
              .Share();
-        // Shift�L�[�������Ȃ���̑��s���w��
+        // Shiftキーを押しながらの走行を購読
         moveStream
              .Where(_ => Input.GetKey(KeyCode.LeftShift))
              .Subscribe(movement => new RunCommand(this, movement).Execute());
-        // �ʏ�̕��s���w��
+        // 通常の歩行を購読
         moveStream
             .Where(_ => !Input.GetKey(KeyCode.LeftShift))
             .Subscribe(movement => new WalkCommand(this, movement).Execute());
-        // �W�����v�̓��͂ƒn�ʂɐG��Ă��邩�̊m�F
+        // ジャンプの入力と地面に触れているかの確認
         this.UpdateAsObservable()
             .Where(_ => Input.GetButtonDown("Jump"))
             .Where(_ => IsGrounded())
             .Subscribe(_ => m_Rigidbody.AddForce(new Vector3(0.0f, m_JumpForce, 0.0f)));
     }
 
-    // �v���C���[���w��̑��x�ňړ�
+    // プレイヤーを指定の速度で移動
     public void Move(Vector3 movement, float speed)
     {
         Vector3 relativeMovement = m_CameraTransform.TransformDirection(movement);
@@ -86,11 +87,11 @@ public class PlayerController : NetworkBehaviour
         m_Rigidbody.MovePosition(transform.position + relativeMovement * speed * Time.deltaTime);
     }
 
-    // �v���C���[���n�ʂɐG��Ă��邩�ǂ����𔻒f
+    // プレイヤーが地面に触れているかどうかを判断
     bool IsGrounded()
     {
         Vector3 start = transform.position;
-        Vector3 end = start - Vector3.up * 0.5f; // ����0.5f�Œn�ʂ��m�F
+        Vector3 end = start - Vector3.up * 0.5f; // 距離0.5fで地面を確認
 
         bool isGrounded = Physics.Raycast(start, -Vector3.up, 1.5f);
         Color lineColor = isGrounded ? Color.green : Color.red;
@@ -98,14 +99,14 @@ public class PlayerController : NetworkBehaviour
         Debug.DrawLine(start, end, lineColor);
         return isGrounded;
     }
-    // �R�}���h�p�^�[�����`����C���^�[�t�F�[�X
+    // コマンドパターンを定義するインターフェース
     private interface ICommand
     {
         void Execute();
     }
-    // ���s���Ǘ�����R�}���h�N���X
-    // ���̃N���X�̓v���C���[�̕��s�s�����J�v�Z�������A
-    // �Ăяo���ꂽ�ۂɃv���C���[���w�肳�ꂽ�����Ƒ��x�ňړ�������
+    // 歩行を管理するコマンドクラス
+    // このクラスはプレイヤーの歩行行動をカプセル化し、
+    // 呼び出された際にプレイヤーを指定された方向と速度で移動させる
 
     private class WalkCommand : ICommand
     {
@@ -123,9 +124,9 @@ public class PlayerController : NetworkBehaviour
             m_Player.Move(m_Direction, m_Player.m_WalkSpeed);
         }
     }
-    // ���s���Ǘ�����R�}���h�N���X
-    // ���̃N���X�̓v���C���[�̑��s�s�����J�v�Z�������A
-    // �Ăяo���ꂽ�ۂɃv���C���[���w�肳�ꂽ�����ɍ����ňړ�������
+    // 走行を管理するコマンドクラス
+    // このクラスはプレイヤーの走行行動をカプセル化し、
+    // 呼び出された際にプレイヤーを指定された方向に高速で移動させる
     private class RunCommand : ICommand
     {
         private PlayerController m_Player;

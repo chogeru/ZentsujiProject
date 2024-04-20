@@ -27,7 +27,6 @@ public class PlayerCameraController : MonoBehaviour
     {
         mainCamera = GetComponent<Camera>();
         offset = transform.position - m_Player.position;
-        Cursor.lockState = CursorLockMode.Locked;
 
         Observable.EveryUpdate()
             .Select(_ => {

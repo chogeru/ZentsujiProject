@@ -84,7 +84,7 @@ public class PlayerController : NetworkBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10);
         }
 
-        m_Rigidbody.MovePosition(transform.position + relativeMovement * speed * Time.deltaTime);
+        m_Rigidbody.velocity = relativeMovement * speed;
     }
 
     // プレイヤーが地面に触れているかどうかを判断

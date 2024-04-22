@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using VInspector;
 using R3;
 using Cysharp.Threading.Tasks;
+using System;
+
 
 /// <summary>
 /// ネットワーク対応のチャットUIを管理するクラス。
@@ -91,9 +93,10 @@ public class ChatUI : NetworkBehaviour
     [ClientRpc]
     void RpcReceive(string playerName, string message)
     {
+        string timestamp = DateTime.Now.ToString("HH:mm:ss");
         string prettyMessage = playerName == m_LocalPlayerName ?
-            $"<color=red>{playerName}:</color> {message}" :
-            $"<color=blue>{playerName}:</color> {message}";
+            $"<color=red>{playerName}:{timestamp}:</color> {message}" :
+            $"<color=blue>{playerName}:{timestamp}:</color> {message}";
         AppendMessage(prettyMessage);
     }
 

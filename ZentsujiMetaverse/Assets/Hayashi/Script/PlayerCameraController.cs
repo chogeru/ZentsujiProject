@@ -25,11 +25,11 @@ public class PlayerCameraController : MonoBehaviour
 
     void Start()
     {
-        Cursor.visible = false;
         mainCamera = GetComponent<Camera>();
         offset = transform.position - m_Player.position;
 
         Observable.EveryUpdate()
+            .Where(_ => !MenuUIManager.instance.isOpenUI)
             .Select(_ => {
                 Vector2 mouseInput = new Vector2(Input.GetAxis("Mouse X") * m_Sensitivity, Input.GetAxis("Mouse Y") * m_Sensitivity);
                 Vector2 gamepadInput = Gamepad.current?.rightStick.ReadValue() ?? Vector2.zero;
@@ -43,23 +43,25 @@ public class PlayerCameraController : MonoBehaviour
 
     private async UniTaskVoid UpdateCameraPositionAsync(float mouseX, float mouseY, float scrollInput)
     {
+
         offset = Quaternion.AngleAxis(mouseX, Vector3.up) * Quaternion.AngleAxis(-mouseY, mainCamera.transform.right) * offset;
 
-        float currentDistance = offset.magnitude;
-        float newDistance = Mathf.Clamp(currentDistance - scrollInput * m_Sensitivity * Time.deltaTime, m_MinDistance, m_MaxDistance);
-        offset = offset.normalized * newDistance;
+            float currentDistance = offset.magnitude;
+            float newDistance = Mathf.Clamp(currentDistance - scrollInput * m_Sensitivity * Time.deltaTime, m_MinDistance, m_MaxDistance);
+            offset = offset.normalized * newDistance;
 
-        Vector3 newPosition = m_Player.position + offset;
-        Vector3 direction = newPosition - m_Player.position;
+            Vector3 newPosition = m_Player.position + offset;
+            Vector3 direction = newPosition - m_Player.position;
 
-        if (Physics.Raycast(m_Player.position, direction.normalized, out RaycastHit hit, direction.magnitude, m_ObstacleMask))
-        {
-            newPosition = hit.point - direction.normalized * m_MinDistance;
-        }
+            if (Physics.Raycast(m_Player.position, direction.normalized, out RaycastHit hit, direction.magnitude, m_ObstacleMask))
+            {
+                newPosition = hit.point - direction.normalized * m_MinDistance;
+            }
 
-        mainCamera.transform.position = newPosition;
-        mainCamera.transform.LookAt(m_Player.position);
+            mainCamera.transform.position = newPosition;
+            mainCamera.transform.LookAt(m_Player.position);
 
-        await UniTask.Yield(PlayerLoopTiming.Update);
+            await UniTask.Yield(PlayerLoopTiming.Update);
+        
     }
 }

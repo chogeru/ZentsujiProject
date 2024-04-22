@@ -32,7 +32,13 @@ public class MenuUIManager : MonoBehaviour
 
     public static MenuUIManager instance;
 
-    public bool OpenUI=false;
+    public  bool isOpenUI=false;
+
+
+    public bool IsUIOpen()
+    {
+        return m_OptionsPanel.activeSelf || m_VolumePanel.activeSelf || m_ChatPanel.activeSelf || m_ScreenSizePanel.activeSelf;
+    }
 
     private void Awake()
     {
@@ -53,6 +59,11 @@ public class MenuUIManager : MonoBehaviour
         CloseAllPanels();
         SetupButtonCallbacks();
       
+    }
+     private void Update()
+    {
+        // UIの開閉状態に基づいて、プレイヤーの移動とカメラの回転を制御
+        isOpenUI = IsUIOpen();
     }
     private void InitializeButtonPanelMap()
     {

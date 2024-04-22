@@ -46,17 +46,23 @@ public class PlayerController : NetworkBehaviour
     {
         m_Rigidbody = GetComponent<Rigidbody>();
         m_CameraTransform = Camera.main.transform;
-        m_Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic; 
+        m_Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         base.OnStartLocalPlayer();
         InitializeMovement();
     }
     // プレイヤーの動きを初期化するためのメソッド
     void InitializeMovement()
     {
+        // UIが開かれた瞬間にプレイヤーの速度をゼロにリセット
+        this.UpdateAsObservable()
+        .Where(_ => MenuUIManager.instance.isOpenUI)
+        .Subscribe(_ => m_Rigidbody.velocity = Vector3.zero);
+
         // プレイヤーの移動入力をリアクティブに監視
         var moveStream = this.UpdateAsObservable()
-             .Select(_ => new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")))
-             .Share();
+         .Where(_ => !MenuUIManager.instance.isOpenUI)
+         .Select(_ => new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")))
+         .Share();
         // Shiftキーを押しながらの走行を購読
         moveStream
              .Where(_ => Input.GetKey(KeyCode.LeftShift))
@@ -67,16 +73,24 @@ public class PlayerController : NetworkBehaviour
             .Subscribe(movement => new WalkCommand(this, movement).Execute());
         // ジャンプの入力と地面に触れているかの確認
         this.UpdateAsObservable()
+            .Where(_ => !MenuUIManager.instance.isOpenUI)
             .Where(_ => Input.GetButtonDown("Jump"))
             .Where(_ => IsGrounded())
             .Subscribe(_ => m_Rigidbody.AddForce(new Vector3(0.0f, m_JumpForce, 0.0f)));
+
     }
 
     // プレイヤーを指定の速度で移動
     public void Move(Vector3 movement, float speed)
     {
+        if (MenuUIManager.instance.isOpenUI)
+        {
+            m_Rigidbody.velocity = Vector3.zero;
+            return;
+        }
+
         Vector3 relativeMovement = m_CameraTransform.TransformDirection(movement);
-        relativeMovement.y = 0; 
+        relativeMovement.y = 0;
 
         if (movement != Vector3.zero)
         {

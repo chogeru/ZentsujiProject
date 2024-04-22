@@ -25,6 +25,7 @@ public class PlayerCameraController : MonoBehaviour
 
     void Start()
     {
+        Cursor.visible = false;
         mainCamera = GetComponent<Camera>();
         offset = transform.position - m_Player.position;
 

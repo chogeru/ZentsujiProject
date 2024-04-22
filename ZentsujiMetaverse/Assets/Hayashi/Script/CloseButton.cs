@@ -18,4 +18,8 @@ public class CloseButton : MonoBehaviour
         // 親パネルを非表示にする
         transform.parent.gameObject.SetActive(false);
     }
+    public void CursorFalse()
+    {
+        Cursor.visible = false;
+    }
 }

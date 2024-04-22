@@ -10,4 +10,9 @@ public class SetSE : MonoBehaviour
     {
         SEManager.instance.PlaySound(m_SEClipName);
     }
+
+    public void PlaySEButton(string SEClipName)
+    {
+        SEManager.instance.PlaySound(SEClipName);
+    }
 }

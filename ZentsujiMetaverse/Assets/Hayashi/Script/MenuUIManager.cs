@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using R3;
 using System.Collections.Generic;
 using VInspector;
+using Mirror.Examples.CouchCoop;
 
 public class MenuUIManager : MonoBehaviour
 {
@@ -28,6 +29,23 @@ public class MenuUIManager : MonoBehaviour
     [EndTab]
 
     private Dictionary<Button, GameObject> m_ButtonPanelMap;
+
+    public static MenuUIManager instance;
+
+    public bool OpenUI=false;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     private void Start()
     {
@@ -64,6 +82,7 @@ public class MenuUIManager : MonoBehaviour
     }
     private void ShowOnlyThisPanel(GameObject activePanel)
     {
+        Cursor.visible = true;
         // 全パネルを非表示にして、選択されたパネルのみを表示
         foreach (var panel in m_ButtonPanelMap.Values)
         {

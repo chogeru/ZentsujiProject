@@ -71,6 +71,7 @@ public class PlayerController : NetworkBehaviour
         moveStream
             .Where(_ => !Input.GetKey(KeyCode.LeftShift))
             .Subscribe(movement => new WalkCommand(this, movement).Execute());
+
         // ジャンプの入力と地面に触れているかの確認
         this.UpdateAsObservable()
             .Where(_ => !MenuUIManager.instance.isOpenUI)
@@ -104,6 +105,7 @@ public class PlayerController : NetworkBehaviour
     // プレイヤーが地面に触れているかどうかを判断
     bool IsGrounded()
     {
+        
         Vector3 start = transform.position;
         Vector3 end = start - Vector3.up * 0.5f; // 距離0.5fで地面を確認
 

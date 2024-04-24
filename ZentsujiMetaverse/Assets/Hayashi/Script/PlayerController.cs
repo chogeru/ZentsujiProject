@@ -36,7 +36,7 @@ public class PlayerController : NetworkBehaviour
     private float m_RunSpeed = 10.0f;
     [SerializeField, Header("ジャンプ力")]
     public float m_JumpForce = 300f;
-
+    [SerializeField]
     private Rigidbody m_Rigidbody;
     [SerializeField]
     private Transform m_CameraTransform;
@@ -50,7 +50,6 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
-        m_CameraTransform = Camera.main.transform;
         m_Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         base.OnStartLocalPlayer();
         InitializeMovement();
@@ -122,7 +121,7 @@ public class PlayerController : NetworkBehaviour
     // プレイヤーが地面に触れているかどうかを判断
     bool IsGrounded()
     {
-        
+
         Vector3 start = transform.position;
         Vector3 end = start - Vector3.up * 0.5f; // 距離0.5fで地面を確認
 

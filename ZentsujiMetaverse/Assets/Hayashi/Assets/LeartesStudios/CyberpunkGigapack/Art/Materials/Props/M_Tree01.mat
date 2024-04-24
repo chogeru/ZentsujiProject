@@ -25,7 +25,6 @@ Material:
     type: 3}
   m_ValidKeywords:
   - _ALPHATEST_ON
-  - _SURFACE_TYPE_TRANSPARENT
   m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
   - _DOUBLESIDED_ON
@@ -35,14 +34,13 @@ Material:
   m_CustomRenderQueue: 2475
   stringTagMap:
     MotionVector: User
-    RenderType: Transparent
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - MOTIONVECTORS
   - TransparentDepthPostpass
   - TransparentBackface
   - RayTracingPrepass
   - TransparentDepthPrepass
-  - DepthOnly
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -171,7 +169,7 @@ Material:
     - _DoubleSidedEnable: 1
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 1
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _EnableBlendModePreserveSpecularLighting: 0
     - _EnableFogOnTransparent: 1
     - _Min_Opacity: 0
@@ -186,7 +184,7 @@ Material:
     - _RefractionModel: 0
     - _RenderQueueType: 1
     - _RequireSplitLighting: 0
-    - _SrcBlend: 5
+    - _SrcBlend: 1
     - _StencilRef: 0
     - _StencilRefDepth: 8
     - _StencilRefDistortionVec: 4
@@ -199,7 +197,7 @@ Material:
     - _StencilWriteMaskMV: 40
     - _Strips_Tiling: 1
     - _SupportDecals: 1
-    - _Surface: 1
+    - _Surface: 0
     - _SurfaceType: 0
     - _TransparentBackfaceEnable: 0
     - _TransparentCullMode: 2
@@ -216,7 +214,7 @@ Material:
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 3
     - _ZTestTransparent: 4
-    - _ZWrite: 0
+    - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
     - Color_9999a74f96034bfd8f70d82adf6bdcbd: {r: 0, g: 0.38447738, b: 1, a: 1}

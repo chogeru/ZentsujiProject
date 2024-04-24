@@ -6,7 +6,6 @@ public class Player : NetworkBehaviour
     [SyncVar]
     public string studentId; 
 
-
     public override void OnStartLocalPlayer()
     {
         base.OnStartLocalPlayer();

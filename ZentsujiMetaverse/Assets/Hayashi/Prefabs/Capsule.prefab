@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 796781145588370417}
   - component: {fileID: 3880145141130334582}
   - component: {fileID: 6947465709856727073}
+  - component: {fileID: 1444284008552733807}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -140,6 +141,7 @@ MonoBehaviour:
   m_RunSpeed: 9
   m_JumpForce: 500
   m_CameraTransform: {fileID: 0}
+  m_Animator: {fileID: 0}
 --- !u!114 &796781145588370422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226,6 +228,22 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0
   studentId: sfef
+--- !u!114 &1444284008552733807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 796781145588370424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc38b54cd83ec5d46b09308ea916785c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
+  m_CameraGameObject: {fileID: 796781145600915028}
 --- !u!1 &796781145600915028
 GameObject:
   m_ObjectHideFlags: 0
@@ -245,7 +263,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &796781145600915029
 Transform:
   m_ObjectHideFlags: 0

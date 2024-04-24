@@ -40,7 +40,12 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody m_Rigidbody;
     [SerializeField]
     private Transform m_CameraTransform;
+    [SerializeField, Header("アニメ-ター")]
+    private Animator m_Animator;
 
+    private bool isIdle;
+    private bool issWalk;
+    private bool isRun;
     // ローカルプレイヤーが開始した時に呼び出されるメソッド
     public override void OnStartLocalPlayer()
     {
@@ -80,13 +85,19 @@ public class PlayerController : NetworkBehaviour
             .Subscribe(_ => m_Rigidbody.AddForce(new Vector3(0.0f, m_JumpForce, 0.0f)));
 
     }
-
+    private void Update()
+    {
+        PlayerAnimeState();
+    }
     // プレイヤーを指定の速度で移動
     public void Move(Vector3 movement, float speed)
     {
         if (MenuUIManager.instance.isOpenUI)
         {
             m_Rigidbody.velocity = Vector3.zero;
+            isIdle = true;
+            issWalk = false;
+            isRun = false;
             return;
         }
 
@@ -97,6 +108,12 @@ public class PlayerController : NetworkBehaviour
         {
             Quaternion targetRotation = Quaternion.LookRotation(relativeMovement, Vector3.up);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10);
+        }
+        else
+        {
+            isIdle = true;
+            issWalk = false;
+            isRun = false;
         }
 
         m_Rigidbody.velocity = relativeMovement * speed;
@@ -115,6 +132,19 @@ public class PlayerController : NetworkBehaviour
         Debug.DrawLine(start, end, lineColor);
         return isGrounded;
     }
+
+    private void PlayerAnimeState()
+    {
+        m_Animator.SetBool("Idle", isIdle);
+        m_Animator.SetBool("Walk", issWalk);
+        m_Animator.SetBool("Run", isRun);
+        m_Animator.SetFloat("左右", Input.GetAxis("Horizontal"));
+        m_Animator.SetFloat("前後", Input.GetAxis("Vertical"));
+        m_Animator.SetFloat("走り左右", Input.GetAxis("Horizontal"));
+        m_Animator.SetFloat("走り前後", Input.GetAxis("Vertical"));
+    }
+
+
     // コマンドパターンを定義するインターフェース
     private interface ICommand
     {
@@ -137,6 +167,9 @@ public class PlayerController : NetworkBehaviour
 
         public void Execute()
         {
+            m_Player.isRun = false;
+            m_Player.isIdle = false;
+            m_Player.issWalk = true;
             m_Player.Move(m_Direction, m_Player.m_WalkSpeed);
         }
     }
@@ -156,7 +189,11 @@ public class PlayerController : NetworkBehaviour
 
         public void Execute()
         {
+            m_Player.isRun = true;
+            m_Player.isIdle = false;
+            m_Player.issWalk = false;
             m_Player.Move(m_Direction, m_Player.m_RunSpeed);
         }
     }
+
 }

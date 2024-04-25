@@ -2,6 +2,7 @@
 {
     using System;
     using UnityEngine;
+    using SRF.Helpers;
 
     public abstract class DataBoundControl : OptionsControlBase
     {
@@ -31,7 +32,14 @@
 
             _isReadOnly = !prop.CanWrite;
 
+            prop.ValueChanged += OnValueChanged;
+
             OnBind(propertyName, prop.PropertyType);
+            Refresh();
+        }
+
+        private void OnValueChanged(PropertyReference property)
+        {
             Refresh();
         }
 
@@ -99,7 +107,22 @@
 
             if (_hasStarted)
             {
+                if (_prop != null)
+                {
+                    _prop.ValueChanged += OnValueChanged;
+                }
+
                 Refresh();
+            }
+        }
+
+        protected override void OnDisable()
+        {
+            base.OnDisable();
+
+            if (_prop != null)
+            {
+                _prop.ValueChanged -= OnValueChanged;
             }
         }
 

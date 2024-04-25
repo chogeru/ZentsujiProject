@@ -13,6 +13,8 @@
         private PinAlignment _position;
         private TriggerRoot _trigger;
         private IConsoleService _consoleService;
+        private bool _showErrorNotification;
+
         public bool IsEnabled
         {
             get { return _trigger != null && _trigger.CachedGameObject.activeSelf; }
@@ -30,6 +32,34 @@
                 }
             }
         }
+
+        public bool ShowErrorNotification
+        {
+            get
+            {
+                return _showErrorNotification;
+            }
+            set
+            {
+                if (_showErrorNotification == value) return;
+
+                _showErrorNotification = value;
+
+                if (_trigger == null) return;
+
+                if(_showErrorNotification)
+                {
+                    _consoleService = SRServiceManager.GetService<IConsoleService>();
+                    _consoleService.Error += OnError;
+                }
+                else
+                {
+                    _consoleService.Error -= OnError;
+                    _consoleService = null;
+                }
+            }
+        }
+
         public PinAlignment Position
         {
             get { return _position; }
@@ -43,38 +73,26 @@
                 _position = value;
             }
         }
+
         protected override void Awake()
         {
             base.Awake();
             DontDestroyOnLoad(CachedGameObject);
 
             CachedTransform.SetParent(Hierarchy.Get("SRDebugger"), true);
+            ShowErrorNotification = Settings.Instance.ErrorNotification;
 
             name = "Trigger";
         }
-        protected override void OnEnable()
-        {
-            base.OnEnable();
 
-            if (Settings.Instance.ErrorNotification)
-            {
-                _consoleService = SRServiceManager.GetService<IConsoleService>();
-                _consoleService.Error += OnError;
-            }
-        }
-        protected override void OnDisable()
-        {
-            base.OnDisable();
-
-            if (_consoleService != null)
-            {
-                _consoleService.Error -= OnError;
-            }
-        }
         private void OnError(IConsoleService console)
         {
-            _trigger.ErrorNotifier.ShowErrorWarning();
+            if (_trigger != null)
+            {
+                _trigger.ErrorNotifier.ShowErrorWarning();
+            }
         }
+
         private void CreateTrigger()
         {
             var prefab = Resources.Load<TriggerRoot>(SRDebugPaths.TriggerPrefabPath);
@@ -124,12 +142,26 @@
             SRDebuggerUtil.EnsureEventSystemExists();
 
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += OnActiveSceneChanged;
+
+            if (_showErrorNotification)
+            {
+                _consoleService = SRServiceManager.GetService<IConsoleService>();
+                _consoleService.Error += OnError;
+            }
         }
+
         protected override void OnDestroy()
         {
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+
+            if (_consoleService != null)
+            {
+                _consoleService.Error -= OnError;
+            }
+
             base.OnDestroy();
         }
+
         private static void OnActiveSceneChanged(UnityEngine.SceneManagement.Scene s1, UnityEngine.SceneManagement.Scene s2)
         {
             SRDebuggerUtil.EnsureEventSystemExists();

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using UnityEngine.Serialization;
 
 namespace SRDebugger
 {
@@ -78,8 +79,13 @@ namespace SRDebugger
             DevelopmentBuildsOnly
         }
 
-        private const string ResourcesPath = "/usr/Resources/SRDebugger";
-        private const string ResourcesName = "Settings";
+        public enum UIModes
+        {
+            NewInputSystem,
+            LegacyInputSystem
+        }
+
+        internal const string ResourcesName = "Settings";
         private static Settings _instance;
 
         public static Settings Instance
@@ -91,15 +97,9 @@ namespace SRDebugger
                     _instance = GetOrCreateInstance();
                 }
 
-                if (_instance._keyboardShortcuts != null && _instance._keyboardShortcuts.Length > 0)
-                {
-                    _instance.UpgradeKeyboardShortcuts();
-                }
-
                 return _instance;
             }
         }
-
         private static KeyboardShortcut[] GetDefaultKeyboardShortcuts()
         {
             return new[]
@@ -137,6 +137,11 @@ namespace SRDebugger
 
         private void UpgradeKeyboardShortcuts()
         {
+            if (_keyboardShortcuts == null || _keyboardShortcuts.Length == 0)
+            {
+                return; // Nothing to do
+            }
+
             Debug.Log("[SRDebugger] Upgrading Settings format");
 
             var newShortcuts = new List<KeyboardShortcut>();
@@ -175,6 +180,10 @@ namespace SRDebugger
             [SerializeField] public KeyCode Key;
 
             [SerializeField] public bool Shift;
+
+#if ENABLE_INPUT_SYSTEM
+            [NonSerialized] public UnityEngine.InputSystem.Key? Cached_KeyCode;
+#endif
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -186,6 +195,14 @@ namespace SRDebugger
             get { return _isEnabled; }
 #if UNITY_EDITOR
             set { _isEnabled = value; }
+#endif
+        }
+
+        public UIModes UIInputMode
+        {
+            get { return _uiInputMode; }
+#if UNITY_EDITOR
+            set { _uiInputMode = value; }
 #endif
         }
 
@@ -259,6 +276,14 @@ namespace SRDebugger
             get { return _enableBackgroundTransparency; }
 #if UNITY_EDITOR
             set { _enableBackgroundTransparency = value; }
+#endif
+        }
+
+        public float BackgroundTransparency
+        {
+            get { return _backgroundTransparency; }
+#if UNITY_EDITOR
+            set { _backgroundTransparency = value; }
 #endif
         }
 
@@ -353,6 +378,14 @@ namespace SRDebugger
             get { return _enableBugReporter; }
 #if UNITY_EDITOR
             set { _enableBugReporter = value; }
+#endif
+        }
+
+        public bool EnableBugReportScreenshot
+        {
+            get { return _enableBugReportScreenshot; }
+#if UNITY_EDITOR
+            set { _enableBugReportScreenshot = value;  }
 #endif
         }
 
@@ -527,11 +560,23 @@ namespace SRDebugger
 #endif
         }
 
-        #endregion
+#if UNITY_EDITOR
+        public bool DisableWelcomePopup
+        {
+            get { return _disableWelcomePopup; }
+            set { _disableWelcomePopup = value; }
+        }
+#endif
+
+#endregion
 
         #region Serialization
 
         [SerializeField] private bool _isEnabled = true;
+
+        [SerializeField] private bool _disableWelcomePopup = false;
+
+        [SerializeField] private UIModes _uiInputMode = UIModes.NewInputSystem;
 
         [SerializeField] private DefaultTabs _defaultTab = DefaultTabs.SystemInformation;
 
@@ -559,6 +604,8 @@ namespace SRDebugger
 
         [SerializeField] private bool _enableBackgroundTransparency = true;
 
+        [SerializeField] private float _backgroundTransparency = 0.9f;
+
         [SerializeField] private bool _collapseDuplicateLogEntries = true;
 
         [SerializeField] private bool _richTextInConsole = true;
@@ -578,6 +625,8 @@ namespace SRDebugger
         [SerializeField] private string _apiKey = "";
 
         [SerializeField] private bool _enableBugReporter;
+
+        [SerializeField] private bool _enableBugReportScreenshot = true;
 
         [SerializeField] private DefaultTabs[] _disabledTabs = {};
 
@@ -615,56 +664,40 @@ namespace SRDebugger
 
         #region Saving/Loading
 
-        private static Settings GetOrCreateInstance()
+        internal static void ClearCache()
+        {
+            if (_instance != null)
+            {
+                Resources.UnloadAsset(_instance);
+            }
+
+            _instance = null;
+        }
+
+        internal static Settings GetInstance()
         {
             var instance = Resources.Load<Settings>("SRDebugger/" + ResourcesName);
+            return instance;
+        }
+
+        private static Settings GetOrCreateInstance()
+        {
+            var instance = GetInstance();
 
             if (instance == null)
             {
+                Debug.Log("[SRDebugger] No SRDebugger settings object found - using defaults. (Open SRDebugger Settings window in the Unity Editor to create settings file)");
+
                 // Create instance
                 instance = CreateInstance<Settings>();
 
-#if UNITY_EDITOR
-
-                // Get resources folder path
-                var resourcesPath = GetResourcesPath();
-
-                if (resourcesPath == null)
-                {
-                    Debug.LogError(
-                        "[SRDebugger] Error finding Resources path. Please make sure SRDebugger folder is intact");
-                    return instance;
-                }
-
-                Debug.Log("[SRDebugger] Creating settings asset at {0}/{1}".Fmt(resourcesPath, ResourcesName));
-
-                // Create directory if it doesn't exist
-                Directory.CreateDirectory(resourcesPath);
-
-                // Save instance if in editor
-                AssetDatabase.CreateAsset(instance, resourcesPath + "/" + ResourcesName + ".asset");
-
-#endif
+            } else
+            {
+                instance.UpgradeKeyboardShortcuts();
             }
 
             return instance;
         }
-
-#if UNITY_EDITOR
-
-        private static string GetResourcesPath()
-        {
-            try
-            {
-                return Internal.Editor.SRDebugEditorUtil.GetRootPath() + ResourcesPath;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-#endif
 
         #endregion
     }

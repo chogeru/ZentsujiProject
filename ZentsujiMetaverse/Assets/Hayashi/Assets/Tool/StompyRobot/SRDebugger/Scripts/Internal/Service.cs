@@ -13,6 +13,21 @@
         private static IOptionsService _optionsService;
         private static IDockConsoleService _dockConsoleService;
 
+#if UNITY_EDITOR && ((!UNITY_2017 && !UNITY_2018 && !UNITY_2019) || UNITY_2019_3_OR_NEWER)
+        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.SubsystemRegistration)]
+        public static void RuntimeInitialize()
+        {
+            // Clear service references at startup in case of "enter play mode without domain reload"
+            _consoleService = null;
+            _debugPanelService = null;
+            _debugTriggerService = null;
+            _pinnedUiService = null;
+            _debugCameraService = null;
+            _optionsService = null;
+            _dockConsoleService = null;
+        }
+#endif
+
         public static IConsoleService Console
         {
             get

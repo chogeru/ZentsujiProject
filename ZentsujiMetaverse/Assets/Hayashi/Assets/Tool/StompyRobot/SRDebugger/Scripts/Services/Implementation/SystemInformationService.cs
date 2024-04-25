@@ -60,11 +60,11 @@
 
         public Dictionary<string, Dictionary<string, object>> CreateReport(bool includePrivate = false)
         {
-            var dict = new Dictionary<string, Dictionary<string, object>>();
+            var dict = new Dictionary<string, Dictionary<string, object>>(_info.Count);
 
             foreach (var keyValuePair in _info)
             {
-                var category = new Dictionary<string, object>();
+                var category = new Dictionary<string, object>(keyValuePair.Value.Count);
 
                 foreach (var systemInfo in keyValuePair.Value)
                 {
@@ -96,6 +96,14 @@
                 //Info.Create("Process Name", () => Process.GetCurrentProcess().ProcessName)
             });
 
+            if (SystemInfo.batteryStatus != BatteryStatus.Unknown)
+            {
+                _info.Add("Battery", new[]
+                {
+                    InfoEntry.Create("Status", UnityEngine.SystemInfo.batteryStatus),
+                    InfoEntry.Create("Battery Level", UnityEngine.SystemInfo.batteryLevel)
+                });
+            }
 
 #if ENABLE_IL2CPP
             const string IL2CPP = "Yes";
@@ -113,8 +121,11 @@
                         Application.genuineCheckAvailable ? "Trusted" : "Untrusted")),
                 InfoEntry.Create("System Language", Application.systemLanguage),
                 InfoEntry.Create("Platform", Application.platform),
+                InfoEntry.Create("Install Mode", Application.installMode),
+                InfoEntry.Create("Sandbox", Application.sandboxType),
                 InfoEntry.Create("IL2CPP", IL2CPP),
                 InfoEntry.Create("Application Version", Application.version),
+                InfoEntry.Create("Application Id", Application.identifier),
                 InfoEntry.Create("SRDebugger Version", SRDebug.Version),
             });
 
@@ -123,8 +134,9 @@
                 InfoEntry.Create("Resolution", () => Screen.width + "x" + Screen.height),
                 InfoEntry.Create("DPI", () => Screen.dpi),
                 InfoEntry.Create("Fullscreen", () => Screen.fullScreen),
-                InfoEntry.Create("Orientation", () => Screen.orientation)
-            });
+                InfoEntry.Create("Fullscreen Mode", () => Screen.fullScreenMode),
+                InfoEntry.Create("Orientation", () => Screen.orientation),
+            }); 
 
             _info.Add("Runtime", new[]
             {
@@ -174,7 +186,8 @@
                 InfoEntry.Create("Location", UnityEngine.SystemInfo.supportsLocationService),
                 InfoEntry.Create("Accelerometer", UnityEngine.SystemInfo.supportsAccelerometer),
                 InfoEntry.Create("Gyroscope", UnityEngine.SystemInfo.supportsGyroscope),
-                InfoEntry.Create("Vibration", UnityEngine.SystemInfo.supportsVibration)
+                InfoEntry.Create("Vibration", UnityEngine.SystemInfo.supportsVibration),
+                InfoEntry.Create("Audio", UnityEngine.SystemInfo.supportsAudio)
             });
 
 #if UNITY_IOS
@@ -184,7 +197,7 @@
 #if UNITY_5 || UNITY_5_3_OR_NEWER
                 InfoEntry.Create("Generation", UnityEngine.iOS.Device.generation),
                 InfoEntry.Create("Ad Tracking", UnityEngine.iOS.Device.advertisingTrackingEnabled),
-#else           
+#else
                 InfoEntry.Create("Generation", iPhone.generation),
                 InfoEntry.Create("Ad Tracking", iPhone.advertisingTrackingEnabled),
 #endif
@@ -192,32 +205,45 @@
 
 #endif
 #pragma warning disable 618
-            _info.Add("Graphics", new[]
+            _info.Add("Graphics - Device", new[]
             {
                 InfoEntry.Create("Device Name", UnityEngine.SystemInfo.graphicsDeviceName),
                 InfoEntry.Create("Device Vendor", UnityEngine.SystemInfo.graphicsDeviceVendor),
                 InfoEntry.Create("Device Version", UnityEngine.SystemInfo.graphicsDeviceVersion),
+                InfoEntry.Create("Graphics Memory", SRFileUtil.GetBytesReadable(((long) UnityEngine.SystemInfo.graphicsMemorySize)*1024*1024)),
                 InfoEntry.Create("Max Tex Size", UnityEngine.SystemInfo.maxTextureSize),
-#if !UNITY_5 && !UNITY_5_3_OR_NEWER
-                InfoEntry.Create("Fill Rate",
-                    SystemInfo.graphicsPixelFillrate > 0 ? "{0}mpix/s".Fmt(SystemInfo.graphicsPixelFillrate) : "Unknown"),
-#endif
-                InfoEntry.Create("NPOT Support", UnityEngine.SystemInfo.npotSupport),
-                InfoEntry.Create("Render Textures",
-                    "{0} ({1})".Fmt(UnityEngine.SystemInfo.supportsRenderTextures ? "Yes" : "No",
-                        UnityEngine.SystemInfo.supportedRenderTargetCount)),
-                InfoEntry.Create("3D Textures", UnityEngine.SystemInfo.supports3DTextures),
-                InfoEntry.Create("Compute Shaders", UnityEngine.SystemInfo.supportsComputeShaders),
-#if !UNITY_5 && !UNITY_5_3_OR_NEWER
-                InfoEntry.Create("Vertex Programs", SystemInfo.supportsVertexPrograms),
-#endif
-                InfoEntry.Create("Image Effects", UnityEngine.SystemInfo.supportsImageEffects),
-                InfoEntry.Create("Cubemaps", UnityEngine.SystemInfo.supportsRenderToCubemap),
+            });
+
+            _info.Add("Graphics - Features", new[]
+            {
+                InfoEntry.Create("UV Starts at top", UnityEngine.SystemInfo.graphicsUVStartsAtTop),
+                InfoEntry.Create("Shader Level", UnityEngine.SystemInfo.graphicsShaderLevel),
+                InfoEntry.Create("Multi Threaded", UnityEngine.SystemInfo.graphicsMultiThreaded),
+                InfoEntry.Create("Hidden Service Removal (GPU)", UnityEngine.SystemInfo.hasHiddenSurfaceRemovalOnGPU),
+                InfoEntry.Create("Uniform Array Indexing (Fragment Shaders)", UnityEngine.SystemInfo.hasDynamicUniformArrayIndexingInFragmentShaders),
                 InfoEntry.Create("Shadows", UnityEngine.SystemInfo.supportsShadows),
-                InfoEntry.Create("Stencil", UnityEngine.SystemInfo.supportsStencil),
-                InfoEntry.Create("Sparse Textures", UnityEngine.SystemInfo.supportsSparseTextures)
+                InfoEntry.Create("Raw Depth Sampling (Shadows)", UnityEngine.SystemInfo.supportsRawShadowDepthSampling),
+                InfoEntry.Create("Motion Vectors", UnityEngine.SystemInfo.supportsMotionVectors),
+                InfoEntry.Create("Cubemaps", UnityEngine.SystemInfo.supportsRenderToCubemap),
+                InfoEntry.Create("Image Effects", UnityEngine.SystemInfo.supportsImageEffects),
+                InfoEntry.Create("3D Textures", UnityEngine.SystemInfo.supports3DTextures),
+                InfoEntry.Create("2D Array Textures", UnityEngine.SystemInfo.supports2DArrayTextures),
+                InfoEntry.Create("3D Render Textures", UnityEngine.SystemInfo.supports3DRenderTextures),
+                InfoEntry.Create("Cubemap Array Textures", UnityEngine.SystemInfo.supportsCubemapArrayTextures),
+                InfoEntry.Create("Copy Texture Support", UnityEngine.SystemInfo.copyTextureSupport),
+                InfoEntry.Create("Compute Shaders", UnityEngine.SystemInfo.supportsComputeShaders),
+                InfoEntry.Create("Instancing", UnityEngine.SystemInfo.supportsInstancing),
+                InfoEntry.Create("Hardware Quad Topology", UnityEngine.SystemInfo.supportsHardwareQuadTopology),
+                InfoEntry.Create("32-bit index buffer", UnityEngine.SystemInfo.supports32bitsIndexBuffer),
+                InfoEntry.Create("Sparse Textures", UnityEngine.SystemInfo.supportsSparseTextures),
+                InfoEntry.Create("Render Target Count", UnityEngine.SystemInfo.supportedRenderTargetCount),
+                InfoEntry.Create("Separated Render Targets Blend", UnityEngine.SystemInfo.supportsSeparatedRenderTargetsBlend),
+                InfoEntry.Create("Multisampled Textures", UnityEngine.SystemInfo.supportsMultisampledTextures),
+                InfoEntry.Create("Texture Wrap Mirror Once", UnityEngine.SystemInfo.supportsTextureWrapMirrorOnce),
+                InfoEntry.Create("Reversed Z Buffer", UnityEngine.SystemInfo.usesReversedZBuffer)
             });
 #pragma warning restore 618
+
         }
 
         private static string GetCloudManifestPrettyName(string name)

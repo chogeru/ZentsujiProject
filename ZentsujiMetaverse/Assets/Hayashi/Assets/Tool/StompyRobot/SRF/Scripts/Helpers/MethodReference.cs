@@ -1,28 +1,37 @@
-﻿namespace SRF.Helpers
+﻿using System;
+
+namespace SRF.Helpers
 {
     using System.Reflection;
 
-    public class MethodReference
+    public sealed class MethodReference
     {
-        private MethodInfo _method;
-        private object _target;
+        private readonly Func<object[], object> _method;
 
         public MethodReference(object target, MethodInfo method)
         {
             SRDebugUtil.AssertNotNull(target);
 
-            _target = target;
-            _method = method;
+            _method = o => method.Invoke(target, o);
         }
 
-        public string MethodName
+        public MethodReference(Func<object[], object> method)
         {
-            get { return _method.Name; }
+            _method = method;
         }
 
         public object Invoke(object[] parameters)
         {
-            return _method.Invoke(_target, parameters);
+            return _method.Invoke(parameters);
+        }
+
+        public static implicit operator MethodReference(Action action)
+        {
+            return new MethodReference(args =>
+            {
+                action();
+                return null;
+            });
         }
     }
 }

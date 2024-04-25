@@ -213,14 +213,12 @@
 
         public void OnBeforeSerialize()
         {
-            Debug.Log("[OnBeforeSerialize] Count: {0}".Fmt(_count));
             // Clean buffer of unused elements before serializing
             Clean();
         }
 
         public void OnAfterDeserialize()
         {
-            Debug.Log("[OnAfterDeserialize] Count: {0}".Fmt(_count));
         }
 
         /// <summary>

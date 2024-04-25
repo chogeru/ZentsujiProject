@@ -60,5 +60,14 @@
 
             return t;
         }
+
+#if (!UNITY_2017 && !UNITY_2018 && !UNITY_2019) || UNITY_2019_3_OR_NEWER
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        public static void RuntimeInitialize()
+        {
+            // To handle entering play mode without a domain reload, need to reset the state of the service manager.
+            Cache.Clear();
+        }
+#endif
     }
 }

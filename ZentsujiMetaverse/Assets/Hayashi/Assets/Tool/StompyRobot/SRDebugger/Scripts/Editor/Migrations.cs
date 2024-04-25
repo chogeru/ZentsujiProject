@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SRDebugger.Internal.Editor;
 using SRF;
 using UnityEngine;
 using UnityEditor;
@@ -76,7 +75,7 @@ namespace SRDebugger.Editor
                 Debug.Log("Running Migration: " + migration.Id);
 
             var assetPaths = AssetDatabase.GetAllAssetPaths();
-            var root = new DirectoryInfo(SRDebugEditorUtil.GetRootPath());
+            var root = new DirectoryInfo(SRInternalEditorUtil.GetRootPath());
 
             if(EnableLog)
                 Debug.Log("Using Root Path: " + root.FullName);

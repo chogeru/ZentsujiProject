@@ -1,5 +1,5 @@
 =====================
-SRDebugger - (C) Stompy Robot LTD 2020
+SRDebugger - (C) Stompy Robot LTD 2021
 =====================
 
 Visit https://www.stompyrobot.uk/tools/srdebugger/documentation for more detailed documentation.
@@ -10,7 +10,7 @@ Open StompyRobot/SRDebugger/Scenes/Sample.unity for a simple example scene.
 
 ## Setup
 
-### Unity 2017 / 2018 / 2019
+### Unity 2019 / 2020 / 2021 / 2022
 
 No setup is required. SRDebugger will automatically load at runtime unless disabled in settings. 
 By default, the trigger to open the debug panel is attached to the top-left of the game view. Triple-tap there to open the panel. (This can be changed in the settings)
@@ -37,6 +37,84 @@ For documentation on other features, including the options tab, bug reporter, pr
 - Source Code Pro font provided by Adobe (github.com/adobe-fonts/source-code-pro) (Open Font License 1.1)
 
 # Change Log
+
+1.12.1
+----------
+
+** Minimum supported version is now 2019.3 **
+
+Features:
+- Background opacity can now be configured in settings (Settings/Advanced/Background Opacity)
+- Application ID will now be displayed in emails from the bug reporter (the ID set in Project Preferences)
+- New option to disable the welcome popup (Settings/Advanced/Disable Welcome Popup)
+
+API changes:
+- New API for changing the bug report handler. This allows you to implement a custom bug report endpoint without modifying SRDebugger source code. (SRDebug.Instance.SetBugReportHandler)
+- New API for changing console filter state (info/warning/error visibility)
+- New API for enabling or disabling error notification (SRDebug.Instance.IsTriggerErrorNotificationEnabled)
+- New API for checking if SRDebugger is initialized (SRDebug.IsInitialized)
+
+Changes:
+- Info/Warning/Error filter state now syncs between console tab and pinned console, and persists if debug panel is unloaded.
+- Option categories are now sorted alphabetically.
+- MonoBehaviors can now be added as an Option Container. Any properties or methods derived from MonoBehavior will be ignored.
+- Properties and Methods with [Browsable(false)] attribute will not be displayed in the options tab (applies to SROptions and Option Containers)
+
+Fixes:
+- (Options) Enum and Number property names are no longer truncated.
+- (Options) Improved error message when an unsupported property type is encountered.
+- Debug panel no longer consumes CPU resources rendering canvases when hidden.
+- Misc optimisations and bug fixes.
+
+1.11.0
+----------
+
+New:
+- Initial support for notched displays (safe area)
+- Copy log message / stack trace to clipboard (on supported platforms)
+
+Changes:
+- Improvements to UI scaling behaviour on high-dpi phone displays
+- Display warning at runtime when issues are detected with log message callbacks
+- Expanded input area for scroll bar on console view (easier to drag on touch screens)
+- Added additional graphics info to system tab
+- Press and hold "refresh" button on system tab to activate updating entries every frame
+- (Editor) Cleanup and restore SRDebugger after domain reload when in play mode (script recompile)
+
+Fixes:
+- Fix exception when adding custom option entry via property getter
+- Fix exception when opening settings window a second time
+- Additional fixes to support enter play mode without domain reload
+
+1.10.0
+----------
+
+** Minimum supported version is now 2018.4 **
+
+Features:
+- New API: Custom "options containers" that can dynamically add/remove options at runtime without using reflection (i.e. no underlying C# property/method for each option).
+- Support for new Unity Input System.
+- (Experimental) Editor UI and script API for enabling/disabling SRDebugger. This enables you completely remove SRDebugger from builds of your game without uninstalling the plugin.
+
+Changes:
+- Added option to disable taking screenshot when making a bug report.
+- Performance improvements for options tab when there are many option values changing frequently.
+
+Fixes:
+- Update SROptions window in editor when using SRDebug.Init()
+- Fix errors relating to "domain reload" when entering play mode in editor.
+- MissingReferenceException when using options containers while debug panel is unloaded.
+- Prevent trigger from taking input focus via navigation events.
+- Fix access to Unity property from background thread.
+
+1.9.1
+----------
+
+Fixed:
+- No longer auto-initializes when auto-initialization is disabled. 
+- Improved support for higher levels of 'managed stripping' in AOT compiled platforms (IL2CPP)
+- Fix error notifier calling native Unity methods from background thread.
+- Fix number increment/decrement issues on non-english language platforms.
 
 1.9.0
 ----------

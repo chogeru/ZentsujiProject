@@ -1,4 +1,6 @@
-﻿namespace SRDebugger.UI.Controls.Data
+﻿using System.Globalization;
+
+namespace SRDebugger.UI.Controls.Data
 {
     using System;
     using System.Collections.Generic;
@@ -52,13 +54,15 @@
         {
             try
             {
-                var num = Convert.ChangeType(newValue, _type);
+                var num = Convert.ChangeType(newValue, _type, CultureInfo.InvariantCulture);
                 UpdateValue(num);
             }
             catch (Exception)
             {
                 NumberSpinner.text = _lastValue;
             }
+
+            LayoutRebuilder.MarkLayoutForRebuild(GetComponent<RectTransform>());
         }
 
         protected override void OnBind(string propertyName, Type t)
@@ -120,7 +124,7 @@
 
         protected override void OnValueUpdated(object newValue)
         {
-            var value = Convert.ToDecimal(newValue).ToString();
+            var value = Convert.ToDecimal(newValue, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture);
 
             if (value != _lastValue)
             {

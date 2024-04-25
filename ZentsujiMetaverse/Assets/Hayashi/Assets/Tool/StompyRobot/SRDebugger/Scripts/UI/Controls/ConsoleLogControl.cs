@@ -136,7 +136,7 @@ namespace SRDebugger.UI.Controls
 
         private void Refresh()
         {
-            if (_consoleScrollRect.normalizedPosition.y.ApproxZero())
+            if (_consoleScrollRect.normalizedPosition.y < 0.01f)
             {
                 _scrollPosition = _consoleScrollRect.normalizedPosition;
             }

@@ -6,7 +6,7 @@ namespace SRDebugger.UI.Other
     {
         public bool IsVisible
         {
-            get { return enabled; }
+            get { return _isShowing; }
         }
 
         private const float DisplayTime = 6;
@@ -17,30 +17,39 @@ namespace SRDebugger.UI.Other
         private int _triggerHash;
 
         private float _hideTime;
+        private bool _isShowing;
+
+        private bool _queueWarning;
 
         void Awake()
         {
             _triggerHash = Animator.StringToHash("Display");
-            enabled = false;
         }
 
         public void ShowErrorWarning()
         {
-            _hideTime = Time.realtimeSinceStartup + DisplayTime;
-
-            if (!enabled)
-            {
-                enabled = true;
-                _animator.SetBool(_triggerHash, true);
-            }
+            _queueWarning = true;
         }
 
         void Update()
         {
-            if (Time.realtimeSinceStartup > _hideTime)
+            if (_queueWarning)
             {
-                enabled = false;
+                _hideTime = Time.realtimeSinceStartup + DisplayTime;
+
+                if (!_isShowing)
+                {
+                    _isShowing = true;
+                    _animator.SetBool(_triggerHash, true);
+                }
+
+                _queueWarning = false;
+            }
+
+            if (_isShowing && Time.realtimeSinceStartup > _hideTime)
+            {
                 _animator.SetBool(_triggerHash, false);
+                _isShowing = false;
             }
         }
     }

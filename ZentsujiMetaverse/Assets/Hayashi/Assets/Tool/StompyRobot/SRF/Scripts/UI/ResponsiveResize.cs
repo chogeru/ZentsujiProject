@@ -7,7 +7,7 @@
 
     [ExecuteInEditMode]
     [RequireComponent(typeof (RectTransform))]
-    [AddComponentMenu(ComponentMenuPaths.ResponsiveEnable)]
+    [AddComponentMenu(ComponentMenuPaths.ResponsiveResize)]
     public class ResponsiveResize : ResponsiveBase
     {
         public Element[] Elements = new Element[0];

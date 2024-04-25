@@ -22,7 +22,7 @@ namespace SRF.Service
         public const bool EnableLogging = false;
 #endif
 
-#if (!UNITY_2017 && !UNITY_2018 && !UNITY_2019) || UNITY_2019_3_OR_NEWER
+#if UNITY_EDITOR && ((!UNITY_2017 && !UNITY_2018 && !UNITY_2019) || UNITY_2019_3_OR_NEWER)
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void RuntimeInitialize()
         {
@@ -69,6 +69,7 @@ namespace SRF.Service
             {
                 Debug.LogWarning("Service {0} not found. (HasQuit: {1})".Fmt(typeof(T).Name, _hasQuit));
             }
+
 
             return s;
         }
@@ -205,14 +206,12 @@ namespace SRF.Service
             }
         }
 
-        [Serializable]
         private class Service
         {
             public object Object;
             public Type Type;
         }
 
-        [Serializable]
         private class ServiceStub
         {
             public Func<object> Constructor;
@@ -278,9 +277,9 @@ namespace SRF.Service
                 try
                 {
 #if NETFX_CORE
-                    types.AddRange(assembly.ExportedTypes);
+                    types.AddRange(assembly.Types);
 #else
-                    types.AddRange(assembly.GetExportedTypes());
+                    types.AddRange(assembly.GetTypes());
 #endif
                 }
                 catch (Exception e)
@@ -354,7 +353,40 @@ namespace SRF.Service
         protected void OnApplicationQuit()
         {
             _hasQuit = true;
+            _assemblies.Clear();
         }
+
+#if UNITY_EDITOR
+
+        protected void OnDisable()
+        {
+            if (EnableLogging)
+            {
+                Debug.Log("[SRServiceManager] Cleaning up services");
+            }
+
+            // Script recompile is likely in progress - clear up everything.
+            foreach (Service s in _services)
+            {
+                IDisposable disposable = s.Object as IDisposable;
+                if (disposable != null)
+                {
+                    disposable.Dispose();
+                }
+
+                Behaviour behaviour = s.Object as Behaviour;
+                if (behaviour != null)
+                {
+                    DestroyImmediate(behaviour.gameObject);
+                } else if (s.Object is Object)
+                {
+                    DestroyImmediate(s.Object as Object);
+                }
+            }
+
+            _services.Clear(clean: true);
+        }
+#endif
 
         private static object DefaultServiceConstructor(Type serviceIntType, Type implType)
         {

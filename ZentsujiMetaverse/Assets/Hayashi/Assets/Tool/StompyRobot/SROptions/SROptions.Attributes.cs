@@ -15,24 +15,49 @@ public partial class SROptions
     // These attributes are used when using SROptions. Options added via SRDebug.Instance.AddOptionsContainer can use the attribute defined in SRDebugger namespace.
 
     [AttributeUsage(AttributeTargets.Property)]
-    public sealed class IncrementAttribute : SRDebugger.IncrementAttribute {
-        public IncrementAttribute(double increment) : base(increment)
+    public sealed class IncrementAttribute :
+#if DISABLE_SRDEBUGGER
+        Attribute
+#else
+        SRDebugger.IncrementAttribute
+#endif
+    {
+        public IncrementAttribute(double increment)
+#if !DISABLE_SRDEBUGGER
+            : base(increment)
+#endif
         {
         }
     }
 
     [AttributeUsage(AttributeTargets.Property)]
-    public sealed class NumberRangeAttribute : SRDebugger.NumberRangeAttribute
+    public sealed class NumberRangeAttribute :
+#if DISABLE_SRDEBUGGER
+        Attribute
+#else
+        SRDebugger.NumberRangeAttribute
+#endif
     {
-        public NumberRangeAttribute(double min, double max) : base(min, max)
+        public NumberRangeAttribute(double min, double max)
+#if !DISABLE_SRDEBUGGER
+            : base(min, max)
+#endif
         {
         }
     }
-    
+
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
-    public sealed class SortAttribute : SRDebugger.SortAttribute
+    public sealed class SortAttribute :
+#if DISABLE_SRDEBUGGER
+        Attribute
+#else
+        SRDebugger.SortAttribute
+#endif
     {
-        public SortAttribute(int priority) : base(priority)
+        public SortAttribute(int priority)
+#if !DISABLE_SRDEBUGGER
+            : base(priority)
+#endif
         {
         }
     }

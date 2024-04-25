@@ -67,6 +67,12 @@
                 return;
             }
 
+            if (!isActiveAndEnabled)
+            {
+                _cachedRoot = null;
+                return;
+            }
+
             if (_cachedRoot == null || invalidateCache)
             {
                 _cachedRoot = GetStyleRoot();

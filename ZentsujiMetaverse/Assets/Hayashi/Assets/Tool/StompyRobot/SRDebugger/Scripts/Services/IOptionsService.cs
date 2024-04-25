@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using Internal;
 
     public interface IOptionsService
@@ -11,11 +10,6 @@
         /// Invoked when the <seealso cref="Options"/> collection changes.
         /// </summary>
         event EventHandler OptionsUpdated;
-
-        /// <summary>
-        /// Invoked when the value of an option has been updated.
-        /// </summary>
-        event EventHandler<PropertyChangedEventArgs> OptionsValueUpdated;
 
         ICollection<OptionDefinition> Options { get; }
 
@@ -32,8 +26,18 @@
         void AddContainer(object obj);
 
         /// <summary>
-        /// Remove any options from the <paramref name="obj"/> container.
+        /// Add an options container to the options collection.
+        /// </summary>
+        void AddContainer(IOptionContainer optionContainer);
+
+        /// <summary>
+        /// Remove any options that were added from the <paramref name="obj"/> container.
         /// </summary>
         void RemoveContainer(object obj);
+
+        /// <summary>
+        /// Remove an options container from the options collection.
+        /// </summary>
+        void RemoveContainer(IOptionContainer optionContainer);
     }
 }

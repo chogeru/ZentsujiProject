@@ -3,8 +3,10 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+#if !DISABLE_SRDEBUGGER
 using SRDebugger;
 using SRDebugger.Services;
+#endif
 using SRF;
 using SRF.Service;
 using Debug = UnityEngine.Debug;
@@ -43,8 +45,8 @@ public partial class SROptions
         get { return _testFloat; }
         set
         {
-            OnValueChanged("TestFloat", value);
             _testFloat = value;
+            OnValueChanged("TestFloat", value);
         }
     }
 
@@ -54,8 +56,8 @@ public partial class SROptions
         get { return _testDouble; }
         set
         {
-            OnValueChanged("TestDouble", value);
             _testDouble = value;
+            OnValueChanged("TestDouble", value);
         }
     }
 
@@ -65,8 +67,8 @@ public partial class SROptions
         get { return _testInt; }
         set
         {
-            OnValueChanged("TestInt", value);
             _testInt = value;
+            OnValueChanged("TestInt", value);
         }
     }
 
@@ -76,8 +78,8 @@ public partial class SROptions
         get { return _testByte; }
         set
         {
-            OnValueChanged("TestByte", value);
             _testByte = value;
+            OnValueChanged("TestByte", value);
         }
     }
 
@@ -87,8 +89,8 @@ public partial class SROptions
         get { return _testShort; }
         set
         {
-            OnValueChanged("TestShort", value);
             _testShort = value;
+            OnValueChanged("TestShort", value);
         }
     }
 
@@ -98,8 +100,8 @@ public partial class SROptions
         get { return _testString; }
         set
         {
-            OnValueChanged("TestString", value);
             _testString = value;
+            OnValueChanged("TestString", value);
         }
     }
 
@@ -109,8 +111,8 @@ public partial class SROptions
         get { return _testBoolean; }
         set
         {
-            OnValueChanged("TestBoolean", value);
             _testBoolean = value;
+            OnValueChanged("TestBoolean", value);
         }
     }
 
@@ -120,8 +122,8 @@ public partial class SROptions
         get { return _testEnum; }
         set
         {
-            OnValueChanged("TestEnum", value);
             _testEnum = value;
+            OnValueChanged("TestEnum", value);
         }
     }
 
@@ -131,8 +133,8 @@ public partial class SROptions
         get { return _testSByte; }
         set
         {
-            OnValueChanged("TestSByte", value);
             _testSByte = value;
+            OnValueChanged("TestSByte", value);
         }
     }
 
@@ -142,8 +144,8 @@ public partial class SROptions
         get { return _testUInt; }
         set
         {
-            OnValueChanged("TestUInt", value);
             _testUInt = value;
+            OnValueChanged("TestUInt", value);
         }
     }
 
@@ -154,8 +156,8 @@ public partial class SROptions
         get { return _test01Range; }
         set
         {
-            OnValueChanged("Test01Range", value);
             _test01Range = value;
+            OnValueChanged("Test01Range", value);
         }
     }
 
@@ -166,8 +168,8 @@ public partial class SROptions
         get { return _testFractionIncrement; }
         set
         {
-            OnValueChanged("TestFractionIncrement", value);
             _testFractionIncrement = value;
+            OnValueChanged("TestFractionIncrement", value);
         }
     }
 
@@ -178,8 +180,8 @@ public partial class SROptions
         get { return _testLargeIncrement; }
         set
         {
-            OnValueChanged("TestLargeIncrement", value);
             _testLargeIncrement = value;
+            OnValueChanged("TestLargeIncrement", value);
         }
     }
 
@@ -197,16 +199,18 @@ public partial class SROptions
 
     private void OnValueChanged(string n, object newValue)
     {
-        Debug.Log("[SRDebug] {0} value changed to {1}".Fmt(n, newValue));
+        Debug.LogFormat("[SRDebug] {0} value changed to {1}", n, newValue);
         OnPropertyChanged(n);
     }
 
+#if !DISABLE_SRDEBUGGER
     [Category("SRDebugger")]
     public PinAlignment TriggerPosition
     {
         get { return SRServiceManager.GetService<IDebugTriggerService>().Position; }
         set { SRServiceManager.GetService<IDebugTriggerService>().Position = value; }
     }
+#endif
 
     private static readonly string[] SampleLogs =
     {
@@ -267,7 +271,7 @@ public partial class SROptions
         }
         sw.Stop();
 
-        Debug.Log("Posted {0} log messages in {1}s".Fmt(ConsoleTestQuantity, sw.Elapsed.TotalSeconds));
+        Debug.LogFormat("Posted {0} log messages in {1}s", ConsoleTestQuantity, sw.Elapsed.TotalSeconds);
     }
 
     [Category("Console Test")]
@@ -361,6 +365,14 @@ public partial class SROptions
     public string TestLongReadOnlyString
     {
         get { return "This is a really long string with no reason other than to test long strings."; }
+    }
+
+    [Browsable(false)]
+    public bool ThisBooleanPropertyShouldBeHidden { get; set; }
+
+    [Browsable(false)]
+    public void ThisMethodShouldBeHidden()
+    {
     }
 
 #endif

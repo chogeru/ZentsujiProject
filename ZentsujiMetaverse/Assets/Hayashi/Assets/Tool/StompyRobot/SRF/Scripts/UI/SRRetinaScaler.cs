@@ -12,46 +12,57 @@
     [AddComponentMenu(ComponentMenuPaths.RetinaScaler)]
     public class SRRetinaScaler : SRMonoBehaviour
     {
-        [SerializeField] private float _retinaScale = 2f;
-
-        [SerializeField] private int _thresholdDpi = 250;
-
         [SerializeField] private bool _disablePixelPerfect = false;
 
-        /// <summary>
-        /// Dpi over which to apply scaling
-        /// </summary>
-        public int ThresholdDpi
-        {
-            get { return _thresholdDpi; }
-        }
-
-        public float RetinaScale
-        {
-            get { return _retinaScale; }
-        }
+        [SerializeField] private int _designDpi = 120;
 
         private void Start()
         {
+            ApplyScaling();
+        }
+
+        private void ApplyScaling()
+        {
             var dpi = Screen.dpi;
+
+            _lastDpi = dpi;
 
             if (dpi <= 0)
             {
                 return;
             }
 
-            if (dpi > ThresholdDpi)
+#if !UNITY_EDITOR && UNITY_IOS
+            // No iOS device has had low dpi for many years - Unity must be reporting it wrong.
+            if(dpi < 120)
             {
-                var scaler = GetComponent<CanvasScaler>();
+                dpi = 321;
+            }
+#endif
+            var scaler = GetComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
 
-                scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
-                scaler.scaleFactor = scaler.scaleFactor * RetinaScale;
+            // Round scale to nearest 0.5
+            float scale = dpi / _designDpi;
+            scale = Mathf.Max(1, Mathf.Round(scale * 2) / 2.0f);
 
-                if (_disablePixelPerfect)
-                {
-                    GetComponent<Canvas>().pixelPerfect = false;
-                }
+            scaler.scaleFactor = scale;
+
+            if (_disablePixelPerfect)
+            {
+                GetComponent<Canvas>().pixelPerfect = false;
             }
         }
+
+        private float _lastDpi;
+
+        void Update()
+        {
+            if (Screen.dpi != _lastDpi)
+            {
+                ApplyScaling();
+            }
+        }
+
     }
 }

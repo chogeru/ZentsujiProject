@@ -1,17 +1,20 @@
-﻿using System;
+﻿#if !DISABLE_SRDEBUGGER
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Cache;
 using System.Text;
-using SRDebugger.Internal;
 using SRF;
 using UnityEngine;
+using SRDebugger.Internal;
+
 
 namespace SRDebugger.Editor
 {
-    public static class ApiSignup
+    static class ApiSignup
     {
         public delegate void ApiSignupResultCallback(bool success, string apiKey, string email, string error);
 
@@ -94,3 +97,5 @@ namespace SRDebugger.Editor
         }
     }
 }
+
+#endif

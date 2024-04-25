@@ -22,6 +22,16 @@
                 // Instance required for the first time, we look for it
                 if (_instance == null && Application.isPlaying)
                 {
+#if UNITY_EDITOR
+                    // Support reloading scripts after a recompile - static reference will be cleared, but we can find it again.
+                    T autoSingleton = FindObjectOfType<T>();
+                    if (autoSingleton != null)
+                    {
+                        _instance = autoSingleton;
+                        return _instance;
+                    }
+#endif
+
                     var go = new GameObject("_" + typeof (T).Name);
                     go.AddComponent<T>(); // _instance set by Awake() constructor
                 }
@@ -45,6 +55,14 @@
             }
 
             _instance = (T) this;
+        }
+
+        protected virtual void OnEnable()
+        {
+#if UNITY_EDITOR
+            // Restore reference after C# recompile.
+            _instance = (T) this;
+#endif
         }
 
         // Make sure the instance isn't referenced anymore when the user quit, just in case.

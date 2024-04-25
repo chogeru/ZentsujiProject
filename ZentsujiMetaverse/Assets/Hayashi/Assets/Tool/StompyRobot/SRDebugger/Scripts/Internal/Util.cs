@@ -1,4 +1,6 @@
-﻿namespace SRDebugger.Internal
+﻿using System.Diagnostics;
+
+namespace SRDebugger.Internal
 {
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -71,15 +73,51 @@
         {
             var go = new GameObject("EventSystem (Created by SRDebugger, disable in Window -> SRDebugger -> Settings Window -> Advanced)");
             go.AddComponent<EventSystem>();
+
+#if ENABLE_INPUT_SYSTEM && ENABLE_LEGACY_INPUT_MANAGER
+            switch (Settings.Instance.UIInputMode)
+            {
+                case Settings.UIModes.NewInputSystem:
+                    AddInputSystem(go);
+                    Debug.LogWarning("[SRDebugger] Automatically generated EventSystem is using Unity Input System (can be changed to use Legacy Input in Window -> SRDebugger -> Settings Window -> Advanced)");
+                    break;
+                case Settings.UIModes.LegacyInputSystem:
+                    AddLegacyInputSystem(go);
+                    Debug.LogWarning("[SRDebugger] Automatically generated EventSystem is using Legacy Input (can be changed to use Unity Input System in Window -> SRDebugger -> Settings Window -> Advanced)");
+                    break;
+            }
+#elif ENABLE_INPUT_SYSTEM
+            AddInputSystem(go);
+#elif ENABLE_LEGACY_INPUT_MANAGER || (!ENABLE_INPUT_SYSTEM && !UNITY_2019_3_OR_NEWER)
+            AddLegacyInputSystem(go);
+#endif
+        }
+
+#if ENABLE_INPUT_SYSTEM
+        private static void AddInputSystem(GameObject go)
+        {
+            go.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+
+            // Disable/re-enable to force some initialization.
+            // fix for input not being recognized until component is toggled off then on 
+            go.SetActive(false);
+            go.SetActive(true);
+        }
+#endif
+
+#if ENABLE_LEGACY_INPUT_MANAGER || (!ENABLE_INPUT_SYSTEM && !UNITY_2019_3_OR_NEWER)
+        private static void AddLegacyInputSystem(GameObject go)
+        {
             go.AddComponent<StandaloneInputModule>();
         }
+#endif
 
         /// <summary>
         /// Scan <paramref name="obj" /> for valid options and return a collection of them.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static ICollection<OptionDefinition> ScanForOptions(object obj)
+        public static List<OptionDefinition> ScanForOptions(object obj)
         {
             var options = new List<OptionDefinition>();
 
@@ -93,8 +131,23 @@
 
 #endif
 
+            var ignoreAssembly = typeof(MonoBehaviour).Assembly;
+
             foreach (var memberInfo in members)
             {
+                // Skip any properties that are from built-in Unity types (e.g. Behaviour, MonoBehaviour)
+                if (memberInfo.DeclaringType != null && memberInfo.DeclaringType.Assembly == ignoreAssembly)
+                {
+                    continue;
+                }
+
+                var browsable = memberInfo.GetCustomAttribute<BrowsableAttribute>();
+                if (browsable != null)
+                {
+                    if (!browsable.Browsable)
+                        continue;
+                }
+
                 // Find user-specified category name from attribute
                 var categoryAttribute = SRReflection.GetAttribute<CategoryAttribute>(memberInfo);
                 var category = categoryAttribute == null ? "Default" : categoryAttribute.Category;

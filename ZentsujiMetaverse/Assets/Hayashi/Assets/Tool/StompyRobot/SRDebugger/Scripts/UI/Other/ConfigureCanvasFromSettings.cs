@@ -37,7 +37,10 @@ namespace SRDebugger.UI.Other
 
         private void OnDestroy()
         {
-            _settings.PropertyChanged -= SettingsOnPropertyChanged;
+            if (_settings != null)
+            {
+                _settings.PropertyChanged -= SettingsOnPropertyChanged;
+            }
         }
 
         private void SettingsOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

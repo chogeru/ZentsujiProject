@@ -1,4 +1,6 @@
-﻿namespace SRDebugger.UI.Tabs
+﻿using System.Linq;
+
+namespace SRDebugger.UI.Tabs
 {
     using System;
     using System.Collections.Generic;
@@ -64,8 +66,22 @@
             _optionCanvas = GetComponent<Canvas>();
 
             Service.Options.OptionsUpdated += OnOptionsUpdated;
-            Service.Options.OptionsValueUpdated += OnOptionsValueChanged;
             Service.PinnedUI.OptionPinStateChanged += OnOptionPinnedStateChanged;
+        }
+
+        protected override void OnDestroy()
+        {
+            if (Service.Options != null)
+            {
+                Service.Options.OptionsUpdated -= OnOptionsUpdated;
+            }
+
+            if (Service.PinnedUI != null)
+            {
+                Service.PinnedUI.OptionPinStateChanged -= OnOptionPinnedStateChanged;
+            }
+
+            base.OnDestroy();
         }
 
         private void OnOptionPinnedStateChanged(OptionDefinition optionDefinition, bool isPinned)
@@ -80,11 +96,6 @@
         {
             Clear();
             Populate();
-        }
-
-        private void OnOptionsValueChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            _queueRefresh = true;
         }
 
         protected override void OnEnable()
@@ -183,6 +194,7 @@
             for (var i = 0; i < _options.Count; i++)
             {
                 _controls[i].Refresh();
+                _controls[i].SelectionModeEnabled = _selectionModeEnabled;
                 _controls[i].IsSelected = Service.PinnedUI.HasPinned(_controls[i].Option);
             }
         }
@@ -265,6 +277,19 @@
 
             foreach (var option in Service.Options.Options)
             {
+                if (!OptionControlFactory.CanCreateControl(option))
+                {
+                    if (option.IsProperty)
+                    {
+                        Debug.LogError("[SRDebugger.OptionsTab] Unsupported property type: {0} (on property {1})".Fmt(option.Property.PropertyType, option.Property));
+                    }
+                    else
+                    {
+                        Debug.LogError("[SRDebugger.OptionsTab] Unsupported method signature: {0}".Fmt(option.Name));
+                    }
+                    continue;
+                }
+
                 // Find a properly list for that category, or create a new one
                 List<OptionDefinition> memberList;
 
@@ -279,7 +304,7 @@
 
             var hasCreated = false;
 
-            foreach (var kv in sortedOptions)
+            foreach (var kv in sortedOptions.OrderBy(p => p.Key))
             {
                 if (kv.Value.Count == 0)
                 {
@@ -294,6 +319,8 @@
             {
                 NoOptionsNotice.SetActive(false);
             }
+            
+            RefreshCategorySelection();
         }
 
         protected void CreateCategory(string title, List<OptionDefinition> options)
@@ -307,7 +334,7 @@
 
             groupInstance.CachedTransform.SetParent(ContentContainer, false);
             groupInstance.Header.text = title;
-            groupInstance.SelectionModeEnabled = false;
+            groupInstance.SelectionModeEnabled = _selectionModeEnabled;
 
             categoryInstance.CategoryGroup.SelectionToggle.onValueChanged.AddListener(
                 b => OnCategorySelectionToggle(categoryInstance, b));
@@ -325,7 +352,7 @@
                 categoryInstance.Options.Add(control);
                 control.CachedTransform.SetParent(groupInstance.Container, false);
                 control.IsSelected = Service.PinnedUI.HasPinned(option);
-                control.SelectionModeEnabled = false;
+                control.SelectionModeEnabled = _selectionModeEnabled;
                 control.SelectionModeToggle.onValueChanged.AddListener(OnOptionSelectionToggle);
 
                 _options.Add(option, control);

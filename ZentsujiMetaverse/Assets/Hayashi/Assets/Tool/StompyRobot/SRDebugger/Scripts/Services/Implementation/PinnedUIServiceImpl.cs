@@ -150,7 +150,6 @@
             SRDebug.Instance.PanelVisibilityChanged += OnDebugPanelVisibilityChanged;
 
             Service.Options.OptionsUpdated += OnOptionsUpdated;
-            Service.Options.OptionsValueUpdated += OptionsOnPropertyChanged;
 
             if (OptionsCanvasCreated != null)
             {
@@ -250,11 +249,6 @@
                     Unpin(op);
                 }
             }
-        }
-
-        private void OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            _queueRefresh = true;
         }
 
         private void OnDebugPanelVisibilityChanged(bool isVisible)

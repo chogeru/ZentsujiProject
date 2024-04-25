@@ -1,4 +1,8 @@
-﻿namespace SRDebugger.UI.Controls
+﻿#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
+
+namespace SRDebugger.UI.Controls
 {
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -46,6 +50,22 @@
             CancelButton.onClick.AddListener(CancelButtonPressed);
 
             RefreshState();
+
+
+        }
+
+        protected override void OnEnable()
+        {
+#if ENABLE_INPUT_SYSTEM
+            Keyboard.current.onTextInput += HandleCharacter;
+#endif
+        }
+
+        protected override void OnDisable()
+        {
+#if ENABLE_INPUT_SYSTEM 
+            Keyboard.current.onTextInput -= HandleCharacter;
+#endif
         }
 
         protected override void Update()
@@ -57,30 +77,48 @@
                 return;
             }
 
-            if (_numbers.Count > 0 && (Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Delete)))
+#if ENABLE_INPUT_SYSTEM
+            bool delete = Keyboard.current.deleteKey.wasPressedThisFrame || Keyboard.current.backspaceKey.wasPressedThisFrame;
+#else
+            bool delete = (Input.GetKeyDown(KeyCode.Backspace) || Input.GetKeyDown(KeyCode.Delete));
+#endif
+
+            if (_numbers.Count > 0 && delete)
             {
                 _numbers.PopLast();
                 RefreshState();
             }
 
+#if !ENABLE_INPUT_SYSTEM
             var input = Input.inputString;
 
             for (var i = 0; i < input.Length; i++)
             {
-                if (!char.IsNumber(input, i))
-                {
-                    continue;
-                }
-
-                var num = (int) char.GetNumericValue(input, i);
-
-                if (num > 9 || num < 0)
-                {
-                    continue;
-                }
-
-                PushNumber(num);
+                HandleCharacter(input[i]);
             }
+#endif
+        }
+
+        private void HandleCharacter(char i)
+        {
+            if (!_isVisible)
+            {
+                return;
+            }
+
+            if (!char.IsNumber(i))
+            {
+                return;
+            }
+
+            var num = (int) char.GetNumericValue(i);
+
+            if (num > 9 || num < 0)
+            {
+                return;
+            }
+
+            PushNumber(num);
         }
 
         public void Show()

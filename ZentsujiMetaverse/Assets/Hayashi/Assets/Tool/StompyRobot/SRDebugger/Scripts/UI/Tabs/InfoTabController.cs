@@ -1,4 +1,6 @@
-﻿namespace SRDebugger.UI.Tabs
+﻿using SRF.UI;
+
+namespace SRDebugger.UI.Tabs
 {
     using System.Collections.Generic;
     using System.Text;
@@ -19,13 +21,44 @@
 
         [RequiredField] public RectTransform LayoutContainer;
 
+        [RequiredField] public FlashGraphic ToggleButton;
+
+        private bool _updateEveryFrame;
+
         protected override void OnEnable()
         {
             base.OnEnable();
-            Refresh();
+            InternalRefresh();
+
+            if (_updateEveryFrame)
+            {
+                ToggleButton.FlashAndHoldUntilNextPress();
+            }
         }
 
         public void Refresh()
+        {
+            ToggleButton.Flash(); // flash to disable any "press and hold" that is going on
+            _updateEveryFrame = false;
+            InternalRefresh();
+        }
+
+        protected override void Update()
+        {
+            if (_updateEveryFrame)
+            {
+                InternalRefresh();
+            }
+        }
+
+        public void ActivateRefreshEveryFrame()
+        {
+            ToggleButton.FlashAndHoldUntilNextPress();
+            _updateEveryFrame = true;
+            InternalRefresh();
+        }
+
+        private void InternalRefresh()
         {
             var s = SRServiceManager.GetService<ISystemInformationService>();
 

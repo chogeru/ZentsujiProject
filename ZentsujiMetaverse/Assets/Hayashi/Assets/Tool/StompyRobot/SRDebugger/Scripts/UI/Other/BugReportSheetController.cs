@@ -83,7 +83,7 @@ namespace SRDebugger.UI.Other
 
         private IEnumerator SubmitCo()
         {
-            if (BugReportScreenshotUtil.ScreenshotData == null)
+            if (BugReportScreenshotUtil.ScreenshotData == null && Settings.Instance.EnableBugReportScreenshot)
             {
                 if (TakingScreenshot != null)
                 {
@@ -113,7 +113,7 @@ namespace SRDebugger.UI.Other
 
             BugReportScreenshotUtil.ScreenshotData = null;
 
-            s.SendBugReport(r, OnBugReportComplete, OnBugReportProgress);
+            s.SendBugReport(r, OnBugReportComplete, new Progress<float>(OnBugReportProgress));
         }
 
         private void OnBugReportProgress(float progress)

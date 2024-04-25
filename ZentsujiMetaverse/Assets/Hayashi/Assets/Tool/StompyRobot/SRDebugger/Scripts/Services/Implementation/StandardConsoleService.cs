@@ -1,10 +1,13 @@
-﻿namespace SRDebugger.Services.Implementation
+﻿using System;
+using System.Collections.Generic;
+
+namespace SRDebugger.Services.Implementation
 {
     using SRF.Service;
     using UnityEngine;
 
     [Service(typeof (IConsoleService))]
-    public class StandardConsoleService : IConsoleService
+    public class StandardConsoleService : IConsoleService, IDisposable
     {
         private readonly bool _collapseEnabled;
         private bool _hasCleared;
@@ -13,13 +16,27 @@
         private CircularBuffer<ConsoleEntry> _consoleEntries;
         private readonly object _threadLock = new object();
 
+        private ILogHandler _expectedLogHandler;
+
         public StandardConsoleService()
         {
             Application.logMessageReceivedThreaded += UnityLogCallback;
-
+            _expectedLogHandler = Debug.unityLogger.logHandler;
+            
             SRServiceManager.RegisterService<IConsoleService>(this);
             _collapseEnabled = Settings.Instance.CollapseDuplicateLogEntries;
             _allConsoleEntries = new CircularBuffer<ConsoleEntry>(Settings.Instance.MaximumConsoleEntries);
+        }
+
+        public void Dispose()
+        {
+            Application.logMessageReceivedThreaded -= UnityLogCallback;
+            if (_consoleEntries != null)
+            {
+                _consoleEntries.Clear();
+            }
+
+            _allConsoleEntries.Clear();
         }
 
         public int ErrorCount { get; private set; }
@@ -28,6 +45,20 @@
 
         public event ConsoleUpdatedEventHandler Updated;
         public event ConsoleUpdatedEventHandler Error;
+
+        public bool LoggingEnabled
+        {
+            get { return Debug.unityLogger.logEnabled; }
+            set { Debug.unityLogger.logEnabled = value; }
+        }
+
+        public bool LogHandlerIsOverriden
+        {
+            get
+            {
+                return Debug.unityLogger.logHandler != _expectedLogHandler;
+            }
+        }
 
         public IReadOnlyList<ConsoleEntry> Entries
         {

@@ -1,17 +1,17 @@
-﻿using SRDebugger.Internal.Editor;
+﻿#if !DISABLE_SRDEBUGGER
 using UnityEditor;
 using UnityEngine;
 
 namespace SRDebugger.Editor
 {
     [CustomEditor(typeof (Settings))]
-    public class SettingsEditor : UnityEditor.Editor
+    class SettingsEditor : UnityEditor.Editor
     {
         private bool _override;
 
         public override void OnInspectorGUI()
         {
-            SRDebugEditorUtil.DrawLogo(SRDebugEditorUtil.GetLogo());
+            SRInternalEditorUtil.DrawLogo(SRInternalEditorUtil.GetLogo());
 
             GUILayout.Label(
                 "This asset contains the runtime settings used by SRDebugger. It is recommended that this asset be edited only via the SRDebugger Settings window.",
@@ -47,3 +47,4 @@ namespace SRDebugger.Editor
         }
     }
 }
+#endif

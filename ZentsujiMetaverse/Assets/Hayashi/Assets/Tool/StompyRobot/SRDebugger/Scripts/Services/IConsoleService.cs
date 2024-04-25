@@ -1,4 +1,6 @@
-﻿namespace SRDebugger.Services
+﻿using System.Collections.Generic;
+
+namespace SRDebugger.Services
 {
     using UnityEngine;
 
@@ -23,6 +25,10 @@
         event ConsoleUpdatedEventHandler Updated;
 
         event ConsoleUpdatedEventHandler Error;
+
+        bool LoggingEnabled { get; set; }
+
+        bool LogHandlerIsOverriden { get; }
 
         void Clear();
     }

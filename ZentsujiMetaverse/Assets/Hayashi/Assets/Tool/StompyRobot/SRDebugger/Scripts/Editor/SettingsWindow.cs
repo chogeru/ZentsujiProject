@@ -5,15 +5,34 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+#if !DISABLE_SRDEBUGGER
     using SRDebugger.Internal;
-    using SRDebugger.Internal.Editor;
+#endif
     using SRF;
     using UnityEditor;
     using UnityEditorInternal;
     using UnityEngine;
 
-    public class SRDebuggerSettingsWindow : EditorWindow
+    class SRDebuggerSettingsWindow : EditorWindow
     {
+        [MenuItem(SRDebugEditorPaths.SettingsMenuItemPath)]
+        public static void Open()
+        {
+            GetWindowWithRect<SRDebuggerSettingsWindow>(new Rect(0, 0, 449, 520), true, "SRDebugger - Settings",
+                    true);
+        }
+
+#if DISABLE_SRDEBUGGER
+
+        private bool _isWorking;
+
+        private void OnGUI()
+        {
+            SRDebugEditor.DrawDisabledWindowGui(ref _isWorking);
+        }
+
+#else
+
         private enum ProfilerAlignment
         {
             TopLeft = 0,
@@ -38,32 +57,111 @@
         private bool _showBugReportSignupForm;
         private string[] _tabs = Enum.GetNames(typeof (Tabs)).Select(s => s.Replace('_', ' ')).ToArray();
 
-        [MenuItem(SRDebugPaths.SettingsMenuItemPath)]
-        public static void Open()
+        [NonSerialized] private bool _hasError;
+        [NonSerialized] private string _error;
+
+        private bool _isAppearing = true;
+
+        private void Reset()
         {
-            GetWindowWithRect<SRDebuggerSettingsWindow>(new Rect(0, 0, 449, 520), true, "SRDebugger - Settings", true);
+            if (_isAppearing)
+            {
+                return;
+            }
+
+            SRInternalEditorUtil.EditorSettings.ClearCache();
+            _hasError = false;
         }
 
-        private void OnEnable()
+        private bool SettingsReady(out Settings settings)
         {
-            _currentEntryCode = GetEntryCodeString();
-
-            if (string.IsNullOrEmpty(Settings.Instance.ApiKey))
+            if (!_hasError)
             {
-                _showBugReportSignupForm = true;
+                string message;
+                SRInternalEditorUtil.SettingsResult result =
+                    SRInternalEditorUtil.EditorSettings.TryGetOrCreate(out settings, out message);
+
+                switch (result)
+                {
+                    case SRInternalEditorUtil.SettingsResult.Loaded:
+                    {
+                        // Perform on-load logic
+                        _currentEntryCode = GetEntryCodeString(settings);
+
+                        if (string.IsNullOrEmpty(settings.ApiKey))
+                        {
+                            _showBugReportSignupForm = true;
+                        }
+
+                        return true;
+                    }
+
+                    case SRInternalEditorUtil.SettingsResult.Cache:
+                    {
+                        return true;
+                    }
+
+                    case SRInternalEditorUtil.SettingsResult.Waiting:
+                    {
+                        EditorGUILayout.Space();
+                        GUILayout.Label(message, SRInternalEditorUtil.Styles.ParagraphLabel);
+                        return false;
+                    }
+
+                    case SRInternalEditorUtil.SettingsResult.Error:
+                    {
+                        _error = message;
+                        _hasError = true;
+                        break;
+                    }
+                }
             }
+
+            // Display Error UI
+            settings = null;
+
+            EditorGUILayout.Space();
+            GUILayout.Label("An error has occurred while loading settings.");
+
+            EditorGUILayout.Space();
+
+            GUILayout.Label("Message: ", EditorStyles.boldLabel);
+            GUILayout.Label(_error, SRInternalEditorUtil.Styles.ParagraphLabel);
+
+            EditorGUILayout.Space();
+
+            if (GUILayout.Button("Open Integrity Checker"))
+            {
+                SRIntegrityCheckWindow.Open();
+            }
+
+            if (GUILayout.Button("Retry"))
+            {
+                Reset();
+                Repaint();
+            }
+
+            return false;
         }
 
         private void OnGUI()
         {
+            _isAppearing = false;
+
             // Draw header area 
-            SRDebugEditorUtil.BeginDrawBackground();
-            SRDebugEditorUtil.DrawLogo(SRDebugEditorUtil.GetLogo());
-            SRDebugEditorUtil.EndDrawBackground();
+            SRInternalEditorUtil.BeginDrawBackground();
+            SRInternalEditorUtil.DrawLogo(SRInternalEditorUtil.GetLogo());
+            SRInternalEditorUtil.EndDrawBackground();
 
             // Draw header/content divider
-            EditorGUILayout.BeginVertical(SRDebugEditorUtil.Styles.SettingsHeaderBoxStyle);
+            EditorGUILayout.BeginVertical(SRInternalEditorUtil.Styles.SettingsHeaderBoxStyle);
             EditorGUILayout.EndVertical();
+
+            Settings settings;
+            if (!SettingsReady(out settings))
+            {
+                return;
+            }
 
             // Draw tab buttons
             var rect = EditorGUILayout.BeginVertical(GUI.skin.box);
@@ -102,23 +200,23 @@
             switch (_selectedTab)
             {
                 case Tabs.General:
-                    DrawTabGeneral();
+                    DrawTabGeneral(settings);
                     break;
 
                 case Tabs.Layout:
-                    DrawTabLayout();
+                    DrawTabLayout(settings);
                     break;
 
                 case Tabs.Bug_Reporter:
-                    DrawTabBugReporter();
+                    DrawTabBugReporter(settings);
                     break;
 
                 case Tabs.Shortcuts:
-                    DrawTabShortcuts();
+                    DrawTabShortcuts(settings);
                     break;
 
                 case Tabs.Advanced:
-                    DrawTabAdvanced();
+                    DrawTabAdvanced(settings);
                     break;
             }
 
@@ -126,13 +224,13 @@
 
             // Display rating prompt and link buttons
 
-            EditorGUILayout.LabelField(SRDebugStrings.Current.SettingsRateBoxContents, EditorStyles.miniLabel);
+            EditorGUILayout.LabelField(SRDebugEditorStrings.Current.SettingsRateBoxContents, EditorStyles.miniLabel);
 
-            SRDebugEditorUtil.DrawFooterLayout(position.width);
+            SRInternalEditorUtil.DrawFooterLayout(position.width);
 
             if (GUI.changed)
             {
-                EditorUtility.SetDirty(Settings.Instance);
+                EditorUtility.SetDirty(settings);
             }
         }
 
@@ -145,78 +243,78 @@
             Advanced
         }
 
-        #region Tabs
+            #region Tabs
 
-        private void DrawTabGeneral()
+        private void DrawTabGeneral(Settings settings)
         {
-            GUILayout.Label("Loading", SRDebugEditorUtil.Styles.InspectorHeaderStyle);
+            GUILayout.Label("Loading", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
 
             EditorGUILayout.BeginVertical(EditorStyles.inspectorDefaultMargins);
 
-            if (GUILayout.Toggle(!Settings.Instance.IsEnabled, "Disabled", SRDebugEditorUtil.Styles.RadioButton))
+            if (GUILayout.Toggle(!settings.IsEnabled, "Disabled", SRInternalEditorUtil.Styles.RadioButton))
             {
-                Settings.Instance.IsEnabled = false;
+                settings.IsEnabled = false;
             }
 
             GUILayout.Label("Do not load SRDebugger until a manual call to <i>SRDebug.Init()</i>.",
-                SRDebugEditorUtil.Styles.RadioButtonDescription);
+                SRInternalEditorUtil.Styles.RadioButtonDescription);
 
             var msg = "Automatic (recommended)";
             
-            if (GUILayout.Toggle(Settings.Instance.IsEnabled, msg,
-                SRDebugEditorUtil.Styles.RadioButton))
+            if (GUILayout.Toggle(settings.IsEnabled, msg,
+                SRInternalEditorUtil.Styles.RadioButton))
             {
-                Settings.Instance.IsEnabled = true;
+                settings.IsEnabled = true;
             }
 
             GUILayout.Label("SRDebugger loads automatically when your game starts.",
-                SRDebugEditorUtil.Styles.RadioButtonDescription);
+                SRInternalEditorUtil.Styles.RadioButtonDescription);
 
             EditorGUILayout.EndVertical();
 
-            GUILayout.Label("Panel Access", SRDebugEditorUtil.Styles.InspectorHeaderStyle);
+            GUILayout.Label("Panel Access", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
 
             EditorGUILayout.HelpBox("Configure trigger location in the layout tab.", MessageType.None, true);
 
-            Settings.Instance.EnableTrigger =
+            settings.EnableTrigger =
                 (Settings.TriggerEnableModes)
                     EditorGUILayout.EnumPopup(new GUIContent("Trigger Mode"),
-                        Settings.Instance.EnableTrigger);
+                        settings.EnableTrigger);
 
-            EditorGUI.BeginDisabledGroup(Settings.Instance.EnableTrigger == Settings.TriggerEnableModes.Off);
+            EditorGUI.BeginDisabledGroup(settings.EnableTrigger == Settings.TriggerEnableModes.Off);
 
-            Settings.Instance.TriggerBehaviour =
+            settings.TriggerBehaviour =
                 (Settings.TriggerBehaviours)
                     EditorGUILayout.EnumPopup(new GUIContent("Trigger Behaviour"),
-                        Settings.Instance.TriggerBehaviour);
+                        settings.TriggerBehaviour);
 
-            Settings.Instance.ErrorNotification =
+            settings.ErrorNotification =
                 EditorGUILayout.Toggle(
                     new GUIContent("Error Notification",
                         "Display a notification on the panel trigger when an error is printed to the log."),
-                    Settings.Instance.ErrorNotification);
+                    settings.ErrorNotification);
             
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.Space();
 
-            Settings.Instance.DefaultTab =
+            settings.DefaultTab =
                 (DefaultTabs)
                     EditorGUILayout.EnumPopup(
-                        new GUIContent("Default Tab", SRDebugStrings.Current.SettingsDefaultTabTooltip),
-                        Settings.Instance.DefaultTab);
+                        new GUIContent("Default Tab", SRDebugEditorStrings.Current.SettingsDefaultTabTooltip),
+                        settings.DefaultTab);
 
             EditorGUILayout.Space();
 
             EditorGUILayout.BeginHorizontal();
 
-            Settings.Instance.RequireCode = EditorGUILayout.Toggle(new GUIContent("Require Entry Code"),
-                Settings.Instance.RequireCode);
+            settings.RequireCode = EditorGUILayout.Toggle(new GUIContent("Require Entry Code"),
+                settings.RequireCode);
 
-            EditorGUI.BeginDisabledGroup(!Settings.Instance.RequireCode);
+            EditorGUI.BeginDisabledGroup(!settings.RequireCode);
 
-            Settings.Instance.RequireEntryCodeEveryTime = EditorGUILayout.Toggle(new GUIContent("...Every Time", "Require the user to enter the PIN every time they access the debug panel."),
-                Settings.Instance.RequireEntryCodeEveryTime);
+            settings.RequireEntryCodeEveryTime = EditorGUILayout.Toggle(new GUIContent("...Every Time", "Require the user to enter the PIN every time they access the debug panel."),
+                settings.RequireEntryCodeEveryTime);
 
             EditorGUILayout.EndHorizontal();
 
@@ -232,7 +330,7 @@
 
                 if (newCode.Length == 4)
                 {
-                    UpdateEntryCode(newCode);
+                    UpdateEntryCode(settings, newCode);
                 }
             }
 
@@ -240,51 +338,49 @@
 
             EditorGUILayout.Space();
 
-            Settings.Instance.AutomaticallyShowCursor =
+            settings.AutomaticallyShowCursor =
                 EditorGUILayout.Toggle(
                     new GUIContent("Show Cursor",
                         "Automatically set the cursor to visible when the debug panel is opened, and revert when closed."),
-                    Settings.Instance.AutomaticallyShowCursor);
-
-
+                    settings.AutomaticallyShowCursor);
 
             // Expand content area to fit all available space
             GUILayout.FlexibleSpace();
         }
 
-        private void DrawTabLayout()
+        private void DrawTabLayout(Settings settings)
         {
-            GUILayout.Label("Pinned Tool Positions", SRDebugEditorUtil.Styles.HeaderLabel);
+            GUILayout.Label("Pinned Tool Positions", SRInternalEditorUtil.Styles.HeaderLabel);
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             var rect = GUILayoutUtility.GetRect(360, 210);
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
-            SRDebugEditorUtil.DrawLayoutPreview(rect);
+            SRInternalEditorUtil.DrawLayoutPreview(rect, settings);
 
             EditorGUILayout.BeginHorizontal();
 
             {
                 EditorGUILayout.BeginVertical();
 
-                GUILayout.Label("Console", SRDebugEditorUtil.Styles.InspectorHeaderStyle);
+                GUILayout.Label("Console", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
 
-                Settings.Instance.ConsoleAlignment =
-                    (ConsoleAlignment) EditorGUILayout.EnumPopup(Settings.Instance.ConsoleAlignment);
+                settings.ConsoleAlignment =
+                    (ConsoleAlignment) EditorGUILayout.EnumPopup(settings.ConsoleAlignment);
 
                 EditorGUILayout.EndVertical();
             }
 
             {
-                EditorGUI.BeginDisabledGroup(Settings.Instance.EnableTrigger == Settings.TriggerEnableModes.Off);
+                EditorGUI.BeginDisabledGroup(settings.EnableTrigger == Settings.TriggerEnableModes.Off);
 
                 EditorGUILayout.BeginVertical();
 
-                GUILayout.Label("Entry Trigger", SRDebugEditorUtil.Styles.InspectorHeaderStyle);
+                GUILayout.Label("Entry Trigger", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
 
-                Settings.Instance.TriggerPosition =
-                    (PinAlignment) EditorGUILayout.EnumPopup(Settings.Instance.TriggerPosition);
+                settings.TriggerPosition =
+                    (PinAlignment) EditorGUILayout.EnumPopup(settings.TriggerPosition);
 
                 EditorGUILayout.EndVertical();
 
@@ -298,10 +394,10 @@
             {
                 EditorGUILayout.BeginVertical();
 
-                GUILayout.Label("Profiler", SRDebugEditorUtil.Styles.InspectorHeaderStyle);
+                GUILayout.Label("Profiler", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
 
-                Settings.Instance.ProfilerAlignment =
-                    (PinAlignment) EditorGUILayout.EnumPopup((ProfilerAlignment)Settings.Instance.ProfilerAlignment);
+                settings.ProfilerAlignment =
+                    (PinAlignment) EditorGUILayout.EnumPopup((ProfilerAlignment)settings.ProfilerAlignment);
 
                 EditorGUILayout.EndVertical();
             }
@@ -309,10 +405,10 @@
             {
                 EditorGUILayout.BeginVertical();
 
-                GUILayout.Label("Options", SRDebugEditorUtil.Styles.InspectorHeaderStyle);
+                GUILayout.Label("Options", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
 
-                Settings.Instance.OptionsAlignment =
-                    (PinAlignment) EditorGUILayout.EnumPopup((OptionsAlignment)Settings.Instance.OptionsAlignment);
+                settings.OptionsAlignment =
+                    (PinAlignment) EditorGUILayout.EnumPopup((OptionsAlignment)settings.OptionsAlignment);
 
                 EditorGUILayout.EndVertical();
             }
@@ -325,30 +421,34 @@
 
         private bool _enableButton;
 
-        private void DrawTabBugReporter()
+        private void DrawTabBugReporter(Settings settings)
         {
             if (_showBugReportSignupForm)
             {
-                DrawBugReportSignupForm();
+                DrawBugReportSignupForm(settings);
                 return;
             }
 
-            GUILayout.Label("Bug Reporter", SRDebugEditorUtil.Styles.HeaderLabel);
+            GUILayout.Label("Bug Reporter", SRInternalEditorUtil.Styles.HeaderLabel);
 
-            EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(Settings.Instance.ApiKey));
+            EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(settings.ApiKey));
 
-            Settings.Instance.EnableBugReporter = EditorGUILayout.Toggle("Enable Bug Reporter",
-                Settings.Instance.EnableBugReporter);
+            settings.EnableBugReporter = EditorGUILayout.Toggle("Enable Bug Reporter",
+                settings.EnableBugReporter);
+
+            
+            settings.EnableBugReportScreenshot = EditorGUILayout.Toggle("Take Screenshot",
+                settings.EnableBugReportScreenshot);
 
             EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.BeginHorizontal();
 
-            Settings.Instance.ApiKey = EditorGUILayout.TextField("API Key", Settings.Instance.ApiKey);
+            settings.ApiKey = EditorGUILayout.TextField("API Key", settings.ApiKey);
 
             if (GUILayout.Button("Verify", GUILayout.ExpandWidth(false)))
             {
-                EditorUtility.DisplayDialog("Verify API Key", ApiSignup.Verify(Settings.Instance.ApiKey), "OK");
+                EditorUtility.DisplayDialog("Verify API Key", ApiSignup.Verify(settings.ApiKey), "OK");
             }
 
             EditorGUILayout.EndHorizontal();
@@ -357,15 +457,15 @@
 
             GUILayout.Label(
                 "If you need to change your account email address, or have any other questions or concerns, please email us at contact@stompyrobot.uk.",
-                SRDebugEditorUtil.Styles.ParagraphLabel);
+                SRInternalEditorUtil.Styles.ParagraphLabel);
 
             GUILayout.FlexibleSpace();
 
-            if (!string.IsNullOrEmpty(Settings.Instance.ApiKey))
+            if (!string.IsNullOrEmpty(settings.ApiKey))
             {
-                GUILayout.Label("Reset", SRDebugEditorUtil.Styles.InspectorHeaderStyle);
+                GUILayout.Label("Reset", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
                 GUILayout.Label("Click the button below to clear the API key and show the signup form.",
-                    SRDebugEditorUtil.Styles.ParagraphLabel);
+                    SRInternalEditorUtil.Styles.ParagraphLabel);
 
                 EditorGUILayout.BeginHorizontal();
 
@@ -375,8 +475,8 @@
 
                 if (GUILayout.Button("Reset"))
                 {
-                    Settings.Instance.ApiKey = null;
-                    Settings.Instance.EnableBugReporter = false;
+                    settings.ApiKey = null;
+                    settings.EnableBugReporter = false;
                     _enableButton = false;
                     _showBugReportSignupForm = true;
                 }
@@ -401,7 +501,7 @@
         private bool _agreeLegal;
         private string _errorMessage;
 
-        private void DrawBugReportSignupForm()
+        private void DrawBugReportSignupForm(Settings settings)
         {
             var isWeb = false;
 
@@ -412,15 +512,15 @@
 
             EditorGUI.BeginDisabledGroup(isWeb || !_enableTabChange);
 
-            GUILayout.Label("Signup Form", SRDebugEditorUtil.Styles.HeaderLabel);
+            GUILayout.Label("Signup Form", SRInternalEditorUtil.Styles.HeaderLabel);
             GUILayout.Label(
                 "SRDebugger requires a free API key to enable the bug reporter system. This form will acquire one for you.",
-                SRDebugEditorUtil.Styles.ParagraphLabel);
+                SRInternalEditorUtil.Styles.ParagraphLabel);
 
             if (
-                SRDebugEditorUtil.ClickableLabel(
-                    "Already got an API key? <color={0}>Click here</color>.".Fmt(SRDebugEditorUtil.Styles.LinkColour),
-                    SRDebugEditorUtil.Styles.RichTextLabel))
+                SRInternalEditorUtil.ClickableLabel(
+                    "Already got an API key? <color={0}>Click here</color>.".Fmt(SRInternalEditorUtil.Styles.LinkColour),
+                    SRInternalEditorUtil.Styles.RichTextLabel))
             {
                 _showBugReportSignupForm = false;
                 Repaint();
@@ -450,9 +550,9 @@
 
             EditorGUILayout.BeginHorizontal();
 
-            if (SRDebugEditorUtil.ClickableLabel(
-                "I agree to the <color={0}>terms and conditions</color>.".Fmt(SRDebugEditorUtil.Styles.LinkColour),
-                SRDebugEditorUtil.Styles.RichTextLabel))
+            if (SRInternalEditorUtil.ClickableLabel(
+                "I agree to the <color={0}>terms and conditions</color>.".Fmt(SRInternalEditorUtil.Styles.LinkColour),
+                SRInternalEditorUtil.Styles.RichTextLabel))
             {
                 ApiSignupTermsWindow.Open();
             }
@@ -473,7 +573,8 @@
 
                 EditorApplication.delayCall += () =>
                 {
-                    ApiSignup.SignUp(_emailAddress, _invoiceNumber, OnSignupResult);
+                    ApiSignup.SignUp(_emailAddress, _invoiceNumber,
+                        (success, key, email, error) => OnSignupResult(success, key, email, error, settings));
                     Repaint();
                 };
             }
@@ -493,7 +594,7 @@
             EditorGUI.EndDisabledGroup();
         }
 
-        private void OnSignupResult(bool didSucceed, string apiKey, string email, string error)
+        private void OnSignupResult(bool didSucceed, string apiKey, string email, string error, Settings settings)
         {
             _enableTabChange = true;
             _selectedTab = Tabs.Bug_Reporter;
@@ -504,8 +605,8 @@
                 return;
             }
 
-            Settings.Instance.ApiKey = apiKey;
-            Settings.Instance.EnableBugReporter = true;
+            settings.ApiKey = apiKey;
+            settings.EnableBugReporter = true;
 
             EditorUtility.DisplayDialog("SRDebugger API",
                 "API key has been created successfully. An email has been sent to your email address ({0}) with a verification link. You must verify your email before you can receive any bug reports."
@@ -517,11 +618,11 @@
         private ReorderableList _keyboardShortcutList;
         private Vector2 _scrollPosition;
 
-        private void DrawTabShortcuts()
+        private void DrawTabShortcuts(Settings settings)
         {
             if (_keyboardShortcutList == null)
             {
-                _keyboardShortcutList = new ReorderableList((IList) Settings.Instance.KeyboardShortcuts,
+                _keyboardShortcutList = new ReorderableList((IList) settings.KeyboardShortcuts,
                     typeof (Settings.KeyboardShortcut), false, true, true, true);
                 _keyboardShortcutList.drawHeaderCallback = DrawKeyboardListHeaderCallback;
                 _keyboardShortcutList.drawElementCallback = DrawKeyboardListItemCallback;
@@ -533,22 +634,22 @@
 
             EditorGUILayout.BeginHorizontal();
 
-            Settings.Instance.EnableKeyboardShortcuts = EditorGUILayout.Toggle(
-                new GUIContent("Enable", SRDebugStrings.Current.SettingsKeyboardShortcutsTooltip),
-                Settings.Instance.EnableKeyboardShortcuts);
+            settings.EnableKeyboardShortcuts = EditorGUILayout.Toggle(
+                new GUIContent("Enable", SRDebugEditorStrings.Current.SettingsKeyboardShortcutsTooltip),
+                settings.EnableKeyboardShortcuts);
 
-            EditorGUI.BeginDisabledGroup(!Settings.Instance.EnableKeyboardShortcuts);
+            EditorGUI.BeginDisabledGroup(!settings.EnableKeyboardShortcuts);
 
-            Settings.Instance.KeyboardEscapeClose =
+            settings.KeyboardEscapeClose =
                 EditorGUILayout.Toggle(
-                    new GUIContent("Close on Esc", SRDebugStrings.Current.SettingsCloseOnEscapeTooltip),
-                    Settings.Instance.KeyboardEscapeClose);
+                    new GUIContent("Close on Esc", SRDebugEditorStrings.Current.SettingsCloseOnEscapeTooltip),
+                    settings.KeyboardEscapeClose);
 
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Separator();
 
-            var dupe = DetectDuplicateKeyboardShortcuts();
+            var dupe = DetectDuplicateKeyboardShortcuts(settings);
 
             if (dupe != null)
             {
@@ -607,65 +708,72 @@
             EditorGUI.EndDisabledGroup();
         }
 
-        private void DrawTabAdvanced()
+        private void DrawTabAdvanced(Settings settings)
         {
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, false, true);
 
-            GUILayout.Label("Console", SRDebugEditorUtil.Styles.InspectorHeaderStyle);
+            GUILayout.Label("Console", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
 
-            Settings.Instance.CollapseDuplicateLogEntries =
+            settings.CollapseDuplicateLogEntries =
                 EditorGUILayout.Toggle(
                     new GUIContent("Collapse Log Entries", "Collapse duplicate log entries into single log."),
-                    Settings.Instance.CollapseDuplicateLogEntries);
+                    settings.CollapseDuplicateLogEntries);
 
-            Settings.Instance.RichTextInConsole =
+            settings.RichTextInConsole =
                 EditorGUILayout.Toggle(
                     new GUIContent("Rich Text in Console", "Parse rich text tags in console log entries."),
-                    Settings.Instance.RichTextInConsole);
+                    settings.RichTextInConsole);
 
-            Settings.Instance.MaximumConsoleEntries =
+            settings.MaximumConsoleEntries =
                 EditorGUILayout.IntSlider(
                     new GUIContent("Max Console Entries",
                         "The maximum size of the console buffer. Higher values may cause performance issues on slower devices."),
-                    Settings.Instance.MaximumConsoleEntries, 100, 6000);
+                    settings.MaximumConsoleEntries, 100, 6000);
 
             EditorGUILayout.Separator();
-            GUILayout.Label("Display", SRDebugEditorUtil.Styles.InspectorHeaderStyle);
+            GUILayout.Label("Display", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
 
-            Settings.Instance.EnableBackgroundTransparency =
+            settings.EnableBackgroundTransparency =
                 EditorGUILayout.Toggle(new GUIContent("Transparent Background"),
-                    Settings.Instance.EnableBackgroundTransparency);
+                    settings.EnableBackgroundTransparency);
+
+            EditorGUI.BeginDisabledGroup(!settings.EnableBackgroundTransparency);
+
+            settings.BackgroundTransparency = EditorGUILayout.Slider(new GUIContent("Background Opacity"),
+                settings.BackgroundTransparency, 0.0f, 1.0f);
+
+            EditorGUI.EndDisabledGroup();
 
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.PrefixLabel(new GUIContent("Layer", "The layer the debug panel UI will be drawn to"));
 
-            Settings.Instance.DebugLayer = EditorGUILayout.LayerField(Settings.Instance.DebugLayer);
+            settings.DebugLayer = EditorGUILayout.LayerField(settings.DebugLayer);
 
             EditorGUILayout.EndHorizontal();
 
-            Settings.Instance.UseDebugCamera =
+            settings.UseDebugCamera =
                 EditorGUILayout.Toggle(
-                    new GUIContent("Use Debug Camera", SRDebugStrings.Current.SettingsDebugCameraTooltip),
-                    Settings.Instance.UseDebugCamera);
+                    new GUIContent("Use Debug Camera", SRDebugEditorStrings.Current.SettingsDebugCameraTooltip),
+                    settings.UseDebugCamera);
 
-            EditorGUI.BeginDisabledGroup(!Settings.Instance.UseDebugCamera);
+            EditorGUI.BeginDisabledGroup(!settings.UseDebugCamera);
 
-            Settings.Instance.DebugCameraDepth = EditorGUILayout.Slider(new GUIContent("Debug Camera Depth"),
-                Settings.Instance.DebugCameraDepth, -100, 100);
+            settings.DebugCameraDepth = EditorGUILayout.Slider(new GUIContent("Debug Camera Depth"),
+                settings.DebugCameraDepth, -100, 100);
 
             EditorGUI.EndDisabledGroup();
 
-            Settings.Instance.UIScale =
-                EditorGUILayout.Slider(new GUIContent("UI Scale"), Settings.Instance.UIScale, 1f, 3f);
+            settings.UIScale =
+                EditorGUILayout.Slider(new GUIContent("UI Scale"), settings.UIScale, 1f, 3f);
 
             EditorGUILayout.Separator();
-            GUILayout.Label("Enabled Tabs", SRDebugEditorUtil.Styles.InspectorHeaderStyle);
+            GUILayout.Label("Enabled Tabs", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
 
-            GUILayout.Label(SRDebugStrings.Current.SettingsEnabledTabsDescription, EditorStyles.wordWrappedLabel);
+            GUILayout.Label(SRDebugEditorStrings.Current.SettingsEnabledTabsDescription, EditorStyles.wordWrappedLabel);
             EditorGUILayout.Space();
 
-            var disabledTabs = Settings.Instance.DisabledTabs.ToList();
+            var disabledTabs = settings.DisabledTabs.ToList();
 
             var tabNames = Enum.GetNames(typeof (DefaultTabs));
             var tabValues = Enum.GetValues(typeof (DefaultTabs));
@@ -693,7 +801,7 @@
                 var isEnabled = !disabledTabs.Contains(tabValue);
 
                 var isNowEnabled = EditorGUILayout.ToggleLeft(tabName, isEnabled,
-                    SRDebugEditorUtil.Styles.LeftToggleButton);
+                    SRInternalEditorUtil.Styles.LeftToggleButton);
 
                 if (isEnabled && !isNowEnabled)
                 {
@@ -713,24 +821,37 @@
 
             if (changed)
             {
-                Settings.Instance.DisabledTabs = disabledTabs;
+                settings.DisabledTabs = disabledTabs;
             }
 
-            GUILayout.Label("Other", SRDebugEditorUtil.Styles.InspectorHeaderStyle);
+            GUILayout.Label("Other", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
 
-            Settings.Instance.EnableEventSystemGeneration =
+            settings.EnableEventSystemGeneration =
             EditorGUILayout.Toggle(
                 new GUIContent("Automatic Event System", "Automatically create a UGUI EventSystem if none is found in the scene."),
-                Settings.Instance.EnableEventSystemGeneration);
+                settings.EnableEventSystemGeneration);
 
-            Settings.Instance.UnloadOnClose =
+#if ENABLE_INPUT_SYSTEM && ENABLE_LEGACY_INPUT_MANAGER
+            using (new EditorGUI.DisabledScope(!Settings.Instance.EnableEventSystemGeneration))
+            {
+                Settings.Instance.UIInputMode =
+                    (Settings.UIModes) EditorGUILayout.EnumPopup(new GUIContent("Input Mode"), Settings.Instance.UIInputMode);
+            }
+#endif
+
+            settings.UnloadOnClose =
             EditorGUILayout.Toggle(
                 new GUIContent("Unload When Closed", "Unload the debug panel from the scene when it is closed."),
-                Settings.Instance.UnloadOnClose);
+                settings.UnloadOnClose);
 
             EditorGUILayout.HelpBox(
                 "The panel loads again automatically when opened. You can always unload the panel by holding down the close button.",
                 MessageType.Info);
+
+            settings.DisableWelcomePopup =
+            EditorGUILayout.Toggle(
+                new GUIContent("Disable Welcome Popup", "Disable the welcome popup that appears when a project with SRDebugger is opened for the first time."),
+                settings.DisableWelcomePopup);
 
             EditorGUILayout.Separator();
 
@@ -739,20 +860,42 @@
                 Migrations.RunMigrations(true);
             }
 
+            EditorGUILayout.Separator();
+
+            GUILayout.Label("Disable SRDebugger (beta)", SRInternalEditorUtil.Styles.InspectorHeaderStyle);
+
+            GUILayout.Label("Disabling will exclude any SRDebugger assets and scripts from your game.", SRInternalEditorUtil.Styles.ParagraphLabel);
+            EditorGUILayout.HelpBox("This is an experimental feature. Please make sure your project is backed up via source control.", MessageType.Warning);
+
+            GUILayout.Label("• " + SRDebugEditor.DisableSRDebuggerCompileDefine + " compiler define will be added to all build configurations.", SRInternalEditorUtil.Styles.ListBulletPoint);
+            GUILayout.Label("• Some SRDebugger folders will be renamed to prevent Unity from importing them.", SRInternalEditorUtil.Styles.ListBulletPoint);
+            GUILayout.Label("• Any code that interacts with SRDebugger (e.g. SROptions or SRDebug API) should use the `#if !"+ SRDebugEditor.DisableSRDebuggerCompileDefine + "` preprocessor directive.", SRInternalEditorUtil.Styles.ListBulletPoint);
+            GUILayout.Label("• You can enable SRDebugger again at any time.", SRInternalEditorUtil.Styles.ListBulletPoint);
+
+            if (GUILayout.Button("Disable SRDebugger"))
+            {
+                EditorApplication.delayCall += () =>
+                {
+                    SRDebugEditor.SetEnabled(false);
+                    Reset();
+                };
+            }
+
+
             EditorGUILayout.EndScrollView();
         }
 
-        #endregion
+            #endregion
 
-        #region Entry Code Utility
+            #region Entry Code Utility
 
-        private string GetEntryCodeString()
+        private string GetEntryCodeString(Settings settings)
         {
-            var entryCode = Settings.Instance.EntryCode;
+            var entryCode = settings.EntryCode;
 
             if (entryCode.Count == 0)
             {
-                Settings.Instance.EntryCode = new[] {0, 0, 0, 0};
+                settings.EntryCode = new[] {0, 0, 0, 0};
             }
 
             var code = "";
@@ -765,7 +908,7 @@
             return code;
         }
 
-        private void UpdateEntryCode(string str)
+        private void UpdateEntryCode(Settings settings, string str)
         {
             var newCode = new List<int>();
 
@@ -774,17 +917,17 @@
                 newCode.Add(int.Parse(str[i].ToString(), NumberStyles.Integer));
             }
 
-            Settings.Instance.EntryCode = newCode;
-            _currentEntryCode = GetEntryCodeString();
+            settings.EntryCode = newCode;
+            _currentEntryCode = GetEntryCodeString(settings);
         }
 
         #endregion
 
-        #region Keyboard Shortcut Utility
+            #region Keyboard Shortcut Utility
 
-        private Settings.KeyboardShortcut DetectDuplicateKeyboardShortcuts()
+        private Settings.KeyboardShortcut DetectDuplicateKeyboardShortcuts(Settings settings)
         {
-            var s = Settings.Instance.KeyboardShortcuts;
+            var s = settings.KeyboardShortcuts;
 
             return
                 s.FirstOrDefault(
@@ -803,7 +946,13 @@
 
         private void DrawKeyboardListItemCallback(Rect rect, int index, bool isActive, bool isFocused)
         {
-            var item = Settings.Instance.KeyboardShortcuts[index];
+            Settings settings;
+            if (!SettingsReady(out settings))
+            {
+                return;
+            }
+
+            var item = settings.KeyboardShortcuts[index];
 
             rect.y += 2;
 
@@ -842,22 +991,36 @@
 
         private void OnAddKeyboardListCallback(ReorderableList list)
         {
-            var shortcuts = Settings.Instance.KeyboardShortcuts.ToList();
+            Settings settings;
+            if (!SettingsReady(out settings))
+            {
+                return;
+            }
+
+            var shortcuts = settings.KeyboardShortcuts.ToList();
             shortcuts.Add(new Settings.KeyboardShortcut());
 
-            Settings.Instance.KeyboardShortcuts = shortcuts;
-            list.list = (IList) Settings.Instance.KeyboardShortcuts;
+            settings.KeyboardShortcuts = shortcuts;
+            list.list = (IList) settings.KeyboardShortcuts;
         }
 
         private void OnRemoveKeyboardListCallback(ReorderableList list)
         {
-            var shortcuts = Settings.Instance.KeyboardShortcuts.ToList();
+            Settings settings;
+            if (!SettingsReady(out settings))
+            {
+                return;
+            }
+
+            var shortcuts = settings.KeyboardShortcuts.ToList();
             shortcuts.RemoveAt(list.index);
 
-            Settings.Instance.KeyboardShortcuts = shortcuts;
-            list.list = (IList) Settings.Instance.KeyboardShortcuts;
+            settings.KeyboardShortcuts = shortcuts;
+            list.list = (IList) settings.KeyboardShortcuts;
         }
 
-        #endregion
-    }
+            #endregion
+
+#endif
+        }
 }

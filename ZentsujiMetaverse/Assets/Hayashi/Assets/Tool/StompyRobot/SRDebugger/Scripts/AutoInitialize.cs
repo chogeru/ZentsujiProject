@@ -7,10 +7,16 @@ namespace SRDebugger
 
     public static class AutoInitialize
     {
+#if UNITY_2018
+        private const RuntimeInitializeLoadType InitializeLoadType = RuntimeInitializeLoadType.BeforeSceneLoad;
+#else
+        private const RuntimeInitializeLoadType InitializeLoadType = RuntimeInitializeLoadType.SubsystemRegistration;
+#endif
+
         /// <summary>
         /// Initialize the console service before the scene has loaded to catch more of the initialization log.
         /// </summary>
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        [RuntimeInitializeOnLoadMethod(InitializeLoadType)]
         public static void OnLoadBeforeScene()
         {
             // Populate service manager with types from SRDebugger assembly (asmdef)

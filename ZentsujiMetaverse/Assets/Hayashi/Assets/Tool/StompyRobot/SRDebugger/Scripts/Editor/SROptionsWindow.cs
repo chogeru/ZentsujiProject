@@ -1,19 +1,24 @@
-﻿using System.ComponentModel;
+﻿
 
 namespace SRDebugger.Editor
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Internal;
     using SRF;
-    using UI.Controls.Data;
     using UnityEngine;
     using UnityEditor;
+    using System.ComponentModel;
+    using SRF.Helpers;
+#if !DISABLE_SRDEBUGGER
+    using Internal;
+    using SRDebugger.Services;
+    using UI.Controls.Data;
+#endif
 
-    public class SROptionsWindow : EditorWindow
+    class SROptionsWindow : EditorWindow
     {
-        [MenuItem(SRDebugPaths.SROptionsMenuItemPath)]
+        [MenuItem(SRDebugEditorPaths.SROptionsMenuItemPath)]
         public static void Open()
         {
             var window = GetWindow<SROptionsWindow>(false, "SROptions", true);
@@ -21,6 +26,14 @@ namespace SRDebugger.Editor
             window.Show();
         }
 
+#if DISABLE_SRDEBUGGER
+        private bool _isWorking;
+
+        void OnGUI()
+        {
+            SRDebugEditor.DrawDisabledWindowGui(ref _isWorking);
+        }
+#else
         [Serializable]
         private class CategoryState
         {
@@ -32,25 +45,29 @@ namespace SRDebugger.Editor
         private List<CategoryState> _categoryStates = new List<CategoryState>();
 
         private Dictionary<Type, Action<OptionDefinition>> _typeLookup;
-
         private Dictionary<string, List<OptionDefinition>> _options;
 
         private Vector2 _scrollPosition;
         private bool _queueRefresh;
+        private bool _isDirty;
+
 
         [NonSerialized] private GUIStyle _divider;
         [NonSerialized] private GUIStyle _foldout;
 
+        private IOptionsService _activeOptionsService;
+
         public void OnInspectorUpdate()
         {
-            if (EditorApplication.isPlaying && _options == null)
+            if (EditorApplication.isPlaying && (_options == null || _isDirty))
             {
                 Populate();
                 _queueRefresh = true;
+                _isDirty = false;
             }
             else if (!EditorApplication.isPlaying && _options != null)
             {
-                _options = null;
+                Clear();
                 _queueRefresh = true;
             }
 
@@ -60,6 +77,11 @@ namespace SRDebugger.Editor
             }
 
             _queueRefresh = false;
+        }
+
+        private void OnDisable()
+        {
+            Clear();
         }
 
         void PopulateTypeLookup()
@@ -80,11 +102,43 @@ namespace SRDebugger.Editor
             };
         }
 
+        void Clear()
+        {
+            _options = null;
+            _isDirty = false;
+
+            if (_activeOptionsService != null)
+            {
+                _activeOptionsService.OptionsUpdated -= OnOptionsUpdated;
+            }
+
+            _activeOptionsService = null;
+        }
+
         void Populate()
         {
             if (_typeLookup == null)
             {
                 PopulateTypeLookup();
+            }
+
+            if (_activeOptionsService != null)
+            {
+                _activeOptionsService.OptionsUpdated -= OnOptionsUpdated;
+            }
+
+            if (_options != null)
+            {
+                foreach (KeyValuePair<string, List<OptionDefinition>> kv in _options)
+                {
+                    foreach (var option in kv.Value)
+                    {
+                        if (option.IsProperty)
+                        {
+                            option.Property.ValueChanged -= OnOptionPropertyValueChanged;
+                        }
+                    }
+                }
             }
 
             _options = new Dictionary<string, List<OptionDefinition>>();
@@ -100,6 +154,11 @@ namespace SRDebugger.Editor
                 }
 
                 list.Add(option);
+
+                if (option.IsProperty)
+                {
+                    option.Property.ValueChanged += OnOptionPropertyValueChanged;
+                }
             }
 
             foreach (var kv in _options)
@@ -107,14 +166,20 @@ namespace SRDebugger.Editor
                 kv.Value.Sort((d1, d2) => d1.SortPriority.CompareTo(d2.SortPriority));
             }
 
-            Service.Options.OptionsValueUpdated += OptionsOnOptionsValueUpdated;
+            _activeOptionsService = Service.Options;
+            _activeOptionsService.OptionsUpdated += OnOptionsUpdated;
         }
 
-        private void OptionsOnOptionsValueUpdated(object sender, PropertyChangedEventArgs e)
+        private void OnOptionPropertyValueChanged(PropertyReference property)
         {
             _queueRefresh = true;
         }
 
+        private void OnOptionsUpdated(object sender, EventArgs e)
+        {
+            _isDirty = true;
+            _queueRefresh = true;
+        }
 
         void OnGUI()
         {
@@ -385,5 +450,6 @@ namespace SRDebugger.Editor
             EditorGUILayout.PrefixLabel(op.Name);
             EditorGUILayout.LabelField("Unsupported Type: {0}".Fmt(op.Property.PropertyType));
         }
+#endif
+        }
     }
-}

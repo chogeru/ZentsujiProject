@@ -16,7 +16,11 @@
 
         [SerializeField]
         private CanvasGroup _canvasGroup;
+
+        [SerializeField]
+        private bool _scrollToTop;
 #pragma warning restore 649
+
 
         public void Start()
         {
@@ -43,7 +47,14 @@
 
         public void Trigger()
         {
-            _scrollRect.normalizedPosition = new Vector2(0, 0);
+            if (_scrollToTop)
+            {
+                _scrollRect.normalizedPosition = new Vector2(0, 1);
+            }
+            else
+            {
+                _scrollRect.normalizedPosition = new Vector2(0, 0);
+            }
         }
 
         private void OnScrollRectValueChanged(Vector2 position)
@@ -58,7 +69,7 @@
 
             var position = _scrollRect.normalizedPosition;
 
-            if (position.y < 0.001f)
+            if (position.y < 0.001f || (_scrollToTop && position.y >= 0.999f))
             {
                 SetVisible(false);
             }

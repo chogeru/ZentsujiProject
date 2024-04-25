@@ -8,29 +8,39 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: N00_000_00_FaceBrow_00_FACE (Instance)
-  m_Shader: {fileID: 4800000, guid: 85d6126cae43b6847aff4b13f4adb8ec, type: 3}
-  m_ValidKeywords: []
+  m_Shader: {fileID: 4800000, guid: 6459b2db96a08ca41b0f9b39dc7ad59e, type: 3}
+  m_ValidKeywords:
+  - N_F_CA_ON
+  - N_F_CO_ON
+  - N_F_EAL_ON
+  - N_F_FR_ON
+  - N_F_HDLS_ON
+  - N_F_MC_ON
+  - N_F_NLASOBF_ON
+  - N_F_NM_ON
+  - N_F_O_ON
+  - N_F_RELGI_ON
+  - N_F_RL_ON
+  - N_F_R_ON
+  - N_F_SS_ON
+  - N_F_TRANSAFFSHA_ON
+  - N_F_TRANS_ON
+  - _NORMALMAP
   m_InvalidKeywords:
   - L_F_O_ON
   - L_F_RELGI_ON
   - L_F_SS_ON
-  - N_F_CA_ON
-  - N_F_FR_ON
-  - N_F_HDLS_ON
-  - N_F_MC_ON
-  - N_F_NM_ON
-  - N_F_O_ON
-  - N_F_RELGI_ON
-  - N_F_R_ON
-  - N_F_SS_ON
+  - N_F_DCS_ON
+  - N_F_TRANSAFFSHA
   - _ALPHABLEND_ON
-  - _NORMALMAP
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
+  m_CustomRenderQueue: 2450
+  stringTagMap:
+    RenderType: TransparentCutout
+  disabledShaderPasses:
+  - SHADOWCASTER
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -428,6 +438,8 @@ Material:
     - _BitKey7: 0
     - _BitKey8: 0
     - _BitKey9: 0
+    - _BleModDest: 10
+    - _BleModSour: 5
     - _BlendMode: 2
     - _BlendOp: 0
     - _BlendOpAlpha: 0
@@ -438,13 +450,16 @@ Material:
     - _BumpScale: 1
     - _ColorMask: 15
     - _Compa: 4
+    - _ComputeMeshIndex: 0
     - _Cull: 2
     - _CullMode: 0
+    - _Culling: 2
     - _CustomLightDirectionFollowObjectRotation: 0
     - _CustomLightDirectionIntensity: 0
     - _Cutoff: 0.5
-    - _Cutout: 0
+    - _Cutout: 0.5
     - _DebugMode: 0
+    - _DepthThreshold: 900
     - _DirectionalLightIntensity: 0
     - _DissolveNoiseStrength: 0.1
     - _DistanceFadeMode: 0
@@ -505,6 +520,7 @@ Material:
     - _GlossTextureRotate: 0
     - _GlossTextureSoftness: 0
     - _Glossiness: 0.6
+    - _Glow_Edge_Width: 1
     - _HighlightColorPower: 1
     - _IDMask1: 0
     - _IDMask2: 0
@@ -553,6 +569,7 @@ Material:
     - _L_F_SS: 1
     - _L_F_ST: 0
     - _L_F_UOAL: 0
+    - _LigIgnoYNorDir: 0
     - _LightAffectOutlineColor: 0
     - _LightAffectRimLightColor: 0
     - _LightAffectShadow: 0
@@ -562,10 +579,11 @@ Material:
     - _LightIntensity: -1
     - _LightMaxLimit: 1
     - _LightMinLimit: 0.05
-    - _MCIALO: 0
+    - _MCIALO: 1
     - _MCapIntensity: 1
     - _MToonVersion: 32
     - _MVCOL: 0
+    - _MaiColPo: 0.8
     - _Main2ndDissolveNoiseStrength: 0.1
     - _Main2ndEnableLighting: 1
     - _Main2ndTexAlphaMode: 0
@@ -623,24 +641,34 @@ Material:
     - _MatCapShadowMask: 0
     - _MatCapVRParallaxStrength: 1
     - _MatCapZRotCancel: 1
+    - _MaxFadDistance: 2
     - _Metallic: 0
+    - _MinFadDistance: 0
     - _MixMainTexToOutline: 0
     - _MonochromeLighting: 0
     - _N_F_CA: 1
     - _N_F_CLD: 0
-    - _N_F_CO: 0
+    - _N_F_CO: 1
+    - _N_F_COEDGL: 0
+    - _N_F_DCS: 1
+    - _N_F_DDMD: 0
+    - _N_F_EAL: 1
+    - _N_F_ESSAO: 0
     - _N_F_FR: 1
     - _N_F_GLO: 0
     - _N_F_GLOT: 0
     - _N_F_HDLS: 1
     - _N_F_HPSS: 0
     - _N_F_MC: 1
-    - _N_F_NLASOBF: 0
+    - _N_F_MSSOLTFO: 0
+    - _N_F_NFD: 0
+    - _N_F_NLASOBF: 1
     - _N_F_NM: 1
     - _N_F_O: 1
+    - _N_F_OFLMB: 0
     - _N_F_PT: 0
     - _N_F_R: 1
-    - _N_F_RL: 0
+    - _N_F_RL: 1
     - _N_F_SCT: 0
     - _N_F_SL: 0
     - _N_F_SON: 0
@@ -694,8 +722,8 @@ Material:
     - _OutlineVectorScale: 1
     - _OutlineVectorUVMode: 0
     - _OutlineVertexR2Width: 0
-    - _OutlineWidth: 0.08
-    - _OutlineWidthAffectedByViewDistance: 1
+    - _OutlineWidth: 0.1
+    - _OutlineWidthAffectedByViewDistance: 0
     - _OutlineWidthMode: 0
     - _OutlineZBias: 0
     - _OutlineZClip: 1
@@ -736,10 +764,11 @@ Material:
     - _RimIndirBorder: 0.5
     - _RimIndirRange: 0
     - _RimLift: 0.1
+    - _RimLigInt: 0.431
     - _RimLightColorPower: 10
     - _RimLightInLight: 1
     - _RimLightSoftness: 1
-    - _RimLightUnfill: 1.5
+    - _RimLightUnfill: 10
     - _RimLightingMix: 0
     - _RimMainStrength: 0
     - _RimNormalStrength: 1
@@ -760,7 +789,7 @@ Material:
     - _SelfShadowColorPower: 1
     - _SelfShadowHardness: 0
     - _SelfShadowRealTimeShadowColorPower: 1
-    - _SelfShadowRealtimeShadowIntensity: 0.5
+    - _SelfShadowRealtimeShadowIntensity: 1
     - _SelfShadowShadowTAtViewDirection: 0
     - _SelfShadowThreshold: 0.8
     - _ShadeShift: -0.8
@@ -801,6 +830,8 @@ Material:
     - _ShowInAmbientLightShadowIntensity: 1
     - _ShowInAmbientLightShadowThreshold: 0.4
     - _ShowNormal: 0
+    - _SimTrans: 0
+    - _SkinMatrixIndex: 0
     - _SmoothObjectNormal: 0
     - _Smoothness: 1
     - _SpecularBlur: 0
@@ -820,11 +851,13 @@ Material:
     - _StencilZFail: 0
     - _SubpassCutoff: 0.5
     - _TEXMCOLINT: 1
+    - _TRANSMODE: 1
     - _TessEdge: 10
     - _TessFactorMax: 3
     - _TessShrink: 0
     - _TessStrength: 0.5
     - _TexturePatternStyle: 0
+    - _TransAffSha: 1
     - _TransparentMode: 0
     - _TransparentThreshold: 0
     - _UDIMDiscardCompile: 0
@@ -868,6 +901,7 @@ Material:
     - _UseRimShade: 0
     - _UseSecondaryCutout: 0
     - _UseShadow: 0
+    - _UseTLB: 0
     - _UvAnimRotation: 0
     - _UvAnimScrollX: 0
     - _UvAnimScrollY: 0
@@ -922,6 +956,7 @@ Material:
     - _GlitterParams1: {r: 256, g: 256, b: 0.16, a: 50}
     - _GlitterParams2: {r: 0.25, g: 0, b: 0, a: 0}
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Glow_Color: {r: 1, g: 1, b: 1, a: 1}
     - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
     - _Keys: {r: 0, g: 0, b: 0, a: 0}
     - _LightDirectionOverride: {r: 0.001, g: 0.002, b: 0.001, a: 0}
@@ -948,18 +983,20 @@ Material:
     - _MatCap2ndColor: {r: 1, g: 1, b: 1, a: 1}
     - _MatCapBlendUV1: {r: 0, g: 0, b: 0, a: 0}
     - _MatCapColor: {r: 1, g: 1, b: 1, a: 1}
-    - _OutlineColor: {r: 0.2745098, g: 0.090196066, b: 0.12549016, a: 1}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineLitColor: {r: 1, g: 0.19999996, b: 0, a: 0}
     - _OutlineOffset: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineTexHSVG: {r: 0, g: 1, b: 1, a: 1}
     - _OutlineTex_ScrollRotate: {r: 0, g: 0, b: 0, a: 0}
     - _OverallShadowColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PTCol: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectionColor: {r: 1, g: 1, b: 1, a: 1}
     - _ReflectionCubeColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimColor: {r: 0, g: 0, b: 0, a: 1}
     - _RimIndirColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RimLightColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimLightColor: {r: 0.23584908, g: 0.23584908, b: 0.23584908, a: 1}
     - _RimShadeColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _SSAOColor: {r: 0, g: 0, b: 0, a: 0}
     - _SelfLitColor: {r: 1, g: 1, b: 1, a: 1}
     - _SelfShadowColor: {r: 1, g: 1, b: 1, a: 1}
     - _SelfShadowRealTimeShadowColor: {r: 1, g: 1, b: 1, a: 1}

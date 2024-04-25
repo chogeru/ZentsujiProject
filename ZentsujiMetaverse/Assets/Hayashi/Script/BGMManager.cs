@@ -64,7 +64,7 @@ public class BGMManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("query‚ªnull");
+            Debug.Log("queryãŒnull");
         }
     }
 

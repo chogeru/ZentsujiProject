@@ -5609,6 +5609,7 @@ MonoBehaviour:
   m_WalkSpeed: 4
   m_RunSpeed: 9
   m_JumpForce: 500
+  m_GravityMultiplier: 2
   m_Rigidbody: {fileID: 9126141871417367007}
   m_CameraTransform: {fileID: 9126141871003576020}
   m_Animator: {fileID: 9126141871417367003}
@@ -6378,7 +6379,7 @@ MonoBehaviour:
   m_ObstacleMask:
     serializedVersion: 2
     m_Bits: 55
-  m_MinDistance: 1
+  m_MinDistance: 0.01
   m_MaxDistance: 10
   m_SphereCastRadius: 0.5
 --- !u!114 &5176151510122938454

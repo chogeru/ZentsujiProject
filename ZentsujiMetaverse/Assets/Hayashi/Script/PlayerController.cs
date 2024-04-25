@@ -3,6 +3,7 @@ using Mirror;
 using R3;
 using R3.Triggers;
 using UnityEngine;
+using UnityEngine.UIElements;
 #region
 /*
 .Subscribe
@@ -25,6 +26,7 @@ Selectは、元のデータを新しい形に変換するために使う
 観測可能なストリーム（Observable）
 時間の経過とともに値やイベントを生成するデータのストリームを表す
 具体的には、マウスの移動、ボタンのクリック、キーボードの入力、外部サーバーからのデータの取得など、
+
 */
 #endregion
 
@@ -36,6 +38,8 @@ public class PlayerController : NetworkBehaviour
     private float m_RunSpeed = 10.0f;
     [SerializeField, Header("ジャンプ力")]
     public float m_JumpForce = 300f;
+    [SerializeField, Header("重力係数")]
+    private float m_GravityMultiplier = 2.0f;
     [SerializeField]
     private Rigidbody m_Rigidbody;
     [SerializeField]
@@ -43,21 +47,23 @@ public class PlayerController : NetworkBehaviour
     [SerializeField, Header("アニメ-ター")]
     private Animator m_Animator;
 
-    private bool isIdle;
-    private bool issWalk;
-    private bool isRun;
+    private ReactiveProperty<bool> isIdle = new ReactiveProperty<bool>(true);
+    private ReactiveProperty<bool> isWalk = new ReactiveProperty<bool>(false);
+    private ReactiveProperty<bool> isRun = new ReactiveProperty<bool>(false);
     // ローカルプレイヤーが開始した時に呼び出されるメソッド
     public override void OnStartLocalPlayer()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
         m_Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         base.OnStartLocalPlayer();
-        InitializeMovement();
+        InitializeMovement().Forget();
+        BindAnimations();
     }
-    // プレイヤーの動きを初期化するためのメソッド
-    void InitializeMovement()
+
+    // プレイヤーの動きを非同期的に初期化
+    private async UniTaskVoid InitializeMovement()
     {
-        // UIが開かれた瞬間にプレイヤーの速度をゼロにリセット
+        // UIが開かれている間はプレイヤーの速度をゼロに設定
         this.UpdateAsObservable()
         .Where(_ => MenuUIManager.instance.isOpenUI)
         .Subscribe(_ => m_Rigidbody.velocity = Vector3.zero);
@@ -83,10 +89,38 @@ public class PlayerController : NetworkBehaviour
             .Where(_ => IsGrounded())
             .Subscribe(_ => m_Rigidbody.AddForce(new Vector3(0.0f, m_JumpForce, 0.0f)));
 
+        await UniTask.Yield();
+
     }
-    private void Update()
+    void Update()
     {
-        PlayerAnimeState();
+
+        m_Rigidbody.AddForce(Physics.gravity * m_Rigidbody.mass * m_GravityMultiplier);
+    }
+    // アニメーションの状態をバインドするメソッド
+    private void BindAnimations()
+    {
+        // ReactivePropertyを使ってアニメータの各状態を購読し、変化があるたびにAnimatorへ反映
+        isIdle.Subscribe(idle => m_Animator.SetBool("Idle", idle)).AddTo(this);
+        isWalk.Subscribe(walk => m_Animator.SetBool("Walk", walk)).AddTo(this);
+        isRun.Subscribe(run => m_Animator.SetBool("Run", run)).AddTo(this);
+
+        // 入力軸に基づくアニメーション変数もリアクティブに更新
+        this.UpdateAsObservable()
+            .Select(_ => Input.GetAxis("Horizontal"))
+            .Subscribe(horizontal =>
+            {
+                m_Animator.SetFloat("左右", horizontal);
+                m_Animator.SetFloat("走り左右", horizontal);
+            }).AddTo(this);
+
+        this.UpdateAsObservable()
+            .Select(_ => Input.GetAxis("Vertical"))
+            .Subscribe(vertical =>
+            {
+                m_Animator.SetFloat("前後", vertical);
+                m_Animator.SetFloat("走り前後", vertical);
+            }).AddTo(this);
     }
     // プレイヤーを指定の速度で移動
     public void Move(Vector3 movement, float speed)
@@ -94,30 +128,50 @@ public class PlayerController : NetworkBehaviour
         if (MenuUIManager.instance.isOpenUI)
         {
             m_Rigidbody.velocity = Vector3.zero;
-            isIdle = true;
-            issWalk = false;
-            isRun = false;
+            UpdateState(true, false, false);
             return;
         }
 
         Vector3 relativeMovement = m_CameraTransform.TransformDirection(movement);
         relativeMovement.y = 0;
 
+        // プレイヤーの高さの半分を基準に段差の高さを判定
+        float stepHeight = 0.5f;
+        float heightAboveGround = IsGrounded() ? 0f : stepHeight;
+        Vector3 start = transform.position + Vector3.up * heightAboveGround;
+        Vector3 end = start - Vector3.up * (heightAboveGround + 0.5f); // 地面の下方向にRayを飛ばして段差を検出
+
+        RaycastHit hit;
+        bool isStep = Physics.Raycast(start, -Vector3.up, out hit, stepHeight + 0.5f); // レイキャストで段差を検出
+
+        if (isStep)
+        {
+            // 段差がある場合、プレイヤーを段差の高さに合わせる
+            transform.position = hit.point + Vector3.up * stepHeight;
+        }
+
         if (movement != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(relativeMovement, Vector3.up);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10);
+            //移動時の状態
+            UpdateState(false, !isRun.Value, isRun.Value);
+
         }
         else
         {
-            isIdle = true;
-            issWalk = false;
-            isRun = false;
+            UpdateState(true, false, false);
         }
 
         m_Rigidbody.velocity = relativeMovement * speed;
     }
-
+    // プレイヤーの状態を更新するメソッド
+    private void UpdateState(bool idle, bool walk, bool run)
+    {
+        isIdle.Value = idle;
+        isWalk.Value = walk;
+        isRun.Value = run;
+    }
     // プレイヤーが地面に触れているかどうかを判断
     bool IsGrounded()
     {
@@ -131,18 +185,6 @@ public class PlayerController : NetworkBehaviour
         Debug.DrawLine(start, end, lineColor);
         return isGrounded;
     }
-
-    private void PlayerAnimeState()
-    {
-        m_Animator.SetBool("Idle", isIdle);
-        m_Animator.SetBool("Walk", issWalk);
-        m_Animator.SetBool("Run", isRun);
-        m_Animator.SetFloat("左右", Input.GetAxis("Horizontal"));
-        m_Animator.SetFloat("前後", Input.GetAxis("Vertical"));
-        m_Animator.SetFloat("走り左右", Input.GetAxis("Horizontal"));
-        m_Animator.SetFloat("走り前後", Input.GetAxis("Vertical"));
-    }
-
 
     // コマンドパターンを定義するインターフェース
     private interface ICommand
@@ -166,9 +208,7 @@ public class PlayerController : NetworkBehaviour
 
         public void Execute()
         {
-            m_Player.isRun = false;
-            m_Player.isIdle = false;
-            m_Player.issWalk = true;
+            m_Player.UpdateState(false, true, false);
             m_Player.Move(m_Direction, m_Player.m_WalkSpeed);
         }
     }
@@ -188,9 +228,7 @@ public class PlayerController : NetworkBehaviour
 
         public void Execute()
         {
-            m_Player.isRun = true;
-            m_Player.isIdle = false;
-            m_Player.issWalk = false;
+            m_Player.UpdateState(false, false, true);
             m_Player.Move(m_Direction, m_Player.m_RunSpeed);
         }
     }

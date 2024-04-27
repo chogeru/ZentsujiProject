@@ -46,7 +46,8 @@ public class PlayerController : NetworkBehaviour
     private Transform m_CameraTransform;
     [SerializeField, Header("アニメ-ター")]
     private Animator m_Animator;
-
+    [SerializeField]
+    private CapsuleCollider capsuleCollider;
     private ReactiveProperty<bool> isIdle = new ReactiveProperty<bool>(true);
     private ReactiveProperty<bool> isWalk = new ReactiveProperty<bool>(false);
     private ReactiveProperty<bool> isRun = new ReactiveProperty<bool>(false);
@@ -54,10 +55,13 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
+        capsuleCollider = GetComponent<CapsuleCollider>();  // CapsuleCollider を取得
+
         m_Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         base.OnStartLocalPlayer();
         InitializeMovement().Forget();
         BindAnimations();
+
     }
 
     // プレイヤーの動きを非同期的に初期化
@@ -94,9 +98,34 @@ public class PlayerController : NetworkBehaviour
     }
     void Update()
     {
-
+        // 重力の追加
         m_Rigidbody.AddForce(Physics.gravity * m_Rigidbody.mass * m_GravityMultiplier);
+        // 段差登りを試みる
+        TryStepUp();
     }
+    void TryStepUp()
+    {
+        // プレイヤーの前方0.3ユニットの位置から、カプセルコライダーの高さに基づくレイキャストを設定
+        Vector3 forward = transform.forward * 0.3f;
+        Vector3 rayStart = transform.position + forward + Vector3.up * capsuleCollider.height * 0.5f; // レイキャスト開始点はカプセルの中心点より
+        Vector3 rayEnd = transform.position + forward + Vector3.down * 0.1f; // カプセルコライダーの底近くまで
+
+        // レイキャストの終了点を地面すぐ上に設定
+        RaycastHit hitInfo;
+        if (Physics.Raycast(rayStart, Vector3.down, out hitInfo, capsuleCollider.height * 0.6f))
+        {
+            // レイキャストが何かにヒットし、その高さが適切であればプレイヤーを移動
+            float stepHeight = hitInfo.point.y - transform.position.y;
+            if (stepHeight <= capsuleCollider.height / 3 && stepHeight > 0)
+            {
+                // プレイヤーの位置を段差の上に更新
+                transform.position = new Vector3(transform.position.x, hitInfo.point.y + stepHeight, transform.position.z);
+            }
+        }
+
+        Debug.DrawLine(rayStart, rayEnd, Color.blue); // デバッグ用のレイキャスト表示
+    }
+
     // アニメーションの状態をバインドするメソッド
     private void BindAnimations()
     {
@@ -135,28 +164,12 @@ public class PlayerController : NetworkBehaviour
         Vector3 relativeMovement = m_CameraTransform.TransformDirection(movement);
         relativeMovement.y = 0;
 
-        // プレイヤーの高さの半分を基準に段差の高さを判定
-        float stepHeight = 0.5f;
-        float heightAboveGround = IsGrounded() ? 0f : stepHeight;
-        Vector3 start = transform.position + Vector3.up * heightAboveGround;
-        Vector3 end = start - Vector3.up * (heightAboveGround + 0.5f); // 地面の下方向にRayを飛ばして段差を検出
-
-        RaycastHit hit;
-        bool isStep = Physics.Raycast(start, -Vector3.up, out hit, stepHeight + 0.5f); // レイキャストで段差を検出
-
-        if (isStep)
-        {
-            // 段差がある場合、プレイヤーを段差の高さに合わせる
-            transform.position = hit.point + Vector3.up * stepHeight;
-        }
-
         if (movement != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(relativeMovement, Vector3.up);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10);
-            //移動時の状態
+            // 移動時の状態
             UpdateState(false, !isRun.Value, isRun.Value);
-
         }
         else
         {
@@ -165,6 +178,7 @@ public class PlayerController : NetworkBehaviour
 
         m_Rigidbody.velocity = relativeMovement * speed;
     }
+
     // プレイヤーの状態を更新するメソッド
     private void UpdateState(bool idle, bool walk, bool run)
     {
@@ -172,20 +186,17 @@ public class PlayerController : NetworkBehaviour
         isWalk.Value = walk;
         isRun.Value = run;
     }
-    // プレイヤーが地面に触れているかどうかを判断
+
+    // 地面に触れているかどうかを確認するメソッド
     bool IsGrounded()
     {
+        Vector3 start = transform.position + Vector3.up * 0.1f;
+        Vector3 end = start - Vector3.up * 0.5f;
 
-        Vector3 start = transform.position;
-        Vector3 end = start - Vector3.up * 0.5f; // 距離0.5fで地面を確認
-
-        bool isGrounded = Physics.Raycast(start, -Vector3.up, 1.5f);
-        Color lineColor = isGrounded ? Color.green : Color.red;
-
-        Debug.DrawLine(start, end, lineColor);
-        return isGrounded;
+        bool isGrounded = Physics.Raycast(start, -Vector3.up, out RaycastHit hit, 0.5f);
+        Debug.DrawLine(start, end, isGrounded ? Color.green : Color.red);
+        return isGrounded && hit.normal.y > 0.5;  // 地面が十分に水平であることを確認
     }
-
     // コマンドパターンを定義するインターフェース
     private interface ICommand
     {

@@ -5434,15 +5434,15 @@ GameObject:
   m_Component:
   - component: {fileID: 8251212825534060859}
   - component: {fileID: 9126141871417367007}
-  - component: {fileID: 9126141871417367004}
   - component: {fileID: 9126141871417367003}
   - component: {fileID: 7613769225726324377}
   - component: {fileID: 3059762594325189741}
   - component: {fileID: 346116390547595741}
   - component: {fileID: 6777572095893250503}
-  - component: {fileID: 5319893383884722159}
   - component: {fileID: 7645765249645539236}
   - component: {fileID: 4906736247024168542}
+  - component: {fileID: 3516413507014893257}
+  - component: {fileID: 5319893383884722159}
   m_Layer: 3
   m_Name: "\u30C7\u30D0\u30C3\u30AF\u7528Player 1"
   m_TagString: Player
@@ -5484,25 +5484,11 @@ Rigidbody:
   m_Mass: 70
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 2
---- !u!136 &9126141871417367004
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8775794892995199873}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.2
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
 --- !u!95 &9126141871417367003
 Animator:
   serializedVersion: 5
@@ -5608,29 +5594,12 @@ MonoBehaviour:
   syncInterval: 0
   m_WalkSpeed: 4
   m_RunSpeed: 9
-  m_JumpForce: 500
+  m_JumpForce: 1400
   m_GravityMultiplier: 2
   m_Rigidbody: {fileID: 9126141871417367007}
   m_CameraTransform: {fileID: 9126141871003576020}
   m_Animator: {fileID: 9126141871417367003}
---- !u!143 &5319893383884722159
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8775794892995199873}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Height: 2
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
+  capsuleCollider: {fileID: 0}
 --- !u!114 &7645765249645539236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5664,6 +5633,38 @@ MonoBehaviour:
   syncInterval: 0
   studentIdText: {fileID: 3717067636757910523}
   player: {fileID: 346116390547595741}
+--- !u!136 &3516413507014893257
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8775794892995199873}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.2
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
+--- !u!143 &5319893383884722159
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8775794892995199873}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 0
+  serializedVersion: 2
+  m_Height: 2
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &8841831213057298207
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using SQLite4Unity3d;
+using UnityEngine.Rendering.Universal;
 
 public class BGMManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class BGMManager : MonoBehaviour
     private AudioSource audioSource;
     [SerializeField]
     public SQLiteConnection connection;
-
+    public string m_BGMName;
     void Awake()
     {
         if (instance == null)
@@ -29,25 +30,14 @@ public class BGMManager : MonoBehaviour
         Debug.Log("Database path: " + databasePath);
         
     }
-
-    void OnEnable()
+    private void Start()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        PlayBGMByScene(m_BGMName);
     }
 
-    void OnDisable()
+    private void PlayBGMByScene(string bgmName)
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        PlayBGMByScene(scene.name);
-    }
-
-    private void PlayBGMByScene(string sceneName)
-    {
-        var query = connection.Table<SceneBGM>().Where(x => x.SceneName == sceneName).FirstOrDefault();
+        var query = connection.Table<BGM>().Where(x => x.BGMName == bgmName).FirstOrDefault();
         if (query != null)
         {
             Debug.Log(query);
@@ -68,11 +58,11 @@ public class BGMManager : MonoBehaviour
         }
     }
 
-    class SceneBGM
+    class BGM
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        public string SceneName { get; set; }
+        public string BGMName { get; set; }
         public string BGMFileName { get; set; }
     }
 }

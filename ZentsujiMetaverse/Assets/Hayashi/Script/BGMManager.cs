@@ -49,26 +49,9 @@ public class BGMManager : MonoBehaviour
     }
     void Start()
     {
-        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
-            var dependencyStatus = task.Result;
-            if (dependencyStatus == Firebase.DependencyStatus.Available)
-            {
-                InitializeFirebase();
-                // Firebase SDKの初期化が完了した後にBGMの再生を開始
-                PlayBGMByScene(m_BGMName);
-            }
-            else
-            {
-                Debug.LogError(task.Exception.ToString());
-                Debug.LogError("Could not resolve all Firebase dependencies: " + dependencyStatus);
-            }
-        });
+        PlayBGMByScene(m_BGMName);
     }
-    void InitializeFirebase()
-    {
-        m_Storage = FirebaseStorage.DefaultInstance;
-        m_StorageReference = m_Storage.GetReferenceFromUrl("gs://zentsujimetaverse-421417.appspot.com/");
-    }
+
     void InitializeDatabase()
     {
         // データベースのパスの設定と接続の試み

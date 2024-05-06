@@ -11,6 +11,8 @@ public class LoginScreenManager : MonoBehaviour
     private CanvasGroup m_LoginCanvasGroup;
     [SerializeField,Header("フェードインに掛かる時間")]
     private float m_FadeInDuration = 3.0f;
+    [SerializeField, Header("フェードイン開始までの時間")]
+    private float m_FadeInStartDelay = 2.0f;
 
     private void Start()
     {
@@ -23,12 +25,23 @@ public class LoginScreenManager : MonoBehaviour
             // LogoFadeEffect の OnFadeOutCompleted イベントに対して購読します。
             // R3を使用してイベントが発生した際に StartLoginFadeIn メソッドを呼び出します。
             // AddTo(this) は、この MonoBehaviour が破棄されたときに購読を自動的に解除します。
-            m_LogoFadeEffect.OnFadeOutCompleted.Subscribe(_ => StartLoginFadeIn()).AddTo(this);
+            m_LogoFadeEffect.OnFadeOutCompleted.Subscribe(_ => DelayedFadeIn()).AddTo(this);
         }
+        else
+        {
+            // LogoFadeEffect が設定されていない場合、直接遅延後にフェードインを開始
+            DelayedFadeIn();
+        }
+    }
+    private async void DelayedFadeIn()
+    {
+        await UniTask.Delay(TimeSpan.FromSeconds(m_FadeInStartDelay));
+        StartLoginFadeIn();
     }
 
     private async void StartLoginFadeIn()
     {
+        // 指定された遅延時間後にフェードイン処理を開始
         Debug.Log("ログイン画面のフェードインを開始します。");
         // CanvasGroupの透明度を非同期的に不透明に変更。
         await FadeCanvasGroup(m_LoginCanvasGroup, 1f, m_FadeInDuration);

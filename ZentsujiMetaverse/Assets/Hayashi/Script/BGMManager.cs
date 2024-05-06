@@ -13,7 +13,7 @@ public class BGMManager : MonoBehaviour
     // シングルトンインスタンス
     public static BGMManager instance; 
     // オーディオソースコンポーネント
-    private AudioSource m_AudioSource;   
+    private AudioSource m_AudioSource;
     // SQLiteデータベースへの接続
     public SQLiteConnection m_Connection;
     // 再生するBGMの名前
@@ -23,10 +23,11 @@ public class BGMManager : MonoBehaviour
     // ストレージ内の特定の位置への参照
     public StorageReference m_StorageReference;
 
+    [SerializeField,Header("音量")]
+    private float m_AudioVolume;
+
     void Awake()
     {
-        Debug.Log("BGMManager found.");
-
         // シングルトンパターンの実装
         if (instance == null)
         {
@@ -42,39 +43,39 @@ public class BGMManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        Debug.Log("BGMManager found.");
-
+        Debug.Log("BGMマネージャーが見つかった");
         // オーディオソースコンポーネントの取得
         m_AudioSource = GetComponent<AudioSource>();
     }
     void Start()
     {
-        PlayBGMByScene(m_BGMName);
+        PlayBGMByScene(m_BGMName, m_AudioVolume);
     }
 
     void InitializeDatabase()
     {
         // データベースのパスの設定と接続の試み
         var databasePath = System.IO.Path.Combine(Application.streamingAssetsPath, "bgm_data.db").Replace("\\", "/");
-        Debug.Log("Database path: " + databasePath);
+        Debug.Log("データベースパス: " + databasePath);
 
         try
         {
             m_Connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
-            Debug.Log("Database connected successfully.");
+            Debug.Log("データベースへの接続に成功");
         }
         catch (Exception ex)
         {
-            Debug.LogError("Database connection failed: " + ex.Message);
+            Debug.LogError("データベースへの接続に失敗" + ex.Message);
         }
     }
 
     // 指定されたBGM名に基づいてBGMを再生するメソッド
-    public void PlayBGMByScene(string bgmName)
+    public void PlayBGMByScene(string bgmName , float volume)
     {
+        m_AudioSource.volume = volume;
         if (m_Connection == null)
         {
-            Debug.LogError("Database connection is not established.");
+            Debug.LogError("データベースへの接続が確立されてない");
             return;
         }
         // データベースを検索して指定されたBGM名のデータを取得
@@ -99,7 +100,7 @@ public class BGMManager : MonoBehaviour
         var audioFileRef = m_StorageReference.Child(path);
         // ファイルのダウンロードURLを非同期で取得開始
         var downloadTask = audioFileRef.GetDownloadUrlAsync();
-        Debug.Log("Attempting to download file: " + path);
+        Debug.Log("ファイルのダウンロード: " + path);
 
         // ダウンロードタスクの完了を待機
         yield return new WaitUntil(() => downloadTask.IsCompleted);
@@ -107,23 +108,23 @@ public class BGMManager : MonoBehaviour
         if (downloadTask.Exception != null)
         {
             // ダウンロード中にエラーが発生した場合、エラーログを出力
-            Debug.LogError($"Failed to download {fileName}: {downloadTask.Exception}");
+            Debug.LogError($"{fileName} のダウンロードに失敗：" + downloadTask.Exception);
         }
         else
         {
             // ダウンロードが成功した場合、ダウンロードしたファイルのURLを取得
             var audioUrl = downloadTask.Result.ToString();
-            Debug.Log("File downloaded successfully: " + audioUrl);
+            Debug.Log("ファイルのダウンロードに成功 " + audioUrl);
 
             // URLからオーディオクリップを非同期でロード
             using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(audioUrl, AudioType.MPEG))
             {
-                Debug.Log("Loading audio clip from URL: " + audioUrl);
+                Debug.Log("URLからオーディオクリップをロード..." + audioUrl);
                 yield return www.SendWebRequest(); // リクエストの送信と完了を待機
 
                 if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError)
                 {
-                    Debug.LogError("Error loading audio clip: " + www.error);
+                    Debug.LogError("オーディオクリップのロード中にエラーが発生..." + www.error);
                     // ネットワークエラーまたはプロトコルエラーが発生した場合、エラーログを出力
                     Debug.LogError(www.error);
                 }
@@ -134,11 +135,11 @@ public class BGMManager : MonoBehaviour
                     {
                         m_AudioSource.clip = clip;
                         m_AudioSource.Play();
-                        Debug.Log("Audio clip played successfully.");
+                        Debug.Log("オーディオクリップの再生に成功");
                     }
                     else
                     {
-                        Debug.LogError("Failed to load audio clip from downloaded file.");
+                        Debug.LogError("ダウンロードしたファイルからオーディオクリップをロード出来なかった....");
                     }
                 }
             }

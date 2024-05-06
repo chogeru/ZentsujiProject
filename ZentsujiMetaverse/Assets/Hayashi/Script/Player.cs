@@ -12,11 +12,11 @@ public class Player : NetworkBehaviour
         // プレイヤーがホストであるかどうかを判定
         if (NetworkServer.active && NetworkClient.isConnected)
         {
-            Debug.Log("I am the Host.");
+            Debug.Log("私ホスト");
         }
         else if (NetworkClient.isConnected)
         {
-            Debug.Log("I am a Client.");
+            Debug.Log("私クライアント");
         }
     }
 

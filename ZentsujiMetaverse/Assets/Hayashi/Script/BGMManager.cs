@@ -47,11 +47,6 @@ public class BGMManager : MonoBehaviour
         // オーディオソースコンポーネントの取得
         m_AudioSource = GetComponent<AudioSource>();
     }
-    void Start()
-    {
-        PlayBGMByScene(m_BGMName, m_AudioVolume);
-    }
-
     void InitializeDatabase()
     {
         // データベースのパスの設定と接続の試み

@@ -11,7 +11,6 @@ Material:
   m_Shader: {fileID: 4800000, guid: 6459b2db96a08ca41b0f9b39dc7ad59e, type: 3}
   m_ValidKeywords:
   - N_F_EAL_ON
-  - N_F_O_ON
   - N_F_RELGI_ON
   - N_F_SS_ON
   - N_F_TRANSAFFSHA_ON
@@ -27,7 +26,8 @@ Material:
   m_CustomRenderQueue: 3000
   stringTagMap:
     RenderType: Transparent
-  disabledShaderPasses: []
+  disabledShaderPasses:
+  - SRPDEFAULTUNLIT
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -131,7 +131,7 @@ Material:
     - _BumpScale: 1
     - _Compa: 4
     - _ComputeMeshIndex: 0
-    - _Culling: 2
+    - _Culling: 0
     - _CustomLightDirectionFollowObjectRotation: 0
     - _CustomLightDirectionIntensity: 0
     - _Cutoff: 0.5
@@ -165,9 +165,9 @@ Material:
     - _LightFalloffAffectShadowT: 0
     - _LightFalloffSoftness: 1
     - _LightIntensity: 1
-    - _MCIALO: 0
+    - _MCIALO: 1
     - _MCapIntensity: 1
-    - _MVCOL: 0
+    - _MVCOL: 1
     - _MaiColPo: 0.8
     - _MaxFadDistance: 2
     - _Metallic: 0
@@ -192,7 +192,7 @@ Material:
     - _N_F_NFD: 0
     - _N_F_NLASOBF: 0
     - _N_F_NM: 0
-    - _N_F_O: 1
+    - _N_F_O: 0
     - _N_F_OFLMB: 0
     - _N_F_PT: 0
     - _N_F_R: 0
@@ -276,8 +276,8 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
     - _Glow_Color: {r: 1, g: 1, b: 1, a: 1}
-    - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _MainColor: {r: 0.9734455, g: 0.9734455, b: 0.9734455, a: 1}
+    - _HighlightColor: {r: 0.046258617, g: 0.2924528, b: 0, a: 1}
+    - _MainColor: {r: 0.08771607, g: 0.4433962, b: 0.0027886003, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineOffset: {r: 0, g: 0, b: 0, a: 1}
     - _OverallShadowColor: {r: 0, g: 0, b: 0, a: 1}

@@ -39,7 +39,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField, Header("ジャンプ力")]
     public float m_JumpForce = 300f;
     [SerializeField, Header("重力係数")]
-    private float m_GravityMultiplier = 2.0f;
+    private float m_GravityMultiplier = 9.81f;
     [SerializeField]
     private Rigidbody m_Rigidbody;
     [SerializeField]
@@ -98,10 +98,14 @@ public class PlayerController : NetworkBehaviour
     }
     void Update()
     {
-        // 重力の追加
-        m_Rigidbody.AddForce(Physics.gravity * m_Rigidbody.mass * m_GravityMultiplier);
+        UseGravity();
         // 段差登りを試みる
         TryStepUp();
+    }
+    private void UseGravity()
+    {
+        // 重力の追加
+        m_Rigidbody.AddForce(Physics.gravity * m_Rigidbody.mass * m_GravityMultiplier);
     }
     void TryStepUp()
     {

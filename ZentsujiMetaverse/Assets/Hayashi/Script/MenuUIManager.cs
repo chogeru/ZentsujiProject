@@ -77,6 +77,8 @@ public class MenuUIManager : MonoBehaviour
     }
     private void CloseAllPanels()
     {
+        //パネルをすべて閉じる際にカーソルを非表示に
+        Cursor.visible = false;
         foreach (var panel in m_ButtonPanelMap.Values)
         {
             panel.SetActive(false);

@@ -47,6 +47,8 @@ public class PlayerController : NetworkBehaviour
     [SerializeField, Header("アニメ-ター")]
     private Animator m_Animator;
     [SerializeField]
+    private LayerMask m_LayerMask;
+    [SerializeField]
     private CapsuleCollider capsuleCollider;
     private ReactiveProperty<bool> isIdle = new ReactiveProperty<bool>(true);
     private ReactiveProperty<bool> isWalk = new ReactiveProperty<bool>(false);
@@ -116,7 +118,7 @@ public class PlayerController : NetworkBehaviour
 
         // レイキャストの終了点を地面すぐ上に設定
         RaycastHit hitInfo;
-        if (Physics.Raycast(rayStart, Vector3.down, out hitInfo, capsuleCollider.height * 0.6f))
+        if (Physics.Raycast(rayStart, Vector3.down, out hitInfo, capsuleCollider.height * 0.6f,m_LayerMask))
         {
             // レイキャストが何かにヒットし、その高さが適切であればプレイヤーを移動
             float stepHeight = hitInfo.point.y - transform.position.y;

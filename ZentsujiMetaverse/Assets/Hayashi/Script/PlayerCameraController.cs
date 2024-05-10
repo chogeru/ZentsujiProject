@@ -27,7 +27,6 @@ public class PlayerCameraController : MonoBehaviour
     {
         mainCamera = GetComponent<Camera>();
         offset = transform.position - m_Player.position;
-        Cursor.visible = false;
         Observable.EveryUpdate()
             .Where(_ => !MenuUIManager.instance.isOpenUI)
             .Select(_ => {

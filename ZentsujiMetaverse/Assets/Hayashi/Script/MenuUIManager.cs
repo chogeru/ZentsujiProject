@@ -62,7 +62,16 @@ public class MenuUIManager : MonoBehaviour
     }
      private void Update()
     {
-        // UIの開閉状態に基づいて、プレイヤーの移動とカメラの回転を制御
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            ShowOnlyThisPanel(m_OptionsPanel);
+        }
+        if(Input.GetKeyDown(KeyCode.Escape)&&isOpenUI==true)
+        {
+            CloseAllPanels();
+        }
+        CorsorControl();
+        // UIの開閉状態に基づいて、プレイヤー移動とカメラの回転を制御
         isOpenUI = IsUIOpen();
     }
     private void InitializeButtonPanelMap()
@@ -77,8 +86,6 @@ public class MenuUIManager : MonoBehaviour
     }
     private void CloseAllPanels()
     {
-        //パネルをすべて閉じる際にカーソルを非表示に
-        Cursor.visible = false;
         foreach (var panel in m_ButtonPanelMap.Values)
         {
             panel.SetActive(false);
@@ -108,6 +115,10 @@ public class MenuUIManager : MonoBehaviour
                 // 選択されたパネルのみを表示し、他は非表示に設定
                 panel.SetActive(panel == activePanel);
             }
-        }
+        }        
+    }
+    private void CorsorControl()
+    {
+        Cursor.visible = isOpenUI;
     }
 }

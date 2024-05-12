@@ -10,7 +10,11 @@ Material:
   m_Name: mat_bamboo
   m_Shader: {fileID: 4800000, guid: 6459b2db96a08ca41b0f9b39dc7ad59e, type: 3}
   m_ValidKeywords:
+  - N_F_CO_ON
   - N_F_EAL_ON
+  - N_F_HDLS_ON
+  - N_F_HPSS_ON
+  - N_F_NLASOBF_ON
   - N_F_RELGI_ON
   - N_F_SS_ON
   - N_F_TRANSAFFSHA_ON
@@ -18,16 +22,18 @@ Material:
   - _ALPHATEST_ON
   - _NORMALMAP
   m_InvalidKeywords:
+  - N_F_DCS_ON
   - N_F_TRANSAFFSHA
   - _METALLICGLOSSMAP
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 2450
   stringTagMap:
-    RenderType: Transparent
+    RenderType: TransparentCutout
   disabledShaderPasses:
   - SRPDEFAULTUNLIT
+  - SHADOWCASTER
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -135,7 +141,7 @@ Material:
     - _CustomLightDirectionFollowObjectRotation: 0
     - _CustomLightDirectionIntensity: 0
     - _Cutoff: 0.5
-    - _Cutout: 0
+    - _Cutout: 0.3
     - _DepthThreshold: 900
     - _DetailNormalMapScale: 1
     - _DirectionalLightIntensity: 0
@@ -176,21 +182,21 @@ Material:
     - _Mode: 1
     - _N_F_CA: 0
     - _N_F_CLD: 0
-    - _N_F_CO: 0
+    - _N_F_CO: 1
     - _N_F_COEDGL: 0
-    - _N_F_DCS: 0
+    - _N_F_DCS: 1
     - _N_F_DDMD: 0
     - _N_F_EAL: 1
     - _N_F_ESSAO: 0
     - _N_F_FR: 0
     - _N_F_GLO: 0
     - _N_F_GLOT: 0
-    - _N_F_HDLS: 0
-    - _N_F_HPSS: 0
+    - _N_F_HDLS: 1
+    - _N_F_HPSS: 1
     - _N_F_MC: 0
     - _N_F_MSSOLTFO: 0
     - _N_F_NFD: 0
-    - _N_F_NLASOBF: 0
+    - _N_F_NLASOBF: 1
     - _N_F_NM: 0
     - _N_F_O: 0
     - _N_F_OFLMB: 0

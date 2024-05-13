@@ -6174,10 +6174,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43856e8ff3c08b746a5bfa736c95fe52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Animation: {fileID: 0}
+  m_Animator: {fileID: 0}
   m_AnimationClip:
   - {fileID: 7400000, guid: a37a8fa44e55be141b809c82f4d2317e, type: 2}
-  m_GustureButton: []
+  m_GustureButton:
+  - {fileID: 2031201176439932521}
 --- !u!143 &5319893383884722159
 CharacterController:
   m_ObjectHideFlags: 0

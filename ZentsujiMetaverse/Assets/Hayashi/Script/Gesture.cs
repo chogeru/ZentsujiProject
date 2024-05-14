@@ -58,7 +58,7 @@ public class Gesture : MonoBehaviour
         while (true)
         {
             await UniTask.Yield();
-            if (Vector3.Distance(startPosition, transform.position) > 0.1f) // 0.1fは移動とみなす最小距離
+            if (Vector3.Distance(startPosition, transform.position) > 0.01f) // 0.1fは移動とみなす最小距離
             {
                 m_Animator.Play("Idle");
                 break;

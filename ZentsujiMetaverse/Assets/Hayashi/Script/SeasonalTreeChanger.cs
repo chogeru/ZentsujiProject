@@ -16,6 +16,9 @@ public class SeasonalTreeChanger : MonoBehaviour
     private int m_TreeIndex;
     [SerializeField, Header("草のデバッグログを表示する")]
     private bool m_ShowGrassDebugLog;
+
+    [SerializeField, Header("植物を入れ替えるテレイン")]
+    private Terrain m_Terrain;
     void Start()
     {
         // 開始時に桜や秋の木をすべて通常の木に置き換える
@@ -65,7 +68,7 @@ public class SeasonalTreeChanger : MonoBehaviour
     }
     void ReplaceTrees(int newTreeIndex)
     {
-        Terrain terrain = Terrain.activeTerrain;
+        Terrain terrain = m_Terrain;
         TreeInstance[] treeInstances = terrain.terrainData.treeInstances;
 
         for (int i = 0; i < treeInstances.Length; i++)
@@ -77,12 +80,11 @@ public class SeasonalTreeChanger : MonoBehaviour
                 treeInstances[i] = newTree;
             }
         }
-
         terrain.terrainData.treeInstances = treeInstances;
     }
     void ResetToNormalTrees()
     {
-        Terrain terrain = Terrain.activeTerrain;
+        Terrain terrain = m_Terrain;
         TreeInstance[] treeInstances = terrain.terrainData.treeInstances;
 
         for (int i = 0; i < treeInstances.Length; i++)
@@ -99,7 +101,7 @@ public class SeasonalTreeChanger : MonoBehaviour
     }
     void UpdateGrassColor(int currentMonth)
     {
-        Terrain terrain = Terrain.activeTerrain;
+        Terrain terrain = m_Terrain;
         TerrainData terrainData = terrain.terrainData;
         DetailPrototype[] detailPrototypes = terrainData.detailPrototypes;
 

@@ -26,6 +26,10 @@ public class MenuUIManager : MonoBehaviour
     private GameObject m_ChatPanel;
     [SerializeField, Header("画面サイズ変更画面")]
     private GameObject m_ScreenSizePanel;
+
+    [Tab("オプション画面のアニメーション")]
+    [SerializeField,Header("アニメ-ター")]
+    private Animator m_Animator;
     [EndTab]
 
     private Dictionary<Button, GameObject> m_ButtonPanelMap;
@@ -33,7 +37,6 @@ public class MenuUIManager : MonoBehaviour
     public static MenuUIManager instance;
 
     public  bool isOpenUI=false;
-
 
     public bool IsUIOpen()
     {
@@ -115,7 +118,7 @@ public class MenuUIManager : MonoBehaviour
                 // 選択されたパネルのみを表示し、他は非表示に設定
                 panel.SetActive(panel == activePanel);
             }
-        }        
+        }
     }
     private void CorsorControl()
     {

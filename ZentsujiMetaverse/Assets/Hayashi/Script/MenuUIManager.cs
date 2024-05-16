@@ -4,7 +4,7 @@ using R3;
 using System.Collections.Generic;
 using VInspector;
 using Mirror.Examples.CouchCoop;
-
+using System.Linq;
 public class MenuUIManager : MonoBehaviour
 {
     [Tab("ボタン")]
@@ -28,23 +28,25 @@ public class MenuUIManager : MonoBehaviour
     private GameObject m_ScreenSizePanel;
 
     [Tab("オプション画面のアニメーション")]
-    [SerializeField,Header("アニメ-ター")]
+    [SerializeField, Header("アニメ-ター")]
     private Animator m_Animator;
     [EndTab]
 
     private Dictionary<Button, GameObject> m_ButtonPanelMap;
+    private Dictionary<GameObject, bool> m_PanelOpenStatus;
 
     public static MenuUIManager instance;
 
-    public  bool isOpenUI=false;
+    public bool isOpenUI = false;
 
     public bool IsUIOpen()
     {
-        return m_OptionsPanel.activeSelf || m_VolumePanel.activeSelf || m_ChatPanel.activeSelf || m_ScreenSizePanel.activeSelf;
+        return m_PanelOpenStatus.Values.Any(status => status);
     }
 
     private void Awake()
     {
+        m_PanelOpenStatus = new Dictionary<GameObject, bool>();
         if (instance == null)
         {
             instance = this;
@@ -61,21 +63,40 @@ public class MenuUIManager : MonoBehaviour
         InitializeButtonPanelMap();
         CloseAllPanels();
         SetupButtonCallbacks();
-      
+        foreach (var pair in m_ButtonPanelMap)
+        {
+            m_PanelOpenStatus[pair.Value] = false;
+        }
     }
-     private void Update()
+    private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             ShowOnlyThisPanel(m_OptionsPanel);
         }
-        if(Input.GetKeyDown(KeyCode.Escape)&&isOpenUI==true)
+        if (Input.GetKeyDown(KeyCode.Escape) && isOpenUI == true)
         {
             CloseAllPanels();
         }
         CorsorControl();
-        // UIの開閉状態に基づいて、プレイヤー移動とカメラの回転を制御
+        UpdateAnimatorState();
         isOpenUI = IsUIOpen();
+    }
+    private void UpdateAnimatorState()
+    {
+        foreach (var pair in m_PanelOpenStatus.Keys.ToList())
+        {
+            Animator animator = pair.GetComponent<Animator>();
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+            if (stateInfo.IsName("Close") && stateInfo.normalizedTime >= 1.0f)
+            {
+                m_PanelOpenStatus[pair] = false;  // アニメーションが完全に終了したら状態を更新
+            }
+            else if (stateInfo.IsName("Open") && stateInfo.normalizedTime >= 1.0f)
+            {
+                m_PanelOpenStatus[pair] = true;  // アニメーションが完全に終了したら状態を更新
+            }
+        }
     }
     private void InitializeButtonPanelMap()
     {
@@ -89,9 +110,12 @@ public class MenuUIManager : MonoBehaviour
     }
     private void CloseAllPanels()
     {
-        foreach (var panel in m_ButtonPanelMap.Values)
+        foreach (var pair in m_ButtonPanelMap)
         {
-            panel.SetActive(false);
+            GameObject panel = pair.Value;
+            Animator animator = panel.GetComponent<Animator>();
+            animator.Play("Close");
+            m_PanelOpenStatus[panel] = false;
         }
     }
     private void SetupButtonCallbacks()
@@ -106,20 +130,30 @@ public class MenuUIManager : MonoBehaviour
     private void ShowOnlyThisPanel(GameObject activePanel)
     {
         Cursor.visible = true;
-        // 全パネルを非表示にして、選択されたパネルのみを表示
-        foreach (var panel in m_ButtonPanelMap.Values)
+
+        foreach (var pair in m_ButtonPanelMap)
         {
-            if (panel == m_OptionsPanel)
+            GameObject panel = pair.Value;
+            Animator animator = panel.GetComponent<Animator>();  // 各パネルにアサインされたAnimatorを取得
+            bool isActive = panel == activePanel;
+
+            // アニメーターでアニメーションを再生
+            if (isActive)
             {
-                panel.SetActive(true);
+                animator.Play("Open");
+                m_PanelOpenStatus[panel] = true;
             }
-            else
+            else if (panel != m_OptionsPanel && panel.activeInHierarchy) // パネルがすでに表示されていれば
             {
-                // 選択されたパネルのみを表示し、他は非表示に設定
-                panel.SetActive(panel == activePanel);
+                animator.Play("Close");
+                m_PanelOpenStatus[panel] = false;
+
             }
         }
     }
+
+
+
     private void CorsorControl()
     {
         Cursor.visible = isOpenUI;

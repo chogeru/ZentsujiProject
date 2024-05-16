@@ -21,7 +21,7 @@ Shader "Custom/My Transparent Shader"
 	{
 		Tags{ "RenderType" = "Transparent"  "Queue" = "Transparent+0" "IgnoreProjector" = "True" "ForceNoShadowCasting" = "True" "IsEmissive" = "true"  }
 		Cull Back
-		GrabPass{ }
+	/* /* 	GrabPass{ } */ */
 		CGPROGRAM
 		#include "UnityShaderVariables.cginc"
 		#pragma target 3.0

@@ -37,7 +37,7 @@ Shader "Polyart/Dreamscape Water"
 	{
 		Tags{ "RenderType" = "Transparent"  "Queue" = "Transparent+0" "IgnoreProjector" = "True" }
 		Cull Off
-		GrabPass{ }
+	/* /* 	GrabPass{ } */ */
 		CGPROGRAM
 		#include "UnityShaderVariables.cginc"
 		#include "UnityStandardUtils.cginc"

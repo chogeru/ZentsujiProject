@@ -1,0 +1,274 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7051276458176253583
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7051276458176253577}
+  - component: {fileID: 7051276458176253582}
+  m_Layer: 0
+  m_Name: PassengerWagon_01
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7051276458176253577
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7051276458176253583}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 7051276458065615576}
+  - {fileID: 7051276457474067921}
+  - {fileID: 7051276456950319764}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!205 &7051276458176253582
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7051276458176253583}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0, y: 2.8337603, z: 0.00000047683716}
+  m_Size: 19.239475
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.6
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 7051276458067908664}
+  - screenRelativeHeight: 0.3
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 7051276457476362033}
+  - screenRelativeHeight: 0.1
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 7051276456952612980}
+  m_Enabled: 1
+--- !u!1001 &7051276456950714388
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 7051276458176253577}
+    m_Modifications:
+    - target: {fileID: 100000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_Name
+      value: PassengerWagon_01_LOD2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d91c9455728c89e4b85c9342e27b6d7c, type: 3}
+--- !u!4 &7051276456950319764 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400000, guid: d91c9455728c89e4b85c9342e27b6d7c,
+    type: 3}
+  m_PrefabInstance: {fileID: 7051276456950714388}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7051276456952612980 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2300000, guid: d91c9455728c89e4b85c9342e27b6d7c,
+    type: 3}
+  m_PrefabInstance: {fileID: 7051276456950714388}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7051276457474463569
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 7051276458176253577}
+    m_Modifications:
+    - target: {fileID: 100000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_Name
+      value: PassengerWagon_01_LOD1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a83ab907e4a36a340b86907f45803167, type: 3}
+--- !u!4 &7051276457474067921 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400000, guid: a83ab907e4a36a340b86907f45803167,
+    type: 3}
+  m_PrefabInstance: {fileID: 7051276457474463569}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7051276457476362033 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2300000, guid: a83ab907e4a36a340b86907f45803167,
+    type: 3}
+  m_PrefabInstance: {fileID: 7051276457474463569}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7051276458065739864
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 7051276458176253577}
+    m_Modifications:
+    - target: {fileID: 100000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_Name
+      value: PassengerWagon_01_LOD0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f2a88461fa2016f47a5936799e35b63d, type: 3}
+--- !u!4 &7051276458065615576 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400000, guid: f2a88461fa2016f47a5936799e35b63d,
+    type: 3}
+  m_PrefabInstance: {fileID: 7051276458065739864}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7051276458067908664 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2300000, guid: f2a88461fa2016f47a5936799e35b63d,
+    type: 3}
+  m_PrefabInstance: {fileID: 7051276458065739864}
+  m_PrefabAsset: {fileID: 0}

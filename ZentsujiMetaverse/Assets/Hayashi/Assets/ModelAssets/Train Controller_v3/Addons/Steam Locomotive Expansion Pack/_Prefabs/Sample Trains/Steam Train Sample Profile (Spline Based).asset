@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6c4fb5b2bbf8b649a669ad1efe3668d, type: 3}
+  m_Name: Steam Train Sample Profile (Spline Based)
+  m_EditorClassIdentifier: 
+  locomotivePrefab: {fileID: 2223828614648151464, guid: 188ec23a5ca14c341bd5c47871121792,
+    type: 3}
+  wagonsPrefabs:
+  - {fileID: 9222343954979719696, guid: 7fbddd14b568b034bb934d5e61c712de, type: 3}
+  - {fileID: 8278333512355362771, guid: 4a7b9046f98bade4cb73eae6f06d08cd, type: 3}
+  - {fileID: 4592370206469910972, guid: 425c8054fa5702f42a9f2749d4288748, type: 3}
+  - {fileID: 2275357238233355310, guid: e85469956a59c8441abeaf5034148653, type: 3}
+  - {fileID: 1987474724005009883, guid: 1826d38167ffc214884b2dd91bf51dce, type: 3}

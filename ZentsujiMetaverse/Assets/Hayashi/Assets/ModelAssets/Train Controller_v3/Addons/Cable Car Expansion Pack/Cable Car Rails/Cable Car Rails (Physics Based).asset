@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05181654efbad8a439d70e3e9969b61c, type: 3}
+  m_Name: Cable Car Rails (Physics Based)
+  m_EditorClassIdentifier: 
+  cullingRatio: 0.05
+  baseMeshLODS:
+  - {fileID: 4300000, guid: 4f03776b1c2340e488c859b755a5405b, type: 3}
+  - {fileID: 4300000, guid: fcdfaf5dde0b7c246b5d723dd948fe23, type: 3}
+  - {fileID: 4300000, guid: 8355453c5b537c043ae6cf0143570780, type: 3}
+  materials:
+  - {fileID: 2100000, guid: f442782582a48514884f8f826fb59c8f, type: 2}
+  meshColliders:
+  - {fileID: 4300000, guid: 42c57014798c62c4d98aef9e00f61e76, type: 3}
+  - {fileID: 4300000, guid: ad621fdfc724a8049a1772f19455004c, type: 3}
+  physicMaterials:
+  - {fileID: 13400000, guid: ac102c39c52e43f4ca63ccc3f65bee37, type: 2}
+  startCap: {fileID: 9011821741233126366, guid: 4b4d6c4522f08d54b8217b93e020b85f,
+    type: 3}
+  endCap: {fileID: 5505777321082821240, guid: 14502d41460528c488b6d54dca7d5fb8, type: 3}

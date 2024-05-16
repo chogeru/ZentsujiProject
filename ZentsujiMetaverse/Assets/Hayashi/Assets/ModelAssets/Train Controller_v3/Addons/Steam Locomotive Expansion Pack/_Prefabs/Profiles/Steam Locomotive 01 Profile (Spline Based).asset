@@ -1,0 +1,199 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50d8f891e9218ee499c23358af868483, type: 3}
+  m_Name: Steam Locomotive 01 Profile (Spline Based)
+  m_EditorClassIdentifier: 
+  type: 0
+  trainType: 1
+  speedUnits: 0
+  inputSettings: {fileID: 11400000, guid: dcd68539595cf714c93a57d06dbc26ff, type: 2}
+  modelOffset: {x: 0, y: 0, z: 0}
+  controlZoneTriggerPosition: {x: 0, y: 1.3, z: 7.5}
+  railsOffset: {x: 0, y: 0, z: 0}
+  wheelsPhysics:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  wheelsVisuals:
+    prefab: {fileID: 1998481936086594403, guid: 456470b6f36a2844aa94a701e57fab85,
+      type: 3}
+    customName: WheelsTruck_visual
+    positions:
+    - position: {x: 0, y: 0, z: 4.347}
+      rotation: {x: 0, y: 0, z: 0}
+  steamLocomotiveRearWheelsAndPistons:
+    prefab: {fileID: 7516591629674089322, guid: f7396cac421c86f4a91265c12de181fa,
+      type: 3}
+    customName: RearWheelsTruck_visual
+    positions:
+    - position: {x: 0, y: 0, z: -1.994}
+      rotation: {x: 0, y: 0, z: 0}
+  frontCoupler:
+    prefab: {fileID: 1729131733987660, guid: 02d28c7b6b140e0439c40cad05c56ac3, type: 3}
+    customName: 
+    positions:
+    - position: {x: 0, y: 1.3, z: 7.5}
+      rotation: {x: 0, y: 0, z: 0}
+  backCoupler:
+    prefab: {fileID: 1608319465217322, guid: 429f0d45f74600048951c5be785e4c9a, type: 3}
+    customName: 
+    positions:
+    - position: {x: 0, y: 1.3, z: -6.5}
+      rotation: {x: 0, y: 0, z: 0}
+  defaultJointAnchor:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  bumper:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  externalLights:
+    prefab: {fileID: 1187598522487316, guid: f67f41dfbfcd17347bc3a163dec7786a, type: 3}
+    customName: 
+    positions:
+    - position: {x: 0, y: 4.535, z: 5.09}
+      rotation: {x: 0, y: 0, z: 0}
+  internalLights:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  railSensor:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  passengerSensor:
+    prefab: {fileID: 8833138629923684052, guid: 1e8fe83be410a7746bfa8a71b97b7e1a,
+      type: 3}
+    customName: PassengerSensor
+    positions:
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+  suspensionCollider:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  colliders:
+    prefab: {fileID: 7797091621855326792, guid: 1d6673afaaa26e24d9696e8ef1e7ebfa,
+      type: 3}
+    customName: Colliders
+    positions:
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+  cabinDoorLeft:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  cabinDoorRight:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  passengerDoorLeft:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  passengerDoorRight:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  wheelsSFX:
+    prefab: {fileID: 5583111104909031996, guid: 72a3046f45c770942a94ab9fd879fea7,
+      type: 3}
+    customName: 
+    positions:
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+  wagonConnectionSFX:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  engineSFX:
+    prefab: {fileID: 420570447449214985, guid: db41ef250d633594bb34eaaedbe1501a, type: 3}
+    customName: 
+    positions:
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+  brakesSFX:
+    prefab: {fileID: 1059672493363962, guid: 48db2eade86efbf48bcafcc2c57068d4, type: 3}
+    customName: 
+    positions:
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+  hornSFX:
+    prefab: {fileID: 8994442909820000339, guid: aa80abb15add1634588a4a43fa27762d,
+      type: 3}
+    customName: 
+    positions:
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+  bellSFX:
+    prefab: {fileID: 1400868024879278, guid: d3752432903c8684f991d185ad107863, type: 3}
+    customName: 
+    positions:
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+  openCabinDoorSFX:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  closeCabinDoorSFX:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  openPassengerDoorSFX:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  closePassengerDoorSFX:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  closeDoorWarningSFX:
+    prefab: {fileID: 0}
+    customName: 
+    positions: []
+  smokeParticles:
+    prefab: {fileID: 1273915125232972, guid: 73767e07adddc394d82b994801f89bbb, type: 3}
+    customName: 
+    positions:
+    - position: {x: 0, y: 6.5, z: 4.176}
+      rotation: {x: 0, y: 0, z: 0}
+  brakingSparksParticles:
+    prefab: {fileID: 1000011396044746, guid: 96b2ec0239d11fa4b9792311efceb8ed, type: 3}
+    customName: 
+    positions:
+    - position: {x: -0.774, y: 0, z: 0.202}
+      rotation: {x: 0, y: 0, z: 0}
+    - position: {x: -0.774, y: 0, z: -1.996}
+      rotation: {x: 0, y: 0, z: 0}
+    - position: {x: -0.774, y: 0, z: -4.19}
+      rotation: {x: 0, y: 0, z: 0}
+    - position: {x: 0.774, y: 0, z: 0.202}
+      rotation: {x: 0, y: 0, z: 0}
+    - position: {x: 0.774, y: 0, z: -1.996}
+      rotation: {x: 0, y: 0, z: 0}
+    - position: {x: 0.774, y: 0, z: -4.19}
+      rotation: {x: 0, y: 0, z: 0}
+  internalDetails:
+    prefab: {fileID: 8505148936999826711, guid: f797563eb928e2a4e97348822a40a4ca,
+      type: 3}
+    customName: InternalDetails
+    positions:
+    - position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0}
+  bell:
+    prefab: {fileID: 5934569717486369345, guid: 7c7c608a955ac614b8aa9fdac2c2cfe4,
+      type: 3}
+    customName: Bell
+    positions:
+    - position: {x: 0, y: 4.69, z: 1.04}
+      rotation: {x: 0, y: 0, z: 0}

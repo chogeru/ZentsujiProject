@@ -30,7 +30,7 @@ public class SubMenuUI : MonoBehaviour
             m_Animators[i] = m_UIs[i].GetComponent<Animator>();
             if (m_Animators[i] == null)
             {
-                Debug.LogError("UIオブジェクトにAnimatorコンポーネントがありません: " + m_UIs[i].name);
+                Debug.LogError("UIオブジェクトにAnimatorコンポーネントがない: " + m_UIs[i].name);
                 return;
             }
         }

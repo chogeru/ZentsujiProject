@@ -4,9 +4,11 @@ using UnityEngine.Networking;
 
 public class WeatherManager : MonoBehaviour
 {
-    private string apiKey = "00dcfad56708b44e0c2968b129c4e3ee";
-    private string apiURL = "http://api.openweathermap.org/data/2.5/weather?q=Kagawa,jp&appid=00dcfad56708b44e0c2968b129c4e3ee";
+    private string m_ApiKey = "5d77d1140fecebe5b59765e991114c7b";
+    private string m_ApiURL = "http://api.openweathermap.org/data/2.5/weather?q=Kagawa,jp&appid=";
 
+    [SerializeField, Header("雨のプレハブ")]
+    private GameObject m_RainEffectPrefabs;
     void Start()
     {
         StartCoroutine(GetWeather());
@@ -14,7 +16,7 @@ public class WeatherManager : MonoBehaviour
 
     IEnumerator GetWeather()
     {
-        UnityWebRequest request = UnityWebRequest.Get(apiURL + apiKey);
+        UnityWebRequest request = UnityWebRequest.Get(m_ApiURL + m_ApiKey);
         yield return request.SendWebRequest();
 
         if (request.isNetworkError || request.isHttpError)
@@ -34,8 +36,14 @@ public class WeatherManager : MonoBehaviour
 
         if (weatherInfo.weather[0].main == "Rain")
         {
-            GameObject player = GameObject.FindWithTag("Player");
-            player.AddComponent<RainEffect>();
+            if (m_RainEffectPrefabs != null)
+            {
+                m_RainEffectPrefabs.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("雨のプレハブが設定されてないよ");
+            }
         }
     }
 }

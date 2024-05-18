@@ -7,10 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_bricks_wall_01
+  m_Name: M_tiles_standard 25
   m_Shader: {fileID: 4800000, guid: 6459b2db96a08ca41b0f9b39dc7ad59e, type: 3}
   m_ValidKeywords:
   - N_F_EAL_ON
+  - N_F_NM_ON
   - N_F_O_ON
   - N_F_RELGI_ON
   - N_F_SS_ON
@@ -18,6 +19,8 @@ Material:
   - _NORMALMAP
   m_InvalidKeywords:
   - N_F_TRANSAFFSHA
+  - _DETAIL_MULX2
+  - _METALLICGLOSSMAP
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -28,7 +31,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: 26fe6c6800bc81d43b74747183ba4fa8, type: 3}
+        m_Texture: {fileID: 2800000, guid: 8e7111826fdfab14fba79bfd8a19724a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -40,13 +43,13 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailNormalMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 022b5ab86937a3a41844dd5831f29147, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _EmissionMap:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 2, y: 2}
-        m_Offset: {x: 0, y: 0}
+        m_Scale: {x: 2, y: 0.6}
+        m_Offset: {x: -0.66, y: 0}
     - _FReflection:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -64,9 +67,9 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 2, y: 2}
-        m_Offset: {x: 0, y: 0}
+        m_Texture: {fileID: 2800000, guid: 8606f7b75d623c74180b0e4f0b7864ed, type: 3}
+        m_Scale: {x: 5, y: 5}
+        m_Offset: {x: -0.66, y: 0}
     - _MaskGloss:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -84,13 +87,13 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 7a2a9cd391fca1f4f80de2477dd95b8a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Texture: {fileID: 2800000, guid: 8e7111826fdfab14fba79bfd8a19724a, type: 3}
+        m_Scale: {x: 5, y: 5}
+        m_Offset: {x: -0.66, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -124,7 +127,7 @@ Material:
     - _AlphaBaseCutout: 1
     - _BleModDest: 0
     - _BleModSour: 1
-    - _BumpScale: 0.6
+    - _BumpScale: 2
     - _Compa: 4
     - _ComputeMeshIndex: 0
     - _Culling: 2
@@ -133,7 +136,7 @@ Material:
     - _Cutoff: 0.5
     - _Cutout: 0
     - _DepthThreshold: 900
-    - _DetailNormalMapScale: 1
+    - _DetailNormalMapScale: 2
     - _DirectionalLightIntensity: 0
     - _DoubleSidedOutline: 1
     - _DstBlend: 0
@@ -144,13 +147,13 @@ Material:
     - _GIShadeThreshold: 0
     - _GlossColorPower: 10
     - _GlossIntensity: 1
-    - _GlossMapScale: 1
+    - _GlossMapScale: 0.625
     - _GlossSoftness: 0
     - _GlossTextureFollowLight: 0
     - _GlossTextureFollowObjectRotation: 0
     - _GlossTextureRotate: 0
     - _GlossTextureSoftness: 0
-    - _Glossiness: 0.362
+    - _Glossiness: 0.702
     - _GlossyReflections: 1
     - _Glow_Edge_Width: 1
     - _HighlightColorPower: 1
@@ -164,7 +167,7 @@ Material:
     - _MCIALO: 0
     - _MCapIntensity: 1
     - _MVCOL: 0
-    - _MaiColPo: 0.8
+    - _MaiColPo: 0.7
     - _MaxFadDistance: 2
     - _Metallic: 0
     - _MinFadDistance: 0
@@ -187,7 +190,7 @@ Material:
     - _N_F_MSSOLTFO: 0
     - _N_F_NFD: 0
     - _N_F_NLASOBF: 0
-    - _N_F_NM: 0
+    - _N_F_NM: 1
     - _N_F_O: 1
     - _N_F_OFLMB: 0
     - _N_F_PT: 0
@@ -201,7 +204,7 @@ Material:
     - _N_F_STIAL: 0
     - _N_F_STIS: 0
     - _NoisyOutlineIntensity: 0
-    - _NormalMapIntensity: 1
+    - _NormalMapIntensity: 180
     - _OcclusionStrength: 1
     - _Opacity: 1
     - _Oper: 0
@@ -267,13 +270,13 @@ Material:
     - _VertexColorRedControlSmoothObjectNormal: 0
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 1}
+    - _Color: {r: 0.735849, g: 0.6829832, b: 0.6213065, a: 1}
     - _CustomLightDirection: {r: 0, g: 0, b: 10, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
     - _Glow_Color: {r: 1, g: 1, b: 1, a: 1}
-    - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _MainColor: {r: 0.1981132, g: 0.117109746, b: 0.09095762, a: 1}
+    - _HighlightColor: {r: 0.49056602, g: 0.49056602, b: 0.49056602, a: 1}
+    - _MainColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineOffset: {r: 0, g: 0, b: 0, a: 1}
     - _OverallShadowColor: {r: 0, g: 0, b: 0, a: 1}

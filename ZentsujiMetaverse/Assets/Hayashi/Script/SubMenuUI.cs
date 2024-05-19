@@ -14,7 +14,7 @@ public class SubMenuUI : MonoBehaviour
     [SerializeField, Header("ボタンに対応するUIリスト")]
     private GameObject[] m_UIs;
 
-    private Animator[] m_Animators;
+    private CanvasGroup[] m_CanvasGroups;
 
     void Start()
     {
@@ -24,20 +24,24 @@ public class SubMenuUI : MonoBehaviour
             return;
         }
 
-        m_Animators = new Animator[m_UIs.Length];
+        m_CanvasGroups = new CanvasGroup[m_UIs.Length];
         for (int i = 0; i < m_UIs.Length; i++)
         {
-            m_Animators[i] = m_UIs[i].GetComponent<Animator>();
-            if (m_Animators[i] == null)
+            m_CanvasGroups[i] = m_UIs[i].GetComponent<CanvasGroup>();
+            if (m_CanvasGroups[i] == null)
             {
-                Debug.LogError("UIオブジェクトにAnimatorコンポーネントがない: " + m_UIs[i].name);
-                return;
+                m_CanvasGroups[i] = m_UIs[i].AddComponent<CanvasGroup>();
             }
+            // 初期状態を設定する
+            m_CanvasGroups[i].alpha = 0;
+            m_CanvasGroups[i].blocksRaycasts = false;
+            m_CanvasGroups[i].interactable = false;
+
         }
 
         for (int i = 0; i < m_Buttons.Length; i++)
         {
-            int index = i; // ローカル変数を使ってクロージャをキャプチャ
+            int index = i;
             m_Buttons[i].onClick.AddListener(() => ShowUI(index));
         }
     }
@@ -47,24 +51,39 @@ public class SubMenuUI : MonoBehaviour
         if (MenuUIManager.instance != null)
         {
             m_SubMenuUI.SetActive(!MenuUIManager.instance.isOpenUI);
+            if(MenuUIManager.instance.isOpenUI)
+            {
+                for(int i=0; i < m_CanvasGroups.Length; i++)
+                {
+                    if (m_CanvasGroups[i] != null)
+                    {
+                        m_CanvasGroups[i].alpha = 0;
+                        m_CanvasGroups[i].blocksRaycasts = false;
+                        m_CanvasGroups[i].interactable = false;
+                    }
+                }
+            }
         }
     }
 
     private void ShowUI(int index)
     {
-        // すべてのUIのCloseアニメーションを再生する
-        for (int i = 0; i < m_Animators.Length; i++)
+        
+        for (int i = 0; i < m_CanvasGroups.Length; i++)
         {
-            if (m_Animators[i] != null)
+            if (m_CanvasGroups[i] != null)
             {
-                m_Animators[i].Play("Close");
+                m_CanvasGroups[i].alpha = 0;
+                m_CanvasGroups[i].blocksRaycasts = false;
+                m_CanvasGroups[i].interactable = false; // これを追加
             }
         }
-
-        // 指定されたUIのOpenアニメーションを再生する
-        if (m_Animators[index] != null)
+        
+        if (m_CanvasGroups[index] != null)
         {
-            m_Animators[index].Play("Open");
+            m_CanvasGroups[index].alpha = 1;
+            m_CanvasGroups[index].blocksRaycasts = true;
+            m_CanvasGroups[index].interactable = true; // これを追加
         }
     }
 }

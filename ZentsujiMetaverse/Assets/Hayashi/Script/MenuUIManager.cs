@@ -27,13 +27,9 @@ public class MenuUIManager : MonoBehaviour
     [SerializeField, Header("画面サイズ変更画面")]
     private GameObject m_ScreenSizePanel;
 
-    [Tab("オプション画面のアニメーション")]
-    [SerializeField, Header("アニメ-ター")]
-    private Animator m_Animator;
-    [EndTab]
-
     private Dictionary<Button, GameObject> m_ButtonPanelMap;
     private Dictionary<GameObject, bool> m_PanelOpenStatus;
+    private Dictionary<GameObject, CanvasGroup> m_PanelCanvasGroups;
 
     public static MenuUIManager instance;
 
@@ -47,6 +43,8 @@ public class MenuUIManager : MonoBehaviour
     private void Awake()
     {
         m_PanelOpenStatus = new Dictionary<GameObject, bool>();
+        m_PanelCanvasGroups = new Dictionary<GameObject, CanvasGroup>();
+
         if (instance == null)
         {
             instance = this;
@@ -61,6 +59,7 @@ public class MenuUIManager : MonoBehaviour
     private void Start()
     {
         InitializeButtonPanelMap();
+        InitializeCanvasGroups();
         CloseAllPanels();
         SetupButtonCallbacks();
         foreach (var pair in m_ButtonPanelMap)
@@ -68,6 +67,7 @@ public class MenuUIManager : MonoBehaviour
             m_PanelOpenStatus[pair.Value] = false;
         }
     }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -79,25 +79,9 @@ public class MenuUIManager : MonoBehaviour
             CloseAllPanels();
         }
         CorsorControl();
-        UpdateAnimatorState();
         isOpenUI = IsUIOpen();
     }
-    private void UpdateAnimatorState()
-    {
-        foreach (var pair in m_PanelOpenStatus.Keys.ToList())
-        {
-            Animator animator = pair.GetComponent<Animator>();
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            if (stateInfo.IsName("Close") && stateInfo.normalizedTime >= 1.0f)
-            {
-                m_PanelOpenStatus[pair] = false;  // アニメーションが完全に終了したら状態を更新
-            }
-            else if (stateInfo.IsName("Open") && stateInfo.normalizedTime >= 1.0f)
-            {
-                m_PanelOpenStatus[pair] = true;  // アニメーションが完全に終了したら状態を更新
-            }
-        }
-    }
+
     private void InitializeButtonPanelMap()
     {
         m_ButtonPanelMap = new Dictionary<Button, GameObject>
@@ -108,25 +92,40 @@ public class MenuUIManager : MonoBehaviour
             { m_ScreenSizeButton, m_ScreenSizePanel }
         };
     }
+
+    private void InitializeCanvasGroups()
+    {
+        foreach (var pair in m_ButtonPanelMap)
+        {
+            CanvasGroup canvasGroup = pair.Value.GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+            {
+                canvasGroup = pair.Value.AddComponent<CanvasGroup>();
+            }
+            m_PanelCanvasGroups[pair.Value] = canvasGroup;
+        }
+    }
+
     private void CloseAllPanels()
     {
         foreach (var pair in m_ButtonPanelMap)
         {
             GameObject panel = pair.Value;
-            Animator animator = panel.GetComponent<Animator>();
-            animator.Play("Close");
+            CanvasGroup canvasGroup = m_PanelCanvasGroups[panel];
+            canvasGroup.alpha = 0;
+            canvasGroup.blocksRaycasts = false;
             m_PanelOpenStatus[panel] = false;
         }
     }
+
     private void SetupButtonCallbacks()
     {
         foreach (var pair in m_ButtonPanelMap)
         {
-            pair.Key.OnClickAsObservable()
-                .Subscribe(_ => ShowOnlyThisPanel(pair.Value))
-                .AddTo(this);
+            pair.Key.onClick.AddListener(() => ShowOnlyThisPanel(pair.Value));
         }
     }
+
     private void ShowOnlyThisPanel(GameObject activePanel)
     {
         Cursor.visible = true;
@@ -134,25 +133,23 @@ public class MenuUIManager : MonoBehaviour
         foreach (var pair in m_ButtonPanelMap)
         {
             GameObject panel = pair.Value;
-            Animator animator = panel.GetComponent<Animator>();  // 各パネルにアサインされたAnimatorを取得
+            CanvasGroup canvasGroup = m_PanelCanvasGroups[panel];
             bool isActive = panel == activePanel;
 
-            // アニメーターでアニメーションを再生
             if (isActive)
             {
-                animator.Play("Open");
+                canvasGroup.alpha = 1;
+                canvasGroup.blocksRaycasts = true;
                 m_PanelOpenStatus[panel] = true;
             }
-            else if (panel != m_OptionsPanel && panel.activeInHierarchy) // パネルがすでに表示されていれば
+            else
             {
-                animator.Play("Close");
+                canvasGroup.alpha = 0;
+                canvasGroup.blocksRaycasts = false;
                 m_PanelOpenStatus[panel] = false;
-
             }
         }
     }
-
-
 
     private void CorsorControl()
     {

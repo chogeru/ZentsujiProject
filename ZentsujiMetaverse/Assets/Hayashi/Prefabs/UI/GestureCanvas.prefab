@@ -1051,7 +1051,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0001155138, y: -0.000027520508}
+  m_AnchoredPosition: {x: 0.0001155138, y: 0.000015232657}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &8135534297690225829
@@ -1066,7 +1066,6 @@ GameObject:
   - component: {fileID: 3933473489377169226}
   - component: {fileID: 543436869170433571}
   - component: {fileID: 9019515921399736612}
-  - component: {fileID: 1166802244601955084}
   - component: {fileID: 382873372054564975}
   m_Layer: 5
   m_Name: GestureCanvas
@@ -1158,26 +1157,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!95 &1166802244601955084
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8135534297690225829}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4ee7d7dce8c17524aa21bc87fc2e913e, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
 --- !u!225 &382873372054564975
 CanvasGroup:
   m_ObjectHideFlags: 0

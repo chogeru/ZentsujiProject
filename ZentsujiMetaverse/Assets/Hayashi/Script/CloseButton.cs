@@ -7,25 +7,31 @@ using Cysharp.Threading.Tasks;
 public class CloseButton : MonoBehaviour
 {
     private Button m_Button;
-    private Animator m_Animator;
+    private CanvasGroup m_CanvasGroup;
 
     void Start()
     {
         m_Button = GetComponent<Button>();
         m_Button.onClick.AddListener(() => CloseParentPanel().Forget()); // 非同期メソッドの呼び出し
-        m_Animator = transform.parent.GetComponent<Animator>();
+        m_CanvasGroup = transform.parent.GetComponent<CanvasGroup>();
+        if (m_CanvasGroup == null)
+        {
+            m_CanvasGroup = transform.parent.gameObject.AddComponent<CanvasGroup>();
+        }
     }
 
     private async UniTask CloseParentPanel()
     {
-        if (m_Animator != null)
+        if (m_CanvasGroup != null)
         {
-            // アニメーターが存在する場合、クローズアニメーションを再生
-            m_Animator.Play("Close");
-            await UniTask.Delay((int)(m_Animator.GetCurrentAnimatorStateInfo(0).length * 1000)); // ミリ秒で待機
+            // CanvasGroupが存在する場合、透明度を0にして非表示にする
+            m_CanvasGroup.alpha = 0;
+            m_CanvasGroup.blocksRaycasts = false;
+            await UniTask.Delay(200); // 適切な遅延時間を設定
         }
         Cursor.visible = false;
     }
+
     public void CursorFalse()
     {
         Cursor.visible = false;

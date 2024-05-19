@@ -520,7 +520,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 4681161832453822333}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1286,7 +1286,6 @@ MonoBehaviour:
   m_VolumePanel: {fileID: 2037703943446862729}
   m_ChatPanel: {fileID: 688182192081630566}
   m_ScreenSizePanel: {fileID: 2037703943883488099}
-  m_Animator: {fileID: 0}
   isOpenUI: 0
 --- !u!1 &2037703943181893839
 GameObject:
@@ -3862,7 +3861,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -198}
   m_SizeDelta: {x: 0, y: 28}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1001 &430094554310975804
@@ -4251,6 +4250,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMin.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4419181485994931945, guid: 10b043b42b669874d9358ff0a2b3206d,
+        type: 3}
+      propertyPath: m_Value
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6650361514622222488, guid: 10b043b42b669874d9358ff0a2b3206d,
         type: 3}

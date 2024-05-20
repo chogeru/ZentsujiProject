@@ -9,6 +9,8 @@ public class WeatherManager : MonoBehaviour
 
     [SerializeField, Header("雨のプレハブ")]
     private GameObject m_RainEffectPrefabs;
+    [SerializeField, Header("雲のプレハブ")]
+    private GameObject m_CloudPrefabs;
     void Start()
     {
         StartCoroutine(GetWeather());
@@ -43,6 +45,18 @@ public class WeatherManager : MonoBehaviour
             else
             {
                 Debug.Log("雨のプレハブが設定されてないよ");
+            }
+        }
+        if (weatherInfo.weather[0].main == "Rain" ||
+            weatherInfo.weather[0].main== "Clouds")
+        {
+            if(m_CloudPrefabs!=null)
+            {
+                m_CloudPrefabs.SetActive(true);
+            }
+            else
+            {
+                Debug.Log("雲のプレハブがセットされていません");
             }
         }
     }

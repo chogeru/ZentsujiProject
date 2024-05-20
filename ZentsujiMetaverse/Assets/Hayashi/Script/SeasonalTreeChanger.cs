@@ -28,10 +28,11 @@ public class SeasonalTreeChanger : MonoBehaviour
         TreeInstance[] treeInstances = terrain.terrainData.treeInstances;
 
         Debug.Log("現在の木のインスタンスとそのプロトタイプインデックス:");
+       /*
         for (int i = 0; i < treeInstances.Length; i++)
         {
             Debug.Log($"木 {i}: プロトタイプインデックス = {treeInstances[i].prototypeIndex}");
-        }
+        }*/
         int currentMonth = System.DateTime.Now.Month;
         int selectedTreeIndex = m_NormalTreeIndex;
 

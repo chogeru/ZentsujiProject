@@ -1,14 +1,22 @@
 using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
+using VInspector;
+using TMPro;
 
 public class RoomManager : NetworkManager
 {
-    public InputField m_RoomNameInput;
-    public InputField m_PasswordInput;
-    public InputField m_MaxPlayersInput;
-    public Button m_CreateRoomButton;
-    public Button m_JoinRoomButton;
+    [SerializeField,Header("ルーム名入力フィールド")]
+    private TMP_InputField m_RoomNameInput;
+    [SerializeField,Header("パスワード入力フィールド")]
+    private TMP_InputField m_PasswordInput;
+    [SerializeField,Header("最大人数入力フィールド")]
+    private TMP_InputField m_MaxPlayersInput;
+    
+    [SerializeField,Header("ルーム作成ボタン")]
+    private Button m_CreateRoomButton;
+    [SerializeField,Header("ルーム入出ボタン")]
+    private Button m_JoinRoomButton;
 
     private string m_RoomName;
     private string m_RoomPassword;

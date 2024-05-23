@@ -1,22 +1,24 @@
 using Mirror;
 using UnityEngine;
 using UnityEngine.UI;
-using VInspector;
 using TMPro;
 
 public class RoomManager : NetworkManager
 {
-    [SerializeField,Header("ルーム名入力フィールド")]
+    [SerializeField, Header("ルーム名入力フィールド")]
     private TMP_InputField m_RoomNameInput;
-    [SerializeField,Header("パスワード入力フィールド")]
+    [SerializeField, Header("パスワード入力フィールド")]
     private TMP_InputField m_PasswordInput;
-    [SerializeField,Header("最大人数入力フィールド")]
+    [SerializeField, Header("最大人数入力フィールド")]
     private TMP_InputField m_MaxPlayersInput;
-    
-    [SerializeField,Header("ルーム作成ボタン")]
+
+    [SerializeField, Header("ルーム作成ボタン")]
     private Button m_CreateRoomButton;
-    [SerializeField,Header("ルーム入出ボタン")]
+    [SerializeField, Header("ルーム入出ボタン")]
     private Button m_JoinRoomButton;
+
+    [SerializeField, Header("オンラインシーン名")]
+    private string m_OnlineSceneName;
 
     private string m_RoomName;
     private string m_RoomPassword;
@@ -42,6 +44,7 @@ public class RoomManager : NetworkManager
         // カスタムのロジックでルーム名とパスワードを設定
         NetworkServer.Listen(7777);
         NetworkManager.singleton.StartHost();
+        NetworkManager.singleton.ServerChangeScene(m_OnlineSceneName);
     }
 
     public void JoinRoom()
@@ -52,11 +55,12 @@ public class RoomManager : NetworkManager
         // カスタムのロジックでルーム名とパスワードをチェック
         NetworkManager.singleton.networkAddress = "localhost";
         NetworkManager.singleton.StartClient();
+        NetworkManager.singleton.ServerChangeScene(m_OnlineSceneName);
     }
 
     private void OnClientConnected()
     {
-        Debug.Log("サーバーに接続されました。");
+        Debug.Log("サーバーに接続");
 
         // クライアントがサーバーに接続したときにルーム名とパスワードを送信する
         CustomNetworkMessage message = new CustomNetworkMessage
@@ -79,7 +83,7 @@ public class RoomManager : NetworkManager
         {
             // 最大人数に達しているため、接続を拒否する
             conn.Disconnect();
-            Debug.Log("プレイヤーの最大人数に達しました。接続を拒否しました。");
+            Debug.Log("プレイヤーの最大人数に達した。接続を拒否した。");
         }
     }
 
@@ -111,6 +115,29 @@ public class RoomManager : NetworkManager
     private void OnClientReceiveMessage(CustomNetworkMessage message)
     {
         Debug.Log("サーバーから受信したメッセージ: ルーム名=" + message.roomName + ", パスワード=" + message.password);
+    }
+
+    public void SwitchToAnotherRoom(string newRoomName, string newPassword, string newServerAddress)
+    {
+        // 既存の接続を終了
+        NetworkManager.singleton.StopClient();
+
+        // 新しいサーバーの情報を設定
+        m_RoomName = newRoomName;
+        m_RoomPassword = newPassword;
+        NetworkManager.singleton.networkAddress = newServerAddress;
+
+        // 新しいサーバーに接続
+        NetworkManager.singleton.StartClient();
+    }
+    [ContextMenu("Debug Room Info")]
+    private void DebugRoomInfo()
+    {
+        Debug.Log($"現在オンラインに接続しているか: {NetworkClient.isConnected}");
+        Debug.Log($"ルーム名: {m_RoomName}");
+        Debug.Log($"パスワード: {m_RoomPassword}");
+        Debug.Log($"ルームの最大人数: {m_MaxPlayers}");
+        Debug.Log($"現在の接続数: {NetworkServer.connections.Count}");
     }
 }
 

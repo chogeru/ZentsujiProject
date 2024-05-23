@@ -5420,7 +5420,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8424753312874305819}
   m_LocalRotation: {x: -0, y: 0.62901515, z: -0, w: 0.77739304}
-  m_LocalPosition: {x: 0.000000059604645, y: 2, z: -1.5000002}
+  m_LocalPosition: {x: -1.8874093, y: -4.12772, z: 3.2003846}
   m_LocalScale: {x: 999, y: 999, z: 999}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7028,7 +7028,7 @@ PrefabInstance:
     - target: {fileID: 2640677864486386850, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
       propertyPath: m_Size
-      value: 0.99999875
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2902053178262271013, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
@@ -7038,7 +7038,7 @@ PrefabInstance:
     - target: {fileID: 2902053178262271013, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
       propertyPath: m_Value
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3257935731679804133, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
@@ -7223,12 +7223,12 @@ PrefabInstance:
     - target: {fileID: 8712790648181584772, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.00023651123
+      value: 0.00009536743
       objectReference: {fileID: 0}
     - target: {fileID: 8712790648181584772, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0009932389
+      value: 0.0001241884
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29e2ed117aedabb4b9015ea9ea1be048, type: 3}
@@ -7323,6 +7323,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8251212825534060859}
     m_Modifications:
+    - target: {fileID: 4688141892241902365, guid: 97777873bd42de44ca8691349cf09f80,
+        type: 3}
+      propertyPath: m_OnlineSceneName
+      value: ConferenceRoom
+      objectReference: {fileID: 0}
     - target: {fileID: 9102187171106936275, guid: 97777873bd42de44ca8691349cf09f80,
         type: 3}
       propertyPath: m_Name
@@ -7458,6 +7463,49 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &1111742687622719004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580629669598488786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b0fecffa3f624585964b0d0eb21b18e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  port: 5656
+  DualMode: 1
+  NoDelay: 1
+  Interval: 10
+  Timeout: 10000
+  RecvBufferSize: 7361536
+  SendBufferSize: 7361536
+  FastResend: 2
+  ReceiveWindowSize: 4096
+  SendWindowSize: 4096
+  MaxRetransmit: 40
+  MaximizeSocketBuffers: 1
+  ReliableMaxMessageSize: 297433
+  UnreliableMaxMessageSize: 1194
+  debugLog: 0
+  statisticsGUI: 0
+  statisticsLog: 0
+--- !u!114 &6748955835651881517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1580629669598488786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  offsetX: 0
+  offsetY: 0
 --- !u!224 &1580629669598488798 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9102187171106936287, guid: 97777873bd42de44ca8691349cf09f80,

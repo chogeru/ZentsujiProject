@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -38,28 +39,45 @@ public class WeatherManager : MonoBehaviour
 
         if (weatherInfo.weather[0].main == "Rain")
         {
-            if (m_RainEffectPrefabs != null)
+            if (m_RainEffectPrefabs != null&&m_CloudPrefabs!=null)
             {
                 m_RainEffectPrefabs.SetActive(true);
+                m_CloudPrefabs.SetActive(true);
             }
             else
             {
                 Debug.Log("雨のプレハブが設定されてないよ");
             }
         }
-        if (weatherInfo.weather[0].main == "Rain" ||
-            weatherInfo.weather[0].main== "Clouds")
+    }
+    [ContextMenu("天気通常=Clouds")]
+    public void WeatherCloud()
+    {
+        if (m_RainEffectPrefabs != null && m_CloudPrefabs != null)
         {
-            if(m_CloudPrefabs!=null)
-            {
-                m_CloudPrefabs.SetActive(true);
-            }
-            else
-            {
-                Debug.Log("雲のプレハブがセットされていません");
-            }
+            m_RainEffectPrefabs.SetActive(false);
+            m_CloudPrefabs.SetActive(false);
+        }
+        else
+        {
+            Debug.Log("プレハブが設定されていない");
         }
     }
+
+    [ContextMenu("天気雨=Rain")]
+    public void WeathwerRain()
+    {
+        if (m_RainEffectPrefabs != null && m_CloudPrefabs != null)
+        {
+            m_RainEffectPrefabs.SetActive(true);
+            m_CloudPrefabs.SetActive(true);
+        }
+        else
+        {
+            Debug.Log("プレハブが設定されていない");
+        }
+    }
+
 }
 
 [System.Serializable]

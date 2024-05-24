@@ -111,6 +111,8 @@ public class PlayerController : NetworkBehaviour
     }
     void TryStepUp()
     {
+        if (m_Rigidbody.velocity == Vector3.zero)
+            return;
         // プレイヤーの前方0.3ユニットの位置から、カプセルコライダーの高さに基づくレイキャストを設定
         Vector3 forward = transform.forward * 0.3f;
         Vector3 rayStart = transform.position + forward + Vector3.up * capsuleCollider.height * 0.5f; // レイキャスト開始点はカプセルの中心点より

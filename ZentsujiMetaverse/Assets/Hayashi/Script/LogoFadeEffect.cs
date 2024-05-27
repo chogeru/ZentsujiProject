@@ -15,23 +15,23 @@ public class LogoFadeEffect : MonoBehaviour
     private CanvasGroup m_CanvasGroup;
     [EndTab]
 
-    [Tab("ƒtƒF[ƒhİ’è")]
-    [SerializeField, Header("ƒtƒF[ƒhƒCƒ“‚É‚©‚©‚éŠÔ")]
+    [Tab("ãƒ•ã‚§ãƒ¼ãƒ‰è¨­å®š")]
+    [SerializeField, Header("ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ã«ã‹ã‹ã‚‹æ™‚é–“")]
     private float m_FadeInDuration=3.0f;
-    [SerializeField, Header("Š®‘S‚É•s“§–¾‚É‚È‚Á‚½Œã‚Ì•\¦ŠÔ")]
+    [SerializeField, Header("å®Œå…¨ã«ä¸é€æ˜ã«ãªã£ãŸå¾Œã®è¡¨ç¤ºæ™‚é–“")]
     private float m_VisibleDuration=2.0f;
-    [SerializeField, Header("ƒtƒF[ƒhƒCƒ“‚É‚©‚©‚éŠÔ")]
+    [SerializeField, Header("ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³ã«ã‹ã‹ã‚‹æ™‚é–“")]
     private float m_FadeOutDuration = 3.0f;
 
-    //‘¼‚ÌƒNƒ‰ƒX‚©‚çw“Ç‰Â”\‚ÈƒCƒxƒ“ƒg
+    //ä»–ã®ã‚¯ãƒ©ã‚¹ã‹ã‚‰è³¼èª­å¯èƒ½ãªã‚¤ãƒ™ãƒ³ãƒˆ
     public Subject<Unit> OnFadeOutCompleted = new Subject<Unit>();
     private void Awake()
     {
         m_CanvasGroup=GetComponent<CanvasGroup>();
-        //nullƒ`ƒFƒbƒN
+        //nullãƒã‚§ãƒƒã‚¯
         if(m_CanvasGroup == null)
         {
-            Debug.LogError("ƒLƒƒƒ“ƒoƒXƒOƒ‹[ƒv‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ");
+            Debug.LogError("ã‚­ãƒ£ãƒ³ãƒã‚¹ã‚°ãƒ«ãƒ¼ãƒ—ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“");
             this.enabled = false;
         }
     }
@@ -40,47 +40,59 @@ public class LogoFadeEffect : MonoBehaviour
     {
         try
         {
-            // ƒIƒuƒWƒFƒNƒg‚ª”jŠü‚³‚ê‚½‚Æ‚«‚ÉƒLƒƒƒ“ƒZƒ‹‚³‚ê‚éCancellationToken‚ğæ“¾
+            // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒç ´æ£„ã•ã‚ŒãŸã¨ãã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚Œã‚‹CancellationTokenã‚’å–å¾—
             CancellationToken ct = this.GetCancellationTokenOnDestroy();
 
-            //Å‰‚Í“§–¾ó‘Ô‚É
+            //æœ€åˆã¯é€æ˜çŠ¶æ…‹ã«
             m_CanvasGroup.alpha = 0;
 
-            // 3•b‚©‚¯‚Ä•s“§–¾‚É‚·‚é
+            // 3ç§’ã‹ã‘ã¦ä¸é€æ˜ã«ã™ã‚‹
             await FadeCanvasGroup(m_CanvasGroup, 1f, m_FadeInDuration, ct);
 
-            // •s“§–¾‚Ìó‘Ô‚Å2•bŠÔ‘Ò‚Â
+            // ä¸é€æ˜ã®çŠ¶æ…‹ã§2ç§’é–“å¾…ã¤
             await UniTask.Delay((int)(m_VisibleDuration * 1000), cancellationToken: ct);
 
-            // 3•b‚©‚¯‚ÄÄ“x“§–¾‚É‚·‚é
+            // 3ç§’ã‹ã‘ã¦å†åº¦é€æ˜ã«ã™ã‚‹
             await FadeCanvasGroup(m_CanvasGroup, 0f, m_FadeOutDuration, ct);
 
-            // R3‚ÌSubject‚ğ’Ê‚¶‚ÄƒCƒxƒ“ƒg‚ğ”­s
+            // R3ã®Subjectã‚’é€šã˜ã¦ã‚¤ãƒ™ãƒ³ãƒˆã‚’ç™ºè¡Œ
             OnFadeOutCompleted.OnNext(Unit.Default);
             OnFadeOutCompleted.OnCompleted();
         }
         catch (OperationCanceledException)
         {
-            Debug.Log("ƒtƒF[ƒh‘€ì‚ªƒLƒƒƒ“ƒZƒ‹‚³‚ê‚½");
+            Debug.Log("ãƒ•ã‚§ãƒ¼ãƒ‰æ“ä½œãŒã‚­ãƒ£ãƒ³ã‚»ãƒ«ã•ã‚ŒãŸ");
+        }
+    }
+    private void Update()
+    {
+        if(SkipPerformanceManager.Instance.isSlip)
+        {
+            SkipFadeCanvasGroup();
         }
     }
     private async UniTask FadeCanvasGroup(CanvasGroup cg, float targetAlpha, float duration, CancellationToken ct)
     {
-        // ŠJn‚Ì“§–¾“x‚ğ‹L˜^
+        // é–‹å§‹æ™‚ã®é€æ˜åº¦ã‚’è¨˜éŒ²
         float startAlpha = cg.alpha;
-        //Œo‰ßŠÔ‚ğŠi”[‚·‚é•Ï”
+        //çµŒéæ™‚é–“ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
         float time = 0;
-        // Œo‰ßŠÔ‚ªw’è‚µ‚½‘±ŠÔ‚É’B‚·‚é‚Ü‚Åƒ‹[ƒv
+        // çµŒéæ™‚é–“ãŒæŒ‡å®šã—ãŸæŒç¶šæ™‚é–“ã«é”ã™ã‚‹ã¾ã§ãƒ«ãƒ¼ãƒ—
         while (time < duration)
         {
-            // LerpŠÖ”‚ğg—p‚µ‚Ä“§–¾“x‚ğ™X‚É•Ï‰»‚³‚¹‚é
+            // Lerpé–¢æ•°ã‚’ä½¿ç”¨ã—ã¦é€æ˜åº¦ã‚’å¾ã€…ã«å¤‰åŒ–ã•ã›ã‚‹
             cg.alpha=Mathf.Lerp(startAlpha, targetAlpha, time/duration);
-            // Ÿ‚ÌƒtƒŒ[ƒ€‚Ü‚Å‘Ò‹@‚µA‚±‚ÌŠÔ‚ÉƒLƒƒƒ“ƒZƒ‹‚ª”­¶‚µ‚½‚©ƒ`ƒFƒbƒN
+            // æ¬¡ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã¾ã§å¾…æ©Ÿã—ã€ã“ã®é–“ã«ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãŒç™ºç”Ÿã—ãŸã‹ãƒã‚§ãƒƒã‚¯
             await UniTask.Yield(PlayerLoopTiming.Update, ct);
-            // Œo‰ßŠÔ‚ğXV
+            // çµŒéæ™‚é–“ã‚’æ›´æ–°
             time += Time.deltaTime;
         }
-        // ÅI“I‚È“§–¾“x‚ğİ’è
+        // æœ€çµ‚çš„ãªé€æ˜åº¦ã‚’è¨­å®š
         cg.alpha = targetAlpha;
+    }
+    //å³åº§ã«ã‚­ãƒ£ãƒ³ãƒã‚¹ã‚’é€æ˜ã«(ã‚¹ã‚­ãƒƒãƒ—ç”¨)
+    public void SkipFadeCanvasGroup()
+    {
+        m_CanvasGroup.alpha = 0;
     }
 }

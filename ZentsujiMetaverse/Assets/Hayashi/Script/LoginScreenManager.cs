@@ -33,6 +33,13 @@ public class LoginScreenManager : MonoBehaviour
             DelayedFadeIn();
         }
     }
+    public void Update()
+    {
+        if(SkipPerformanceManager.Instance.isSlip)
+        {
+            SkipFadeCanvas();
+        }
+    }
     private async void DelayedFadeIn()
     {
         await UniTask.Delay(TimeSpan.FromSeconds(m_FadeInStartDelay));
@@ -70,5 +77,10 @@ public class LoginScreenManager : MonoBehaviour
         cg.alpha = targetAlpha;
         //フェード処理完了後にインタラクションを再度有効化
         cg.interactable = true;
+    }
+    private void SkipFadeCanvas()
+    {
+        m_LoginCanvasGroup.alpha = 1f;
+        m_LoginCanvasGroup.interactable = true;
     }
 }

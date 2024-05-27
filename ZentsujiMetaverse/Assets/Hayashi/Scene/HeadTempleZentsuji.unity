@@ -40237,7 +40237,7 @@ PrefabInstance:
     - target: {fileID: 3165541158271280686, guid: df523e54fe1829d4eb691b2e176c4e7b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 300
+      value: 300.0001
       objectReference: {fileID: 0}
     - target: {fileID: 3165541158271280686, guid: df523e54fe1829d4eb691b2e176c4e7b,
         type: 3}
@@ -69009,10 +69009,11 @@ Transform:
   - {fileID: 2070986316}
   - {fileID: 1977000062}
   - {fileID: 1288626601}
-  - {fileID: 1007067968}
+  - {fileID: 34880699}
   - {fileID: 377308063}
   - {fileID: 310991521}
   - {fileID: 1120157914}
+  - {fileID: 1007067968}
   - {fileID: 195713496}
   - {fileID: 2007990507}
   - {fileID: 1966223048}
@@ -69027,7 +69028,6 @@ Transform:
   - {fileID: 384088320}
   - {fileID: 110805613}
   - {fileID: 1138869406}
-  - {fileID: 34880699}
   - {fileID: 603845429}
   - {fileID: 2002212006}
   - {fileID: 74167112}
@@ -84019,7 +84019,6 @@ GameObject:
   - component: {fileID: 2138677395}
   - component: {fileID: 2138677396}
   - component: {fileID: 1304478062616725348}
-  - component: {fileID: 1304478062616725349}
   - component: {fileID: 1304478062616725351}
   m_Layer: 0
   m_Name: Sun
@@ -84442,101 +84441,6 @@ MonoBehaviour:
   rotationsPerHour: 5
   automaticLightIntensity: 1
   maximumLightIntensity: 2
---- !u!114 &1304478062616725349
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2138677391}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc4d76f733087744991913c9d19d5274, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_LensFlareData: {fileID: 11400000, guid: 707b930075906224b9e3d0ceaa1c8fad, type: 2}
-  intensity: 2
-  maxAttenuationDistance: 100
-  maxAttenuationScale: 100
-  distanceAttenuationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  scaleByDistanceCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  attenuationByLightShape: 1
-  radialScreenAttenuationCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: -0.0083351135
-      value: 1.0007019
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1.0874939
-      value: 0.999527
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  useOcclusion: 0
-  occlusionRadius: 0.1
-  sampleCount: 32
-  occlusionOffset: 0.05
-  scale: 1.2
-  allowOffScreen: 0
 --- !u!114 &1304478062616725351
 MonoBehaviour:
   m_ObjectHideFlags: 0

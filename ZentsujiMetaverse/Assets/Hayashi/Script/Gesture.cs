@@ -44,7 +44,7 @@ public class Gesture : MonoBehaviour
         //10秒待機
         await UniTask.Delay(10000);
         // 5秒待つTask
-        var delayTask = UniTask.Delay(5000);
+        var delayTask = UniTask.Delay(10000);
 
         // プレイヤーが移動するか、5秒経過するのを待つ
         await UniTask.WhenAny(playerMovementTask, delayTask);

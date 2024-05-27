@@ -44,7 +44,7 @@ public class MySceneManager : MonoBehaviour
                 Debug.LogError("");
                 return;
             }
-
+            networkManager.onlineScene = nextScene;
             if (!networkManager.isNetworkActive)
             {
                 networkManager.StartHost();

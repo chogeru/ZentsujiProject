@@ -66,7 +66,7 @@ public class PlayerController : NetworkBehaviour
 
     }
 
-    // プレイヤーの動きを非同期的に初期化
+    // プレイヤーの動きを非同期的に初期化(現在メニュー画面と同期)
     private async UniTaskVoid InitializeMovement()
     {
         // UIが開かれている間はプレイヤーの速度をゼロに設定

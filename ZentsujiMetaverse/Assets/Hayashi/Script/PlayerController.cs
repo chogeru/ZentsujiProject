@@ -53,6 +53,7 @@ public class PlayerController : NetworkBehaviour
     private ReactiveProperty<bool> isIdle = new ReactiveProperty<bool>(true);
     private ReactiveProperty<bool> isWalk = new ReactiveProperty<bool>(false);
     private ReactiveProperty<bool> isRun = new ReactiveProperty<bool>(false);
+
     // ローカルプレイヤーが開始した時に呼び出されるメソッド
     public override void OnStartLocalPlayer()
     {

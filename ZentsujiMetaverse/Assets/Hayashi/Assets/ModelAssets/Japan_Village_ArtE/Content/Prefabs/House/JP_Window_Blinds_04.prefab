@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2949756450279526848}
   - component: {fileID: 1084053134688707850}
   - component: {fileID: 4852167946728665913}
+  - component: {fileID: 6750296448441288987}
   m_Layer: 0
   m_Name: JP_Window_Blinds_04
   m_TagString: Untagged
@@ -103,3 +104,16 @@ LODGroup:
     renderers:
     - renderer: {fileID: 1084053134688707850}
   m_Enabled: 1
+--- !u!65 &6750296448441288987
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1444433807748580575}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.10589208, y: 1.6768568, z: 2}
+  m_Center: {x: 0.05294604, y: 0.8236443, z: 0}

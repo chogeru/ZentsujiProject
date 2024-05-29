@@ -16,6 +16,11 @@ public class LoginScreenManager : MonoBehaviour
 
     private void Start()
     {
+        if (m_LoginCanvasGroup == null)
+        {
+            Debug.LogError("m_LoginCanvasGroupが無い");
+            return;
+        }
         m_LoginCanvasGroup.alpha = 0f;
         //初期状態でインタラクション不可に設定
         m_LoginCanvasGroup.interactable = false;
@@ -48,8 +53,13 @@ public class LoginScreenManager : MonoBehaviour
 
     private async void StartLoginFadeIn()
     {
+        if (m_LoginCanvasGroup == null)
+        {
+            Debug.LogError("m_LoginCanvasGroupがnull");
+            return;
+        }
         // 指定された遅延時間後にフェードイン処理を開始
-        Debug.Log("ログイン画面のフェードインを開始します。");
+        Debug.Log("ログイン画面のフェードインを開始");
         // CanvasGroupの透明度を非同期的に不透明に変更。
         await FadeCanvasGroup(m_LoginCanvasGroup, 1f, m_FadeInDuration);
         //フェードイン完了後にインタラクションを有効化
@@ -58,6 +68,12 @@ public class LoginScreenManager : MonoBehaviour
 
     private async UniTask FadeCanvasGroup(CanvasGroup cg, float targetAlpha, float duration)
     {
+        if (cg == null)
+        {
+            Debug.LogError("CanvasGroupがnull");
+            return;
+        }
+
         // フェード処理開始時の透明度を記録。
         float startAlpha = cg.alpha;
         //フェード処理開始時にインタラクションを無効化
@@ -80,6 +96,12 @@ public class LoginScreenManager : MonoBehaviour
     }
     private void SkipFadeCanvas()
     {
+        if (m_LoginCanvasGroup == null)
+        {
+            Debug.LogError("m_LoginCanvasGroupがnull");
+            return;
+        }
+
         m_LoginCanvasGroup.alpha = 1f;
         m_LoginCanvasGroup.interactable = true;
     }

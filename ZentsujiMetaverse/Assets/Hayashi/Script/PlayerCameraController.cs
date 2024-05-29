@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Cysharp.Threading.Tasks;
 using System;
+using R3;
 
 public class PlayerCameraController : MonoBehaviour
 {
@@ -12,21 +13,31 @@ public class PlayerCameraController : MonoBehaviour
     [SerializeField]
     private float m_Sensitivity = 2.0f;
     [SerializeField]
+    private float m_ZoomSensitivity = 2.0f; // 新しいズーム感度フィールド
+    [SerializeField]
     private LayerMask m_ObstacleMask;
     [SerializeField]
     private float m_MinDistance = 1.0f;
     [SerializeField]
-    private float m_MaxDistance = 10.0f; 
-    [SerializeField] 
+    private float m_MaxDistance = 10.0f;
+    [SerializeField]
     private float m_SphereCastRadius = 0.5f;
+    [SerializeField]
+    private float m_SmoothTime = 0.2f; // カメラのズーム動作を滑らかにするための時間
 
     private Camera mainCamera;
     private Vector3 offset;
+    private float currentDistance;
+    private float targetDistance;
+    private float zoomVelocity = 0.0f;
 
     void Start()
     {
         mainCamera = GetComponent<Camera>();
         offset = transform.position - m_Player.position;
+        currentDistance = offset.magnitude;
+        targetDistance = currentDistance;
+
         Observable.EveryUpdate()
             .Where(_ => !MenuUIManager.instance.isOpenUI)
             .Select(_ => {
@@ -42,25 +53,28 @@ public class PlayerCameraController : MonoBehaviour
 
     private async UniTaskVoid UpdateCameraPositionAsync(float mouseX, float mouseY, float scrollInput)
     {
-
         offset = Quaternion.AngleAxis(mouseX, Vector3.up) * Quaternion.AngleAxis(-mouseY, mainCamera.transform.right) * offset;
 
-            float currentDistance = offset.magnitude;
-            float newDistance = Mathf.Clamp(currentDistance - scrollInput * m_Sensitivity * Time.deltaTime, m_MinDistance, m_MaxDistance);
-            offset = offset.normalized * newDistance;
+        // スクロール入力を使用してターゲット距離を更新（m_ZoomSensitivityを使用）
+        targetDistance = Mathf.Clamp(targetDistance - scrollInput * m_ZoomSensitivity * Time.deltaTime, m_MinDistance, m_MaxDistance);
 
-            Vector3 newPosition = m_Player.position + offset;
-            Vector3 direction = newPosition - m_Player.position;
+        // 現在の距離をターゲット距離に滑らかに補間
+        currentDistance = Mathf.SmoothDamp(currentDistance, targetDistance, ref zoomVelocity, m_SmoothTime);
 
-            if (Physics.Raycast(m_Player.position, direction.normalized, out RaycastHit hit, direction.magnitude, m_ObstacleMask))
-            {
-                newPosition = hit.point - direction.normalized * m_MinDistance;
-            }
+        // オフセットの長さを現在の距離に設定
+        offset = offset.normalized * currentDistance;
 
-            mainCamera.transform.position = newPosition;
-            mainCamera.transform.LookAt(m_Player.position);
+        Vector3 newPosition = m_Player.position + offset;
+        Vector3 direction = newPosition - m_Player.position;
 
-            await UniTask.Yield(PlayerLoopTiming.Update);
-        
+        if (Physics.Raycast(m_Player.position, direction.normalized, out RaycastHit hit, direction.magnitude, m_ObstacleMask))
+        {
+            newPosition = hit.point - direction.normalized * m_MinDistance;
+        }
+
+        mainCamera.transform.position = newPosition;
+        mainCamera.transform.LookAt(m_Player.position);
+
+        await UniTask.Yield(PlayerLoopTiming.Update);
     }
 }

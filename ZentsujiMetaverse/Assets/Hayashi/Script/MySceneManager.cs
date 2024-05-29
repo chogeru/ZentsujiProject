@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using SQLite4Unity3d;
 using Cysharp.Threading.Tasks;
 using Mirror;
+using System;
 
 public class MySceneManager : MonoBehaviour
 {
@@ -26,14 +27,23 @@ public class MySceneManager : MonoBehaviour
 
         var databasePath = System.IO.Path.Combine(Application.streamingAssetsPath, "scene_data.db").Replace("\\", "/");
         connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
+        try
+        {
+            connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
+            Debug.Log("Database connection established.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Failed to open database: " + ex.Message);
+        }
     }
 
     public void TriggerSceneLoad(string currentSceneName)
     {
-        LoadNextSceneAsync(currentSceneName).Forget();
+        LoadNextSceneAsync(currentSceneName);
     }
 
-    private async UniTaskVoid LoadNextSceneAsync(string currentSceneName)
+    private void LoadNextSceneAsync(string currentSceneName)
     {
         nextScene = GetNextSceneNameFromDB(currentSceneName);
         if (!string.IsNullOrEmpty(nextScene))
@@ -52,17 +62,13 @@ public class MySceneManager : MonoBehaviour
             else
             {
                 networkManager.StartClient();
-            }
-
-         //   await UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(nextScene, LoadSceneMode.Single);
-         
+            }         
         }
         else
         {
             Debug.LogError("");
         }
     }
-
     private string GetNextSceneNameFromDB(string currentSceneName)
     {
         try

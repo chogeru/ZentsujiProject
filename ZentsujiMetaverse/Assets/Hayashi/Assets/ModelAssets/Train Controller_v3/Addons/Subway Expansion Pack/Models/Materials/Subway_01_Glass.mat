@@ -14,6 +14,7 @@ Material:
   - N_F_O_ON
   - N_F_RELGI_ON
   - N_F_R_ON
+  - N_F_SIMTRANS_ON
   - N_F_SS_ON
   - N_F_TRANSAFFSHA_ON
   - N_F_TRANS_ON
@@ -213,7 +214,7 @@ Material:
     - _NoisyOutlineIntensity: 0
     - _NormalMapIntensity: 1
     - _OcclusionStrength: 1
-    - _Opacity: 1
+    - _Opacity: 0.2
     - _Oper: 0
     - _OutlineExtrudeMethod: 0
     - _OutlineWidth: 0.5
@@ -258,7 +259,7 @@ Material:
     - _ShowInAmbientLightShadowIntensity: 1
     - _ShowInAmbientLightShadowThreshold: 0.4
     - _ShowNormal: 0
-    - _SimTrans: 0
+    - _SimTrans: 1
     - _SkinMatrixIndex: 0
     - _SmoothObjectNormal: 0
     - _SmoothnessTextureChannel: 0

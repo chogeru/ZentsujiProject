@@ -10,10 +10,8 @@ public class ColSceneSwitcher : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // プレイヤーオブジェクトにタグを付けることをお勧めします（例：Player）
         if (other.CompareTag("Player"))
         {
-            // サーバー側でのみシーンの切り替えを行います
             if (isServer)
             {
                 SwitchScene().Forget();
@@ -23,12 +21,13 @@ public class ColSceneSwitcher : NetworkBehaviour
 
     private async UniTaskVoid SwitchScene()
     {
+        LoadCanvas.instance.SetUI();
         // シーンの切り替え
         NetworkManager.singleton.ServerChangeScene(m_SceneName);
 
         // 新しいシーンのロード完了を待つ
         await SceneManager.LoadSceneAsync(m_SceneName);
-
+        LoadCanvas.instance.CloseUI();
         // 新しいシーンのネットワークマネージャーを取得して初期化
         NetworkManager newNetworkManager = FindObjectOfType<NetworkManager>();
         if (newNetworkManager != null)

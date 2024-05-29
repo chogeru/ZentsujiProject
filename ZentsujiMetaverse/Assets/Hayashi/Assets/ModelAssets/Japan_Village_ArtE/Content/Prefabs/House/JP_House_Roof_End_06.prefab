@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6750814566943635295}
   - component: {fileID: 7638225371140864250}
   - component: {fileID: 5612781221058366512}
-  - component: {fileID: 7321754604712425289}
   - component: {fileID: 8870959760292134380}
   m_Layer: 0
   m_Name: JP_House_Roof_End_06
@@ -85,20 +84,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7321754604712425289
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6261242323846655461}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -5501498164811017917, guid: bb254f270308eb14c86f31329ae2b097, type: 3}
 --- !u!205 &8870959760292134380
 LODGroup:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine.Networking;
 
 public class WeatherManager : MonoBehaviour
 {
+    public static WeatherManager instance;
     private string m_ApiKey = "5d77d1140fecebe5b59765e991114c7b";
     private string m_ApiURL = "http://api.openweathermap.org/data/2.5/weather?q=Kagawa,jp&appid=";
 
@@ -12,6 +14,17 @@ public class WeatherManager : MonoBehaviour
     private GameObject m_RainEffectPrefabs;
     [SerializeField, Header("雲のプレハブ")]
     private GameObject m_CloudPrefabs;
+
+    public event Action<string> OnWeatherChanged;
+
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+    }
+
     void Start()
     {
         StartCoroutine(GetWeather());
@@ -36,6 +49,7 @@ public class WeatherManager : MonoBehaviour
     {
         WeatherInfo weatherInfo = JsonUtility.FromJson<WeatherInfo>(json);
         Debug.Log("現在の天気: " + weatherInfo.weather[0].main);
+        OnWeatherChanged?.Invoke(weatherInfo.weather[0].main);
 
         if (weatherInfo.weather[0].main == "Rain")
         {

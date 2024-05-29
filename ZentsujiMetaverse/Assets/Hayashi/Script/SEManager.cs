@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using SQLite4Unity3d;
 using Cysharp.Threading.Tasks;
+using System;
 
 public class SEManager : MonoBehaviour
 {
@@ -24,6 +25,15 @@ public class SEManager : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         var databasePath = System.IO.Path.Combine(Application.streamingAssetsPath, "se_data.db").Replace("\\", "/");
         connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
+        try
+        {
+            connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
+            Debug.Log("Database connection established.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Failed to open database: " + ex.Message);
+        }
     }
 
     public void PlaySound(string clipName)
@@ -40,17 +50,17 @@ public class SEManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.LogError("ƒI[ƒfƒBƒIƒNƒŠƒbƒv‚ª‚È‚¢ " + query.ClipPath);
+                    Debug.LogError("ã‚ªãƒ¼ãƒ‡ã‚£ã‚ªã‚¯ãƒªãƒƒãƒ—ãŒãªã„ " + query.ClipPath);
                 }
             }
             else
             {
-                Debug.LogError("ƒf[ƒ^ƒx[ƒX‚ÉƒTƒEƒ“ƒhƒNƒŠƒbƒv‚ª‚È‚¢ " + clipName);
+                Debug.LogError("ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã«ã‚µã‚¦ãƒ³ãƒ‰ã‚¯ãƒªãƒƒãƒ—ãŒãªã„ " + clipName);
             }
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("ƒf[ƒ^ƒx[ƒX‚Ö‚ÌƒAƒNƒZƒX’†‚ÉƒGƒ‰[‚ª”­¶ " + ex.Message);
+            Debug.LogError("ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã¸ã®ã‚¢ã‚¯ã‚»ã‚¹ä¸­ã«ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿ " + ex.Message);
         }
     }
 

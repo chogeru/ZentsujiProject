@@ -1,6 +1,3 @@
-using Firebase;
-using Firebase.Storage;
-using Firebase.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,7 +28,15 @@ public class BGMManager : MonoBehaviour
         var databasePath = System.IO.Path.Combine(Application.streamingAssetsPath, "bgm_data.db").Replace("\\", "/");
         connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
         Debug.Log("Database path: " + databasePath);
-
+        try
+        {
+            connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
+            Debug.Log("Database connection established.");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError("Failed to open database: " + ex.Message);
+        }
     }
 
     public void PlayBGMByScene(string bgmName ,float volume)

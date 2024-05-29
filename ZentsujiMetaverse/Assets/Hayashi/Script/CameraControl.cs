@@ -7,7 +7,6 @@ public class CameraControl : NetworkBehaviour
 {
     public GameObject m_CameraGameObject; // アクティブにするカメラオブジェクト
 
-    // Startメソッドの代わりにOnStartLocalPlayerメソッドを使用する
     private void Start()
     {
         // オンラインでかつ自身のプレイヤーである場合、カメラをアクティブにする

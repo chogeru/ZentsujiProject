@@ -198,7 +198,7 @@ Shader "Universal Render Pipeline/RealToon/Version 5/Default/Default"
 
 		[Toggle(N_F_MC_ON)] _N_F_MC ("MatCap", Float ) = 0.0
 		[Toggle(N_F_NM_ON)] _N_F_NM ("Normal Map", Float ) = 0.0
-		[Toggle(N_F_CO_ON)] _N_F_CO ("Cutout", Float ) = 0.0
+		[Toggle(N_F_CO_ON)] _N_F_CO ("Cutout", Float ) = 1.0
 		[Toggle(N_F_O_ON)] _N_F_O ("Outline", Float ) = 1.0
 		[Toggle(N_F_CA_ON)] _N_F_CA ("Color Adjustment", Float ) = 0.0
 		[Toggle(N_F_SL_ON)] _N_F_SL ("Self Lit", Float ) = 0.0

@@ -58,7 +58,7 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         m_Rigidbody = GetComponent<Rigidbody>();
-        capsuleCollider = GetComponent<CapsuleCollider>();  // CapsuleCollider を取得
+        capsuleCollider = GetComponent<CapsuleCollider>();
 
         m_Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         base.OnStartLocalPlayer();

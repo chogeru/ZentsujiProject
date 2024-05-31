@@ -1181,8 +1181,8 @@ static string dots_lbs_cd_string = "DOTS|HR - Use Compute Deformation";
 
                 materialEditor.ShaderProperty(_TRANSMODE, new GUIContent(_TRANSMODE.displayName, TOTIPS[11]));
 
-                if (EditorGUI.EndChangeCheck())
-                {
+                 if (EditorGUI.EndChangeCheck())
+                 {
                     foreach (Material m in materialEditor.targets)
                     {
                         switch (_TRANSMODE.floatValue)

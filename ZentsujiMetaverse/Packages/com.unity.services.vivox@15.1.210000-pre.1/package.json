@@ -1,0 +1,48 @@
+{
+  "name": "com.unity.services.vivox",
+  "displayName": "Vivox",
+  "version": "15.1.210000-pre.1",
+  "unity": "2019.4",
+  "_upm": {
+    "gameService": {
+      "groupIndex": 2,
+      "groupName": "Multiplayer",
+      "genericDashboardUrl": "https://dashboard.unity3d.com/vivox",
+      "projectDashboardUrl": "https://dashboard.unity3d.com/organizations/{0}/projects/{1}/vivox/credentials",
+      "projectDashboardUrlType": "OrganizationKeyAndProjectGuid",
+      "configurePath": "Project/Services/Vivox"
+    },
+    "supportedPlatforms": [
+      "Android",
+      "iOS",
+      "mac",
+      "Windows"
+    ],
+    "changelog": "### Changed\n - Upgrades underlying Vivox SDK Dependency to version 5.21.0"
+  },
+  "description": "Unity's voice and text chat service, for multiplayer communication, offers a voice chat and direct message text service with a managed hosted solution. Plug in to your game and configure your project settings to immediately add communications to your project. Connect an unlimited number of users in 2D and 3D channels.  Monitor concurrency on your dashboard. Add a custom UI to allow player to control voice volume, mute, and manage channels. Place users in team chat; allow them to participate in multiple channels.",
+  "dependencies": {
+    "com.unity.settings-manager": "2.0.0",
+    "com.unity.services.core": "1.3.1",
+    "com.unity.nuget.newtonsoft-json": "3.0.2"
+  },
+  "relatedPackages": {
+    "com.unity.services.vivox.tests": "15.1.210000-pre.1"
+  },
+  "upmCi": {
+    "footprint": "51a7531a6e184adf9e83320215d7289dc5d8353a"
+  },
+  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.services.vivox@15.1/manual/index.html",
+  "repository": {
+    "url": "https://github.cds.internal.unity3d.com/unity/vivox-unity-sdk.git",
+    "type": "git",
+    "revision": "9e473c5826e066dbf5da3a44c4f90d4a575bdb11"
+  },
+  "samples": [
+    {
+      "displayName": "Chat Channel Sample",
+      "description": "Try the chat service now, with a voice and text channel example. Login, Voice, Text, Text to Speech and mute example scripts are included.",
+      "path": "Samples~/ChatChannelSample"
+    }
+  ]
+}

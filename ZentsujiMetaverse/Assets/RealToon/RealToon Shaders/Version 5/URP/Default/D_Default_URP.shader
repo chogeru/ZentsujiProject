@@ -198,7 +198,7 @@ Shader "Universal Render Pipeline/RealToon/Version 5/Default/Default"
 
 		[Toggle(N_F_MC_ON)] _N_F_MC ("MatCap", Float ) = 0.0
 		[Toggle(N_F_NM_ON)] _N_F_NM ("Normal Map", Float ) = 0.0
-		[Toggle(N_F_CO_ON)] _N_F_CO ("Cutout", Float ) = 1.0
+		[Toggle(N_F_CO_ON)] _N_F_CO ("Cutout", Float ) = 0.0
 		[Toggle(N_F_O_ON)] _N_F_O ("Outline", Float ) = 1.0
 		[Toggle(N_F_CA_ON)] _N_F_CA ("Color Adjustment", Float ) = 0.0
 		[Toggle(N_F_SL_ON)] _N_F_SL ("Self Lit", Float ) = 0.0
@@ -262,7 +262,7 @@ Blend[_BleModSour][_BleModDest]
 
             #pragma prefer_hlslcc gles
             #pragma only_renderers d3d9 d3d11 vulkan glcore gles3 gles metal xboxone ps4 xboxseries playstation wiiu switch
-#pragma target 4.5 //targetol
+#pragma target 2.0 //targetol
 
 			#pragma multi_compile _ _ADDITIONAL_LIGHTS
             #pragma multi_compile_fog
@@ -531,7 +531,7 @@ DOTS_LiBleSki(input.indices, input.weights, input.positionOS.xyz, input.normalOS
 
             #pragma prefer_hlslcc gles
             #pragma only_renderers d3d9 d3d11 vulkan glcore gles3 gles metal xboxone ps4 xboxseries playstation wiiu switch
-#pragma target 4.5 //targetfl
+#pragma target 2.0 //targetfl
 
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE
@@ -1135,7 +1135,7 @@ float3 Init_FO=RTD_CA*RTD_SON_CHE_1;
             HLSLPROGRAM
             #pragma prefer_hlslcc gles
             #pragma only_renderers d3d9 d3d11 vulkan glcore gles3 gles metal xboxone ps4 xboxseries playstation wiiu switch 
-#pragma target 4.5 //targetsc
+#pragma target 2.0 //targetsc
 
             #pragma multi_compile_instancing
 			#pragma multi_compile _ DOTS_INSTANCING_ON
@@ -1311,7 +1311,7 @@ DOTS_LiBleSki(input.indices, input.weights, input.positionOS.xyz, input.normalOS
 
             #pragma prefer_hlslcc gles
             #pragma only_renderers d3d9 d3d11 vulkan glcore gles3 gles metal xboxone ps4 xboxseries playstation wiiu switch 
-#pragma target 4.5 //targetdo
+#pragma target 2.0 //targetdo
 
             #pragma vertex DepthOnlyVertex
             #pragma fragment DepthOnlyFragment
@@ -1573,7 +1573,7 @@ DOTS_LiBleSki(input.indices, input.weights, input.positionOS.xyz, input.normal.x
 			HLSLPROGRAM
 			#pragma prefer_hlslcc gles
 			#pragma only_renderers d3d9 d3d11 vulkan glcore gles3 gles metal xboxone ps4 xboxseries playstation wiiu switch 
-#pragma target 4.5 //targetm
+#pragma target 2.0 //targetm
 
 			#pragma vertex UniversalVertexMeta
 			#pragma fragment UniversalFragmentMeta

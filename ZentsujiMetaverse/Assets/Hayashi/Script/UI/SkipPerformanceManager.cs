@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 public class SkipPerformanceManager : MonoBehaviour
 {
     public static SkipPerformanceManager Instance;
-    [SerializeField,Header("スキップ時に割り当て用のキー")]
-    private KeyCode m_Kye;
     [ReadOnly,Header("スキップするかどうかのトリガー")]
     public bool isSlip=false;
     private void Awake()
@@ -28,7 +27,7 @@ public class SkipPerformanceManager : MonoBehaviour
     }
     public void Update()
     {
-        if(Input.GetKeyDown(m_Kye))
+        if(Input.anyKeyDown||Gamepad.current?.buttonSouth.isPressed==true)
         {
             isSlip = true;
         }

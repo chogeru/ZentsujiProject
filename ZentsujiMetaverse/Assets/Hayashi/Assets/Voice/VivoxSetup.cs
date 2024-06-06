@@ -157,6 +157,8 @@ namespace LobbyRelaySample.vivox
 
             ChannelType channelType = ChannelType.NonPositional;  // チャネルタイプを非位置情報型に設定
             Channel channel = new Channel(lobbyId + "_voice", channelType, null);  // ロビーチャネルを作成
+            UnityEngine.Debug.Log(lobbyId);
+            UnityEngine.Debug.Log("チャンネル"+channel+"に接続しました");
             m_channelSession = m_loginSession.GetChannelSession(channel);  // チャネルセッションを取得
             if (m_channelSession == null)
             {

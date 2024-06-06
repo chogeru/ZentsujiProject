@@ -5,6 +5,7 @@ using System.IO;
 using VRMShaders;
 using Unity.VisualScripting;
 using Mirror;
+using UnityEditor;
 
 public class VRMSpawner : MonoBehaviour
 {
@@ -49,7 +50,7 @@ public class VRMSpawner : MonoBehaviour
 
         // 読み込んだVRMをGameObjectとしてシーンに生成
         vrmModel.ShowMeshes();
-      
+
 
         // スポーンポイントに移動
         vrmModel.transform.position = spawnPoint.position;
@@ -61,6 +62,8 @@ public class VRMSpawner : MonoBehaviour
         SetVRM(vrmModel);
         // シェーダーをURP用に変換
         ConvertShadersToURP(vrmModel);
+        //プレハブ化
+       // SetPrefabs(vrmModel);
     }
     private void ConvertShadersToURP(RuntimeGltfInstance vrmModelInstance)
     {
@@ -80,7 +83,7 @@ public class VRMSpawner : MonoBehaviour
                     var mainTexture = material.GetTexture("_MainTex");
 
                     // 新しいシェーダーを割り当て
-                //    material.shader = Shader.Find("Universal Render Pipeline/RealToon/Version 5/Default/Default");
+                    //    material.shader = Shader.Find("Universal Render Pipeline/RealToon/Version 5/Default/Default");
 
                     // 新しいシェーダーにメインテクスチャを再設定
                     if (mainTexture != null)
@@ -105,7 +108,8 @@ public class VRMSpawner : MonoBehaviour
         vrm.AddComponent<Rigidbody>();
         vrm.AddComponent<CapsuleCollider>();
         vrm.AddComponent<PlayerController>();
-
+        vrm.AddComponent<Animator>();
+        vrm.AddComponent<Player>();
 
         Rigidbody rigidbody = vrm.GetComponent<Rigidbody>();
         rigidbody.freezeRotation = true;
@@ -113,5 +117,24 @@ public class VRMSpawner : MonoBehaviour
         capsuleCollider.height = 2;
         capsuleCollider.radius = 0.2f;
         capsuleCollider.center = new Vector3(0, 1, 0);
+        Animator animator = vrm.GetComponent<Animator>();
+        animator.applyRootMotion = false;
+
     }
+    /*
+    public void SetPrefabs(RuntimeGltfInstance vrm)
+    {
+        const string prefabPath = "Assets/VRMResourse/VRM.prefab";
+        GameObject vrmobj = vrm.gameObject;
+        if (vrmobj != null)
+        {
+            PrefabUtility.SaveAsPrefabAsset(vrmobj, prefabPath);
+            Debug.Log("セーブアセットやで");
+        }
+        else
+        {
+            Debug.Log("nullやで");
+        }
+    }
+    */
 }

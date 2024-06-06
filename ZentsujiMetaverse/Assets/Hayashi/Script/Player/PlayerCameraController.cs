@@ -13,9 +13,13 @@ public class PlayerCameraController : MonoBehaviour
     [SerializeField]
     private float m_Sensitivity = 2.0f;
     [SerializeField]
-    private float m_ZoomSensitivity = 2.0f; // 新しいズーム感度フィールド
+    private float m_GamepadSensitivity = 3.0f;
+    [SerializeField]
+    private float m_ZoomSensitivity = 2.0f; 
     [SerializeField]
     private LayerMask m_ObstacleMask;
+    [SerializeField]
+    private float m_GamePadScrollSpeed;
     [SerializeField]
     private float m_MinDistance = 1.0f;
     [SerializeField]
@@ -23,7 +27,7 @@ public class PlayerCameraController : MonoBehaviour
     [SerializeField]
     private float m_SphereCastRadius = 0.5f;
     [SerializeField]
-    private float m_SmoothTime = 0.2f; // カメラのズーム動作を滑らかにするための時間
+    private float m_SmoothTime = 0.2f; 
 
     private Camera mainCamera;
     private Vector3 offset;
@@ -40,16 +44,33 @@ public class PlayerCameraController : MonoBehaviour
 
         Observable.EveryUpdate()
             .Where(_ => !MenuUIManager.instance.isOpenUI)
-            .Select(_ => {
+            .Select(_ =>
+            {
                 Vector2 mouseInput = new Vector2(Input.GetAxis("Mouse X") * m_Sensitivity, Input.GetAxis("Mouse Y") * m_Sensitivity);
                 Vector2 gamepadInput = Gamepad.current?.rightStick.ReadValue() ?? Vector2.zero;
                 float scrollInput = Mouse.current.scroll.y.ReadValue();
-                return new Tuple<Vector2, float>(mouseInput + new Vector2(gamepadInput.x * m_Sensitivity, gamepadInput.y * m_Sensitivity), scrollInput);
+                float gamepadZoomInput = 0.0f;
+                if (Gamepad.current != null)
+                {
+                    if (Gamepad.current.buttonNorth.isPressed)
+                    {
+                        gamepadZoomInput = m_GamePadScrollSpeed;
+                    }
+                    else if (Gamepad.current.buttonWest.isPressed)
+                    {
+                        gamepadZoomInput = -m_GamePadScrollSpeed;
+                    }
+                }
+                //ゲームパッド用感度
+                Vector2 adjustedGamepadInput = gamepadInput * m_GamepadSensitivity;
+                return new Tuple<Vector2, float>(mouseInput + new Vector2(gamepadInput.x * m_Sensitivity, gamepadInput.y * m_Sensitivity), scrollInput+gamepadZoomInput);
             })
-            .Subscribe(inputs => {
+            .Subscribe(inputs =>
+            {
                 UpdateCameraPositionAsync(inputs.Item1.x, inputs.Item1.y, inputs.Item2).Forget();
             }).AddTo(this);
     }
+
 
     private async UniTaskVoid UpdateCameraPositionAsync(float mouseX, float mouseY, float scrollInput)
     {

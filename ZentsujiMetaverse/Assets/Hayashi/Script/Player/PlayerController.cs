@@ -4,6 +4,8 @@ using R3;
 using R3.Triggers;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.InputSystem;
+
 #region
 /*
 .Subscribe
@@ -78,21 +80,23 @@ public class PlayerController : NetworkBehaviour
         // プレイヤーの移動入力をリアクティブに監視
         var moveStream = this.UpdateAsObservable()
          .Where(_ => !MenuUIManager.instance.isOpenUI)
-         .Select(_ => new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")))
+         .Select(_ => new Vector3(Gamepad.current?.leftStick.ReadValue().x ?? Input.GetAxis("Horizontal"),
+         0,
+         Gamepad.current?.leftStick.ReadValue().y ?? Input.GetAxis("Vertical")))
          .Share();
         // Shiftキーを押しながらの走行を購読
         moveStream
-             .Where(_ => Input.GetKey(KeyCode.LeftShift))
+             .Where(_ => Input.GetKey(KeyCode.LeftShift) || (Gamepad.current?.leftTrigger.isPressed ?? false))
              .Subscribe(movement => new RunCommand(this, movement).Execute());
         // 通常の歩行を購読
         moveStream
-            .Where(_ => !Input.GetKey(KeyCode.LeftShift))
+            .Where(_ => !Input.GetKey(KeyCode.LeftShift) && !(Gamepad.current?.leftTrigger.isPressed ?? false))
             .Subscribe(movement => new WalkCommand(this, movement).Execute());
 
         // ジャンプの入力と地面に触れているかの確認
         this.UpdateAsObservable()
             .Where(_ => !MenuUIManager.instance.isOpenUI)
-            .Where(_ => Input.GetButtonDown("Jump"))
+            .Where(_ => Input.GetButtonDown("Jump") || (Gamepad.current?.buttonSouth.isPressed ?? false)) // Bボタンもジャンプ
             .Where(_ => IsGrounded())
             .Subscribe(_ => m_Rigidbody.AddForce(new Vector3(0.0f, m_JumpForce, 0.0f)));
 

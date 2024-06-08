@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using VInspector;
 using Mirror.Examples.CouchCoop;
 using System.Linq;
+using UnityEngine.InputSystem;
 public class MenuUIManager : MonoBehaviour
 {
     [Tab("ボタン")]
@@ -32,9 +33,9 @@ public class MenuUIManager : MonoBehaviour
     private Dictionary<GameObject, CanvasGroup> m_PanelCanvasGroups;
 
     public static MenuUIManager instance;
-
+    [ReadOnly]
     public bool isOpenUI = false;
-
+    private bool isKeyOrButtonPressed = false;
     public bool IsUIOpen()
     {
         return m_PanelOpenStatus.Values.Any(status => status);
@@ -70,15 +71,22 @@ public class MenuUIManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if ((Input.GetKeyDown(KeyCode.Escape) || Gamepad.current?.startButton.isPressed == true) && !isKeyOrButtonPressed)
         {
-            ShowOnlyThisPanel(m_OptionsPanel);
+            isKeyOrButtonPressed = true;
+            if (isOpenUI)
+            {
+                CloseAllPanels();
+            }
+            else
+            {
+                ShowOnlyThisPanel(m_OptionsPanel);
+            }
         }
-        if (Input.GetKeyDown(KeyCode.Escape) && isOpenUI == true)
+        if (Input.GetKeyUp(KeyCode.Escape) || (Gamepad.current?.startButton.wasReleasedThisFrame == true))
         {
-            CloseAllPanels();
+            isKeyOrButtonPressed = false;
         }
-        CorsorControl();
         isOpenUI = IsUIOpen();
     }
 
@@ -128,8 +136,6 @@ public class MenuUIManager : MonoBehaviour
 
     private void ShowOnlyThisPanel(GameObject activePanel)
     {
-        Cursor.visible = true;
-
         foreach (var pair in m_ButtonPanelMap)
         {
             GameObject panel = pair.Value;
@@ -149,10 +155,5 @@ public class MenuUIManager : MonoBehaviour
                 m_PanelOpenStatus[panel] = false;
             }
         }
-    }
-
-    private void CorsorControl()
-    {
-        Cursor.visible = isOpenUI;
     }
 }

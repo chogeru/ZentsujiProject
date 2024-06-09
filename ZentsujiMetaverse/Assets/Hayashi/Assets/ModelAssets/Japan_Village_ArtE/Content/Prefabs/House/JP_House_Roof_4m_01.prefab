@@ -150,6 +150,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1370046953266904697}
   - component: {fileID: 960709306195122541}
+  - component: {fileID: -5005893541346216370}
   m_Layer: 0
   m_Name: JP_House_Roof_4m_01
   m_TagString: Untagged
@@ -192,6 +193,18 @@ LODGroup:
     renderers:
     - renderer: {fileID: 6513738628923392872}
   m_Enabled: 1
+--- !u!114 &-5005893541346216370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1749845119330428099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7422125450984077583
 GameObject:
   m_ObjectHideFlags: 0

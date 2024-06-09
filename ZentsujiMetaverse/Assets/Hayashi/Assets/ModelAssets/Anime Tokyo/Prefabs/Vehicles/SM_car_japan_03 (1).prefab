@@ -804,7 +804,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1178985490898127628}
-  m_Mesh: {fileID: -6942422011648779188, guid: d252e833a26bc9d408a2bec7d7553e9f, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 32b58748282afc142bce80794112cd54, type: 2}
 --- !u!23 &3028030815402877601
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1154,6 +1154,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1703370395915242179}
+  - component: {fileID: 1662563802845666347}
   m_Layer: 0
   m_Name: SM_car_japan_03 (1)
   m_TagString: Untagged
@@ -1178,6 +1179,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1662563802845666347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2082992846608109689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2259114834161172585
 GameObject:
   m_ObjectHideFlags: 0
@@ -5610,7 +5623,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7670973918383252951}
-  m_Mesh: {fileID: -1240630588651888049, guid: d252e833a26bc9d408a2bec7d7553e9f, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 8e39a8c27a9418a449e768d04a760caa, type: 2}
 --- !u!23 &6777778073810233398
 MeshRenderer:
   m_ObjectHideFlags: 0

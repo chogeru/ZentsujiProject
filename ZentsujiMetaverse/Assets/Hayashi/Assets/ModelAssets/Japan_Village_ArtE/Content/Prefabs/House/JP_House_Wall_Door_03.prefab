@@ -206,6 +206,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3746891002581698069}
   - component: {fileID: 6523083728811831017}
+  - component: {fileID: 7432160861991946154}
   m_Layer: 0
   m_Name: JP_House_Wall_Door_03
   m_TagString: Untagged
@@ -252,6 +253,18 @@ LODGroup:
     - renderer: {fileID: 4227824479835598908}
     - renderer: {fileID: 632921156222422768}
   m_Enabled: 1
+--- !u!114 &7432160861991946154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4086015209922960559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8184536934543251832
 GameObject:
   m_ObjectHideFlags: 0

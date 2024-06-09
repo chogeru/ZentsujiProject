@@ -401,6 +401,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7888297665460118147}
   - component: {fileID: 3108261405024163314}
+  - component: {fileID: -5614920204371682151}
   m_Layer: 0
   m_Name: JP_House_Wall_Door_01
   m_TagString: Untagged
@@ -439,12 +440,12 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.38328782
+  - screenRelativeHeight: 0.8456632
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 2812091835746565437}
     - renderer: {fileID: 8518914474447629746}
-  - screenRelativeHeight: 0.15755531
+  - screenRelativeHeight: 0.75293726
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 3982517978965568588}
@@ -455,6 +456,18 @@ LODGroup:
     - renderer: {fileID: 2799619502841495227}
     - renderer: {fileID: 8518914474447629746}
   m_Enabled: 1
+--- !u!114 &-5614920204371682151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7364243294680479801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8483228126537823977
 GameObject:
   m_ObjectHideFlags: 0

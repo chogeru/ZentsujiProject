@@ -527,6 +527,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7703267138508998916}
   - component: {fileID: 4172516568972183306}
+  - component: {fileID: -4567958166675305201}
   m_Layer: 0
   m_Name: JP_House_Porch_02
   m_TagString: Untagged
@@ -570,6 +571,18 @@ LODGroup:
     renderers:
     - renderer: {fileID: 402734441949062436}
   m_Enabled: 1
+--- !u!114 &-4567958166675305201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7038088323741815742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8472356465130493292
 GameObject:
   m_ObjectHideFlags: 0

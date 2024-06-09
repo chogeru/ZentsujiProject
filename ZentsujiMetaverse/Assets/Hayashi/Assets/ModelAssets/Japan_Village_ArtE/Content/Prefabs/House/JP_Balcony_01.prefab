@@ -95,6 +95,7 @@ GameObject:
   m_Component:
   - component: {fileID: 713376060529321701}
   - component: {fileID: 5745594862671008148}
+  - component: {fileID: -5673479339037375034}
   m_Layer: 0
   m_Name: JP_Balcony_01
   m_TagString: Untagged
@@ -134,7 +135,7 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.29257447
+  - screenRelativeHeight: 0.79703027
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 1531993818720621707}
@@ -143,6 +144,18 @@ LODGroup:
     renderers:
     - renderer: {fileID: 3445318660064362394}
   m_Enabled: 1
+--- !u!114 &-5673479339037375034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193016052776336479}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1755086681249257356
 GameObject:
   m_ObjectHideFlags: 0

@@ -109,6 +109,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6266449987689043618}
   - component: {fileID: 1201608675483607507}
+  - component: {fileID: -6424466497762885924}
   m_Layer: 0
   m_Name: JP_House_Window_05
   m_TagString: Untagged
@@ -147,7 +148,7 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.34240282
+  - screenRelativeHeight: 0.8489207
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 1080433772403666015}
@@ -156,6 +157,18 @@ LODGroup:
     renderers:
     - renderer: {fileID: 7112958150413814376}
   m_Enabled: 1
+--- !u!114 &-6424466497762885924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6754616299206511640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6943753223139495098
 GameObject:
   m_ObjectHideFlags: 0

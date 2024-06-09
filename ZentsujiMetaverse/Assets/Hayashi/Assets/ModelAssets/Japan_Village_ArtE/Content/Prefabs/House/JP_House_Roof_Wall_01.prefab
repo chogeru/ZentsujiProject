@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1314083884500231283}
   - component: {fileID: 3806975582861785681}
+  - component: {fileID: -4095121732458113581}
   m_Layer: 0
   m_Name: JP_House_Roof_Wall_01
   m_TagString: Untagged
@@ -52,6 +53,18 @@ LODGroup:
     renderers:
     - renderer: {fileID: 2899877380493871001}
   m_Enabled: 1
+--- !u!114 &-4095121732458113581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1835006808113282761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2279413431551570085
 GameObject:
   m_ObjectHideFlags: 0

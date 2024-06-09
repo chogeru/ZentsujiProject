@@ -108,6 +108,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4997016504353129154}
   - component: {fileID: 216990407881733555}
+  - component: {fileID: -8260490239443925847}
   m_Layer: 0
   m_Name: JP_Showcase_Store_01
   m_TagString: Untagged
@@ -147,7 +148,7 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.25
+  - screenRelativeHeight: 0.8130814
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 5324330756148150106}
@@ -156,6 +157,18 @@ LODGroup:
     renderers:
     - renderer: {fileID: 4047812575632104890}
   m_Enabled: 1
+--- !u!114 &-8260490239443925847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5625885051134400632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6718518635167648103
 GameObject:
   m_ObjectHideFlags: 0

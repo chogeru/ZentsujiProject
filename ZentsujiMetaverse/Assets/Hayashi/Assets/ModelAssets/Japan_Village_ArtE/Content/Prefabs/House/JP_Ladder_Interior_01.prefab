@@ -5890,6 +5890,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8893353400417310301}
   - component: {fileID: 4409470871482949932}
+  - component: {fileID: -5613523567690074693}
   m_Layer: 0
   m_Name: JP_Ladder_Interior_01
   m_TagString: Untagged
@@ -5929,11 +5930,11 @@ LODGroup:
   m_AnimateCrossFading: 0
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.37742227
+  - screenRelativeHeight: 0.8489565
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 5510812147866462499}
-  - screenRelativeHeight: 0.11141064
+  - screenRelativeHeight: 0.70108026
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 6129198503703294958}
@@ -5942,6 +5943,18 @@ LODGroup:
     renderers:
     - renderer: {fileID: 8080449733911765307}
   m_Enabled: 1
+--- !u!114 &-5613523567690074693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8079556004369566951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8109800667688589862
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,8 +12,8 @@ public class WeatherManager : MonoBehaviour
 
     [SerializeField, Header("雨のプレハブ")]
     private GameObject m_RainEffectPrefabs;
-    [SerializeField, Header("雲のプレハブ")]
-    private GameObject m_CloudPrefabs;
+    [SerializeField,Header("スカイボックスマテリアル")]
+    private Material m_SkyMaterial;
 
     public event Action<string> OnWeatherChanged;
 
@@ -53,24 +53,45 @@ public class WeatherManager : MonoBehaviour
 
         if (weatherInfo.weather[0].main == "Rain")
         {
-            if (m_RainEffectPrefabs != null&&m_CloudPrefabs!=null)
+            if (m_RainEffectPrefabs != null)
             {
                 m_RainEffectPrefabs.SetActive(true);
-                m_CloudPrefabs.SetActive(true);
             }
             else
             {
                 Debug.Log("雨のプレハブが設定されてないよ");
             }
+            if(m_SkyMaterial!=null)
+            {
+                m_SkyMaterial.SetFloat("Cloudiness", 0.8f);
+                m_SkyMaterial.SetFloat("CloudFalloff", 0f);
+
+            }
         }
+        if (m_SkyMaterial != null)
+        {
+            m_SkyMaterial.SetFloat("Cloudiness", 0.4f);
+            m_SkyMaterial.SetFloat("CloudFalloff", 0.4f);
+        }
+
+        if (m_RainEffectPrefabs != null)
+        {
+            m_RainEffectPrefabs.SetActive(false);
+        }
+        else
+        {
+            Debug.Log("プレハブが設定されていない");
+        }
+
     }
     [ContextMenu("天気通常=Clouds")]
     public void WeatherCloud()
     {
-        if (m_RainEffectPrefabs != null && m_CloudPrefabs != null)
+        if (m_RainEffectPrefabs != null)
         {
             m_RainEffectPrefabs.SetActive(false);
-            m_CloudPrefabs.SetActive(false);
+            m_SkyMaterial.SetFloat("_Cloudiness", 0.4f);
+            m_SkyMaterial.SetFloat("_CloudFalloff", 0.4f);
         }
         else
         {
@@ -81,10 +102,11 @@ public class WeatherManager : MonoBehaviour
     [ContextMenu("天気雨=Rain")]
     public void WeathwerRain()
     {
-        if (m_RainEffectPrefabs != null && m_CloudPrefabs != null)
+        if (m_RainEffectPrefabs != null)
         {
             m_RainEffectPrefabs.SetActive(true);
-            m_CloudPrefabs.SetActive(true);
+            m_SkyMaterial.SetFloat("_Cloudiness", 0.8f);
+            m_SkyMaterial.SetFloat("_CloudFalloff", 0f);
         }
         else
         {

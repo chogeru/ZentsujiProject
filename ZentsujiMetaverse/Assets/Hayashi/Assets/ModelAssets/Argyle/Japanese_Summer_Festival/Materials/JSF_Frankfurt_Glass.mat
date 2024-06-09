@@ -15,6 +15,7 @@ Material:
   - N_F_RELGI_ON
   - N_F_SS_ON
   - N_F_TRANSAFFSHA_ON
+  - N_F_TRANS_ON
   m_InvalidKeywords:
   - N_F_TRANSAFFSHA
   - _ALPHAPREMULTIPLY_ON
@@ -22,8 +23,9 @@ Material:
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -123,8 +125,8 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaBaseCutout: 1
-    - _BleModDest: 0
-    - _BleModSour: 1
+    - _BleModDest: 10
+    - _BleModSour: 5
     - _BumpScale: 1
     - _Compa: 4
     - _ComputeMeshIndex: 0
@@ -204,7 +206,7 @@ Material:
     - _NoisyOutlineIntensity: 0
     - _NormalMapIntensity: 1
     - _OcclusionStrength: 1
-    - _Opacity: 1
+    - _Opacity: 0.5
     - _Oper: 0
     - _OutlineExtrudeMethod: 0
     - _OutlineWidth: 0.5
@@ -256,7 +258,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _TEXMCOLINT: 1
-    - _TRANSMODE: 0
+    - _TRANSMODE: 1
     - _TexturePatternStyle: 0
     - _TransAffSha: 1
     - _TransparentThreshold: 0

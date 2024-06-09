@@ -420,6 +420,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1509892974984482235}
   - component: {fileID: 1509892974984482234}
+  - component: {fileID: 934128055085890605}
   m_Layer: 0
   m_Name: Point light_a_f
   m_TagString: Untagged
@@ -504,6 +505,26 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &934128055085890605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1509892974984482232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Version: 1
+  m_UsePipelineSettings: 1
+  m_AdditionalLightsShadowResolutionTier: 2
+  m_LightLayerMask: 1
+  m_CustomShadowLayers: 0
+  m_ShadowLayerMask: 1
+  m_LightCookieSize: {x: 1, y: 1}
+  m_LightCookieOffset: {x: 0, y: 0}
 --- !u!1 &1509892975103837716
 GameObject:
   m_ObjectHideFlags: 0
@@ -2078,11 +2099,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 417314, guid: 6ac094cee9bac5140baf78fdd9c15b92, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 423428, guid: 6ac094cee9bac5140baf78fdd9c15b92, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 470356, guid: 6ac094cee9bac5140baf78fdd9c15b92, type: 3}
       propertyPath: m_RootOrder

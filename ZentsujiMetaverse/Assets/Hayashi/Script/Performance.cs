@@ -43,6 +43,10 @@ public class Performance : MonoBehaviour
     GUIStyle m_LeftGuiStyle = new GUIStyle();
     GUIStyle m_RightGuiStyle = new GUIStyle();
 
+    [SerializeField, Header("テキストカラー左")]
+    private Color m_LeftGUIColor;
+    [SerializeField,Header("テキストカラー右")]
+    private Color m_RightGUIColor;
     float m_DeltaTime = 0.0f;
 
     private void Awake()
@@ -69,8 +73,8 @@ public class Performance : MonoBehaviour
         m_LeftGuiStyle.fontSize = 35;
         m_RightGuiStyle.fontSize = 28;
         //フォントのカラー
-        m_LeftGuiStyle.normal.textColor = Color.white;
-        m_RightGuiStyle.normal.textColor= Color.white;
+        m_LeftGuiStyle.normal.textColor = m_LeftGUIColor;
+        m_RightGuiStyle.normal.textColor = m_RightGUIColor;
 
         m_RightGuiStyle.alignment = TextAnchor.MiddleRight;
         DontDestroyOnLoad(this.gameObject);

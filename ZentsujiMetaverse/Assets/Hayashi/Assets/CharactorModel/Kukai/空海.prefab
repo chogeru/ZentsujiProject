@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7196592967356749270}
   - component: {fileID: 1672087594070941352}
+  - component: {fileID: 4316397949412388412}
   m_Layer: 0
   m_Name: kuukai_amikasa
   m_TagString: Untagged
@@ -108,7 +109,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -971292438846136049, guid: 32690f7339f3ce245bfceba1a1313a78, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 305f50091267b9c4d8da0d43c4068cbc, type: 2}
   m_Bones:
   - {fileID: 8640785475561708040}
   - {fileID: 4962360032081588771}
@@ -185,6 +186,18 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0000001937151, y: 0.6408966, z: 0.016000926}
     m_Extent: {x: 0.198285, y: 0.13797134, z: 0.19828501}
   m_DirtyAABB: 0
+--- !u!114 &4316397949412388412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78077155933338013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &241273074576006583
 GameObject:
   m_ObjectHideFlags: 0
@@ -786,7 +799,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -7235825186615011399, guid: 32690f7339f3ce245bfceba1a1313a78, type: 3}
+  m_Mesh: {fileID: 4300000, guid: f3fd383e7f7493643bf790bea6e3ef31, type: 2}
   m_Bones:
   - {fileID: 8640785475561708040}
   - {fileID: 4962360032081588771}
@@ -1244,6 +1257,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7673723180471319840}
   - component: {fileID: 6287662347409314955}
+  - component: {fileID: 5142301591576689651}
   m_Layer: 0
   m_Name: kuukai_syakujou
   m_TagString: Untagged
@@ -1311,7 +1325,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -5769381473783000318, guid: 32690f7339f3ce245bfceba1a1313a78, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 305a0686ac70698408d6aa1ce651ede2, type: 2}
   m_Bones:
   - {fileID: 8640785475561708040}
   - {fileID: 4962360032081588771}
@@ -1388,6 +1402,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.7234246, y: 0.45027506, z: -0.18979946}
     m_Extent: {x: 0.057904005, y: 0.052621007, z: 0.8626137}
   m_DirtyAABB: 0
+--- !u!114 &5142301591576689651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2879642570695848399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3044221032553477374
 GameObject:
   m_ObjectHideFlags: 0
@@ -1529,7 +1555,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -5567253749798407614, guid: 32690f7339f3ce245bfceba1a1313a78, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 8fe1d7450446e6b4da724165f8793ade, type: 2}
   m_Bones:
   - {fileID: 8640785475561708040}
   - {fileID: 4962360032081588771}
@@ -2294,6 +2320,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8137833197368925529}
   - component: {fileID: 4388389664972323399}
+  - component: {fileID: 5448890273974907572}
   m_Layer: 0
   m_Name: kuukai_fuku_002
   m_TagString: Untagged
@@ -2361,7 +2388,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 8785742262982148184, guid: 32690f7339f3ce245bfceba1a1313a78, type: 3}
+  m_Mesh: {fileID: 4300000, guid: d199190cbc270c742a35da2e930dbe8d, type: 2}
   m_Bones:
   - {fileID: 8640785475561708040}
   - {fileID: 4962360032081588771}
@@ -2438,6 +2465,18 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.000000029802322, y: 0.13560757, z: -0.0068809353}
     m_Extent: {x: 0.66790473, y: 0.3867511, z: 0.07251145}
   m_DirtyAABB: 0
+--- !u!114 &5448890273974907572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4916137899898090394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5081870149997959928
 GameObject:
   m_ObjectHideFlags: 0
@@ -2897,40 +2936,40 @@ MonoBehaviour:
   serializeData2:
     selectionData:
       positions:
-      - x: 0.63860303
+      - x: 0.638603
         y: 0.1817627
         z: -0.049835205
-      - x: 0.6379548
+      - x: 0.6379547
         y: 0.08018494
         z: -0.049835205
-      - x: 0.6373065
+      - x: 0.63730645
         y: -0.021392822
         z: -0.049835205
-      - x: 0.63665825
+      - x: 0.6366582
         y: -0.12297058
         z: -0.049835205
-      - x: 0.6360101
+      - x: 0.63601005
         y: -0.22454834
         z: -0.049835205
-      - x: 0.63536173
+      - x: 0.6353617
         y: -0.3261261
         z: -0.049835205
-      - x: -0.6419087
+      - x: -0.64190876
         y: 0.1817627
         z: -0.049835205
-      - x: -0.64126045
+      - x: -0.6412605
         y: 0.08018494
         z: -0.049835205
-      - x: -0.6406122
+      - x: -0.64061224
         y: -0.021392822
         z: -0.049835205
-      - x: -0.6399639
+      - x: -0.639964
         y: -0.12297058
         z: -0.049835205
-      - x: -0.6393158
+      - x: -0.63931584
         y: -0.22454834
         z: -0.049835205
-      - x: -0.6386674
+      - x: -0.63866746
         y: -0.3261261
         z: -0.049835205
       attributes:
@@ -3286,6 +3325,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5679979260419158772}
   - component: {fileID: 1252499711386887880}
+  - component: {fileID: 1101336892092037990}
   m_Layer: 0
   m_Name: kuukai_body
   m_TagString: Untagged
@@ -3353,7 +3393,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 8742367663351720135, guid: 32690f7339f3ce245bfceba1a1313a78, type: 3}
+  m_Mesh: {fileID: 4300000, guid: d68b33047c3142541a527c293ba0afd2, type: 2}
   m_Bones:
   - {fileID: 8640785475561708040}
   - {fileID: 4962360032081588771}
@@ -3430,6 +3470,18 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0.4650551, z: -0.005002655}
     m_Extent: {x: 0.82490414, y: 0.0327878, z: 0.06893408}
   m_DirtyAABB: 0
+--- !u!114 &1101336892092037990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5966145558547027330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6083115072046954728
 GameObject:
   m_ObjectHideFlags: 0
@@ -4075,6 +4127,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6482516633927659850}
   - component: {fileID: 5064879515179116854}
+  - component: {fileID: 2831176486381576978}
   m_Layer: 0
   m_Name: kuukai_fuku
   m_TagString: Untagged
@@ -4142,7 +4195,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -6182543641933912815, guid: 32690f7339f3ce245bfceba1a1313a78, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 450d754a851a9a44ebaf1fa29e713802, type: 2}
   m_Bones:
   - {fileID: 8640785475561708040}
   - {fileID: 4962360032081588771}
@@ -4219,6 +4272,18 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0017250627, y: -0.2343229, z: 0.0011926517}
     m_Extent: {x: 0.21439181, y: 0.77745163, z: 0.1749326}
   m_DirtyAABB: 0
+--- !u!114 &2831176486381576978
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7863286861993566135}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7901713463509912745
 GameObject:
   m_ObjectHideFlags: 0
@@ -4328,7 +4393,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: -3871573317478233027, guid: 32690f7339f3ce245bfceba1a1313a78, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 84c2f38b04b3e3240965f6746a49c459, type: 2}
   m_Bones:
   - {fileID: 8640785475561708040}
   - {fileID: 4962360032081588771}

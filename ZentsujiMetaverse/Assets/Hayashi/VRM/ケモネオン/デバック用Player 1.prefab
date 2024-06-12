@@ -5420,7 +5420,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8424753312874305819}
   m_LocalRotation: {x: -0, y: 0.62901515, z: -0, w: 0.77739304}
-  m_LocalPosition: {x: 0.000000059604645, y: 2, z: -1.5000002}
+  m_LocalPosition: {x: -1.8874093, y: -4.12772, z: 3.2003846}
   m_LocalScale: {x: 999, y: 999, z: 999}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5818,6 +5818,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 63
   capsuleCollider: {fileID: 0}
+  m_MaxStepHeight: 0.3
 --- !u!114 &7645765249645539236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6930,12 +6931,12 @@ PrefabInstance:
     - target: {fileID: 8712790648181584772, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.00009536743
+      value: 0.000089645386
       objectReference: {fileID: 0}
     - target: {fileID: 8712790648181584772, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.0003012808
+      value: 0.00030517578
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29e2ed117aedabb4b9015ea9ea1be048, type: 3}

@@ -15,6 +15,7 @@ Material:
   - N_F_RELGI_ON
   - N_F_SS_ON
   - N_F_TRANSAFFSHA_ON
+  - N_F_TRANS_ON
   m_InvalidKeywords:
   - N_F_TRANSAFFSHA
   - _ALPHAPREMULTIPLY_ON
@@ -22,8 +23,9 @@ Material:
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
+  m_CustomRenderQueue: 3000
+  stringTagMap:
+    RenderType: Transparent
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -123,8 +125,8 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaBaseCutout: 1
-    - _BleModDest: 0
-    - _BleModSour: 1
+    - _BleModDest: 10
+    - _BleModSour: 5
     - _BumpScale: 1
     - _Compa: 4
     - _ComputeMeshIndex: 0
@@ -162,7 +164,7 @@ Material:
     - _LightFalloffAffectShadowT: 0
     - _LightFalloffSoftness: 1
     - _LightIntensity: 1
-    - _MCIALO: 0
+    - _MCIALO: 1
     - _MCapIntensity: 1
     - _MVCOL: 0
     - _MaiColPo: 0.8
@@ -204,7 +206,7 @@ Material:
     - _NoisyOutlineIntensity: 0
     - _NormalMapIntensity: 1
     - _OcclusionStrength: 1
-    - _Opacity: 1
+    - _Opacity: 0.3
     - _Oper: 0
     - _OutlineExtrudeMethod: 0
     - _OutlineWidth: 0.5
@@ -256,7 +258,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _TEXMCOLINT: 1
-    - _TRANSMODE: 0
+    - _TRANSMODE: 1
     - _TexturePatternStyle: 0
     - _TransAffSha: 1
     - _TransparentThreshold: 0
@@ -273,8 +275,8 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
     - _Glow_Color: {r: 1, g: 1, b: 1, a: 1}
-    - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _MainColor: {r: 0.9734455, g: 0.9734455, b: 0.9734455, a: 1}
+    - _HighlightColor: {r: 1, g: 1, b: 1, a: 0}
+    - _MainColor: {r: 0.9734455, g: 0.9734455, b: 0.9734455, a: 0}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineOffset: {r: 0, g: 0, b: 0, a: 1}
     - _OverallShadowColor: {r: 0, g: 0, b: 0, a: 1}

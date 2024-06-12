@@ -22,7 +22,8 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
@@ -121,7 +122,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaBaseCutout: 1
+    - _AlphaBaseCutout: 0
     - _BleModDest: 0
     - _BleModSour: 1
     - _BumpScale: 1
@@ -161,7 +162,7 @@ Material:
     - _LightFalloffAffectShadowT: 0
     - _LightFalloffSoftness: 1
     - _LightIntensity: 1
-    - _MCIALO: 0
+    - _MCIALO: 1
     - _MCapIntensity: 1
     - _MVCOL: 0
     - _MaiColPo: 0.8
@@ -206,7 +207,7 @@ Material:
     - _Opacity: 1
     - _Oper: 0
     - _OutlineExtrudeMethod: 0
-    - _OutlineWidth: 0.5
+    - _OutlineWidth: 0.1
     - _OutlineWidthAffectedByViewDistance: 0
     - _OutlineZPostionInCamera: 0
     - _OverallShadowColorPower: 1
@@ -272,8 +273,8 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GlossColor: {r: 1, g: 1, b: 1, a: 1}
     - _Glow_Color: {r: 1, g: 1, b: 1, a: 1}
-    - _HighlightColor: {r: 1, g: 1, b: 1, a: 1}
-    - _MainColor: {r: 0.9734455, g: 0.9734455, b: 0.9734455, a: 1}
+    - _HighlightColor: {r: 1, g: 1, b: 1, a: 0}
+    - _MainColor: {r: 0.9734455, g: 0.9734455, b: 0.9734455, a: 0}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _OutlineOffset: {r: 0, g: 0, b: 0, a: 1}
     - _OverallShadowColor: {r: 0, g: 0, b: 0, a: 1}

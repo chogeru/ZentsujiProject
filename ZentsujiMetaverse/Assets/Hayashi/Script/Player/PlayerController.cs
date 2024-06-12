@@ -52,6 +52,9 @@ public class PlayerController : NetworkBehaviour
     private LayerMask m_LayerMask;
     [SerializeField]
     private CapsuleCollider capsuleCollider;
+
+    [SerializeField, Header("乗り越えられる段差の高さ")]
+    private float m_MaxStepHeight = 0.3f;
     private ReactiveProperty<bool> isIdle = new ReactiveProperty<bool>(true);
     private ReactiveProperty<bool> isWalk = new ReactiveProperty<bool>(false);
     private ReactiveProperty<bool> isRun = new ReactiveProperty<bool>(false);
@@ -116,7 +119,7 @@ public class PlayerController : NetworkBehaviour
     }
     void TryStepUp()
     {
-        if (m_Rigidbody.velocity == Vector3.zero)
+        if (m_Rigidbody.velocity.magnitude<0.1f)
             return;
         // プレイヤーの前方0.3ユニットの位置から、カプセルコライダーの高さに基づくレイキャストを設定
         Vector3 forward = transform.forward * 0.3f;
@@ -129,10 +132,11 @@ public class PlayerController : NetworkBehaviour
         {
             // レイキャストが何かにヒットし、その高さが適切であればプレイヤーを移動
             float stepHeight = hitInfo.point.y - transform.position.y;
-            if (stepHeight <= capsuleCollider.height / 3 && stepHeight > 0)
+            if (stepHeight <= m_MaxStepHeight && stepHeight > 0)
             {
                 // プレイヤーの位置を段差の上に更新
-                transform.position = new Vector3(transform.position.x, hitInfo.point.y + stepHeight, transform.position.z);
+                Vector3 targetPosition = new Vector3(transform.position.x, hitInfo.point.y + stepHeight, transform.position.z);
+                transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 10);
             }
         }
 
@@ -173,9 +177,18 @@ public class PlayerController : NetworkBehaviour
             UpdateState(true, false, false);
             return;
         }
+        // カメラの前方方向を取得し、それを地面の平面にフラットにする
+        Vector3 forward = m_CameraTransform.forward;
+        forward.y = 0;
+        forward.Normalize();
 
-        Vector3 relativeMovement = m_CameraTransform.TransformDirection(movement);
-        relativeMovement.y = 0;
+        // カメラの前方方向に基づいて右方向を計算する
+        Vector3 right = Vector3.Cross(Vector3.up, forward);
+
+        // カメラの水平回転に基づく相対的な移動方向を計算する
+        Vector3 relativeMovement = movement.z * forward + movement.x * right;
+
+
 
         if (movement != Vector3.zero)
         {

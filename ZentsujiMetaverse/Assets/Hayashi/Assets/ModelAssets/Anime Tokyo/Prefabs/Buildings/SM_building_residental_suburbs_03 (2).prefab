@@ -19000,6 +19000,7 @@ GameObject:
   - component: {fileID: 1009750013812389995}
   - component: {fileID: 3019572292015049889}
   - component: {fileID: 869154048532772805}
+  - component: {fileID: 7901374448196906224}
   m_Layer: 0
   m_Name: SM_building_residental_suburbs_03 (2)
   m_TagString: Untagged
@@ -19043,7 +19044,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3667989965033500020}
-  m_Mesh: {fileID: -3278650971306647681, guid: 0b18d6d687842b14088b72d176de08bc, type: 3}
+  m_Mesh: {fileID: 4300000, guid: 54362fe134c185b4689bef46d704e528, type: 2}
 --- !u!23 &3019572292015049889
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -19206,6 +19207,18 @@ MonoBehaviour:
     modifyNameEnabled: 1
   modified: 1
   modifiedChildren: 0
+--- !u!114 &7901374448196906224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3667989965033500020}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e9e5bec874610c42a68fe369784ab10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3688863252304962185
 GameObject:
   m_ObjectHideFlags: 0

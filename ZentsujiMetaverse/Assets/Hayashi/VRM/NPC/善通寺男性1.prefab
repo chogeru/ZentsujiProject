@@ -1716,11 +1716,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 588975596880044823}
-  - component: {fileID: 156099267300626059}
-  - component: {fileID: 743517860885031880}
   - component: {fileID: 5211344580885640862}
   - component: {fileID: 1658407519268702809}
-  - component: {fileID: 9043840383892375873}
   - component: {fileID: 2769732964103576609}
   - component: {fileID: 2638199737322530749}
   m_Layer: 0
@@ -1749,33 +1746,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &156099267300626059
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2850360637001050969}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 690ea0146224b8b4694a1925dddeb352, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Meta: {fileID: 7282840805161640241}
---- !u!114 &743517860885031880
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2850360637001050969}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3869812175467a143ab9cd865752b4a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Avatar: {fileID: 0}
-  Description: {fileID: 0}
 --- !u!95 &5211344580885640862
 Animator:
   serializedVersion: 5
@@ -1809,25 +1779,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BlendShapeAvatar: {fileID: 11400000, guid: 4aa1b5d980719174e8b9116e4257b7cc, type: 2}
---- !u!114 &9043840383892375873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2850360637001050969}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dedba1309bdf12b42af2362f52eea134, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FirstPersonBone: {fileID: 5170694638286268009}
-  FirstPersonOffset: {x: 0, y: 0.06, z: 0}
-  Renderers:
-  - Renderer: {fileID: 7796345937627429288}
-    FirstPersonFlag: 0
-  - Renderer: {fileID: 5589814224356150743}
-    FirstPersonFlag: 0
 --- !u!114 &2769732964103576609
 MonoBehaviour:
   m_ObjectHideFlags: 0

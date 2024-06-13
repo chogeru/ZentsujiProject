@@ -8,40 +8,45 @@ using R3;
 
 public class PlayerCameraController : MonoBehaviour
 {
-    [SerializeField]
+    [SerializeField,Header("プレイヤーのTransform")]
     private Transform m_Player;
-    [SerializeField]
+    [SerializeField,Header("マウス感度")]
     private float m_Sensitivity = 2.0f;
-    [SerializeField]
+    [SerializeField,Header("ゲームパッド感度")]
     private float m_GamepadSensitivity = 3.0f;
-    [SerializeField]
+    [SerializeField,Header("ズーム感度")]
     private float m_ZoomSensitivity = 2.0f; 
-    [SerializeField]
+    [SerializeField,Header("障害物レイヤー")]
     private LayerMask m_ObstacleMask;
-    [SerializeField]
+    [SerializeField,Header("ゲームパッドのスクロール速度")]
     private float m_GamePadScrollSpeed;
-    [SerializeField]
+    [SerializeField,Header("カメラとプレイヤーの最小距離を")]
     private float m_MinDistance = 1.0f;
-    [SerializeField]
+    [SerializeField,Header("カメラとプレイヤーの最大距離")]
     private float m_MaxDistance = 10.0f;
-    [SerializeField]
+    [SerializeField,Header("スフィアキャストの半径")]
     private float m_SphereCastRadius = 0.5f;
-    [SerializeField]
+    [SerializeField,Header("カメラのズーム動作の滑らかさ")]
     private float m_SmoothTime = 0.2f; 
 
-    private Camera mainCamera;
-    private Vector3 offset;
-    private float currentDistance;
-    private float targetDistance;
-    private float zoomVelocity = 0.0f;
+    private Camera m_MainCamera;
+    //カメラとプレイヤー間のオフセット
+    private Vector3 m_Offset;
+    //現在のカメラとプレイヤーの距離
+    private float m_CurrentDistance;
+    //目的のカメラとプレイヤーの距離感
+    private float m_TargetDistance;
+    //ズーム動作の速度
+    private float m_ZoomVelocity = 0.0f;
 
     void Start()
     {
-        mainCamera = GetComponent<Camera>();
-        offset = transform.position - m_Player.position;
-        currentDistance = offset.magnitude;
-        targetDistance = currentDistance;
+        m_MainCamera = GetComponent<Camera>();
+        m_Offset = transform.position - m_Player.position;
+        m_CurrentDistance = m_Offset.magnitude;
+        m_TargetDistance = m_CurrentDistance;
 
+        //UIがひらいていない時カメラの位置を変更する
         Observable.EveryUpdate()
             .Where(_ => !MenuUIManager.instance.isOpenUI)
             .Select(_ =>
@@ -74,27 +79,28 @@ public class PlayerCameraController : MonoBehaviour
 
     private async UniTaskVoid UpdateCameraPositionAsync(float mouseX, float mouseY, float scrollInput)
     {
-        offset = Quaternion.AngleAxis(mouseX, Vector3.up) * Quaternion.AngleAxis(-mouseY, mainCamera.transform.right) * offset;
+        m_Offset = Quaternion.AngleAxis(mouseX, Vector3.up) * Quaternion.AngleAxis(-mouseY, m_MainCamera.transform.right) * m_Offset;
 
-        // スクロール入力を使用してターゲット距離を更新（m_ZoomSensitivityを使用）
-        targetDistance = Mathf.Clamp(targetDistance - scrollInput * m_ZoomSensitivity * Time.deltaTime, m_MinDistance, m_MaxDistance);
+        //スクロール入力を使用してターゲット距離を更新（m_ZoomSensitivityを使用）
+        m_TargetDistance = Mathf.Clamp(m_TargetDistance - scrollInput * m_ZoomSensitivity * Time.deltaTime, m_MinDistance, m_MaxDistance);
 
-        // 現在の距離をターゲット距離に滑らかに補間
-        currentDistance = Mathf.SmoothDamp(currentDistance, targetDistance, ref zoomVelocity, m_SmoothTime);
+        //現在の距離をターゲット距離に滑らかに補間
+        m_CurrentDistance = Mathf.SmoothDamp(m_CurrentDistance, m_TargetDistance, ref m_ZoomVelocity, m_SmoothTime);
 
-        // オフセットの長さを現在の距離に設定
-        offset = offset.normalized * currentDistance;
+        //オフセットの長さを現在の距離に設定
+        m_Offset = m_Offset.normalized * m_CurrentDistance;
 
-        Vector3 newPosition = m_Player.position + offset;
+        Vector3 newPosition = m_Player.position + m_Offset;
         Vector3 direction = newPosition - m_Player.position;
 
+        //カメラが障害物にぶつからないようにする
         if (Physics.Raycast(m_Player.position, direction.normalized, out RaycastHit hit, direction.magnitude, m_ObstacleMask))
         {
             newPosition = hit.point - direction.normalized * m_MinDistance;
         }
 
-        mainCamera.transform.position = newPosition;
-        mainCamera.transform.LookAt(m_Player.position);
+        m_MainCamera.transform.position = newPosition;
+        m_MainCamera.transform.LookAt(m_Player.position);
 
         await UniTask.Yield(PlayerLoopTiming.Update);
     }

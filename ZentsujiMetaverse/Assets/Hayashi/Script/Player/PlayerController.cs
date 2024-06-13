@@ -5,6 +5,7 @@ using R3.Triggers;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
+using VInspector;
 
 #region
 /*
@@ -34,6 +35,8 @@ Selectは、元のデータを新しい形に変換するために使う
 
 public class PlayerController : NetworkBehaviour
 {
+    #region プレイヤー設定
+    [Tab("プレイヤー設定")]
     [SerializeField, Header("歩き速度")]
     private float m_WalkSpeed = 5.0f;
     [SerializeField, Header("走りスピード")]
@@ -42,19 +45,33 @@ public class PlayerController : NetworkBehaviour
     public float m_JumpForce = 300f;
     [SerializeField, Header("重力係数")]
     private float m_GravityMultiplier = 9.81f;
-    [SerializeField]
+    [EndTab]
+    #endregion
+
+    #region 各コンポーネント
+    [Tab("各コンポーネント")]
+    [SerializeField,Header("プレイヤーのRigidbody")]
     private Rigidbody m_Rigidbody;
-    [SerializeField]
-    private Transform m_CameraTransform;
+    [SerializeField, Header("プレイヤーのカプセルコライダ")]
+    private CapsuleCollider m_CapsuleCollider;
     [SerializeField, Header("アニメ-ター")]
     private Animator m_Animator;
-    [SerializeField]
-    private LayerMask m_LayerMask;
-    [SerializeField]
-    private CapsuleCollider capsuleCollider;
+    [EndTab]
+    #endregion
 
+    #region カメラと衝突設定
+    [Tab("カメラと衝突設定")]
+    [SerializeField,Header("自身のカメラ")]
+    private Transform m_CameraTransform;
+
+    [SerializeField, Header("衝突検出用レイヤーマスク")]
+    private LayerMask m_LayerMask;
     [SerializeField, Header("乗り越えられる段差の高さ")]
     private float m_MaxStepHeight = 0.3f;
+    [EndTab]
+    #endregion
+
+    //プレイヤーの行動状態を表すReactiveProperty
     private ReactiveProperty<bool> isIdle = new ReactiveProperty<bool>(true);
     private ReactiveProperty<bool> isWalk = new ReactiveProperty<bool>(false);
     private ReactiveProperty<bool> isRun = new ReactiveProperty<bool>(false);
@@ -62,12 +79,15 @@ public class PlayerController : NetworkBehaviour
     // ローカルプレイヤーが開始した時に呼び出されるメソッド
     public override void OnStartLocalPlayer()
     {
+        //各コンポーネントの所得
         m_Rigidbody = GetComponent<Rigidbody>();
-        capsuleCollider = GetComponent<CapsuleCollider>();
-
+        m_CapsuleCollider = GetComponent<CapsuleCollider>();
+        //衝突検出を連続的に設定
         m_Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         base.OnStartLocalPlayer();
+        //動きを非同期に初期化
         InitializeMovement().Forget();
+        //アニメーションのバインド
         BindAnimations();
 
     }
@@ -84,13 +104,15 @@ public class PlayerController : NetworkBehaviour
         var moveStream = this.UpdateAsObservable()
          .Where(_ => !MenuUIManager.instance.isOpenUI)
          .Select(_ => new Vector3(Gamepad.current?.leftStick.ReadValue().x ?? Input.GetAxis("Horizontal"),
-         0,
-         Gamepad.current?.leftStick.ReadValue().y ?? Input.GetAxis("Vertical")))
+                                  0,
+                                  Gamepad.current?.leftStick.ReadValue().y ?? Input.GetAxis("Vertical")))
          .Share();
+
         // Shiftキーを押しながらの走行を購読
         moveStream
              .Where(_ => Input.GetKey(KeyCode.LeftShift) || (Gamepad.current?.leftTrigger.isPressed ?? false))
              .Subscribe(movement => new RunCommand(this, movement).Execute());
+
         // 通常の歩行を購読
         moveStream
             .Where(_ => !Input.GetKey(KeyCode.LeftShift) && !(Gamepad.current?.leftTrigger.isPressed ?? false))
@@ -108,6 +130,7 @@ public class PlayerController : NetworkBehaviour
     }
     void Update()
     {
+        //重力の適応
         UseGravity();
         // 段差登りを試みる
         TryStepUp();
@@ -121,37 +144,41 @@ public class PlayerController : NetworkBehaviour
     {
         if (m_Rigidbody.velocity.magnitude<0.1f)
             return;
-        // プレイヤーの前方0.3ユニットの位置から、カプセルコライダーの高さに基づくレイキャストを設定
+        //プレイヤーの前方0.3の位置から、レイキャストを設定
         Vector3 forward = transform.forward * 0.3f;
-        Vector3 rayStart = transform.position + forward + Vector3.up * capsuleCollider.height * 0.5f; // レイキャスト開始点はカプセルの中心点より
-        Vector3 rayEnd = transform.position + forward + Vector3.down * 0.1f; // カプセルコライダーの底近くまで
+        //レイキャスト開始点はカプセルの中心点より
+        Vector3 rayStart = transform.position + forward + Vector3.up * m_CapsuleCollider.height * 0.5f;
+        //カプセルコライダーの底まで
+        Vector3 rayEnd = transform.position + forward + Vector3.down * 0.1f;
 
-        // レイキャストの終了点を地面すぐ上に設定
         RaycastHit hitInfo;
-        if (Physics.Raycast(rayStart, Vector3.down, out hitInfo, capsuleCollider.height * 0.6f,m_LayerMask))
+        if (Physics.Raycast(rayStart, Vector3.down, out hitInfo, m_CapsuleCollider.height * 0.6f,m_LayerMask))
         {
-            // レイキャストが何かにヒットし、その高さが適切であればプレイヤーを移動
+            // レイキャストが何かにヒットし、その高さが乗り越えられる高さならプレイヤーを移動
             float stepHeight = hitInfo.point.y - transform.position.y;
             if (stepHeight <= m_MaxStepHeight && stepHeight > 0)
             {
                 // プレイヤーの位置を段差の上に更新
                 Vector3 targetPosition = new Vector3(transform.position.x, hitInfo.point.y + stepHeight, transform.position.z);
+                //プレイヤーの位置を現在の位置からターゲットの位置に
                 transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * 10);
             }
         }
-
-        Debug.DrawLine(rayStart, rayEnd, Color.blue); // デバッグ用のレイキャスト表示
+#if UNITY_EDITOR
+        //デバッグ用のレイキャスト表示
+        Debug.DrawLine(rayStart, rayEnd, Color.blue);
+#endif
     }
 
-    // アニメーションの状態をバインドするメソッド
+    //アニメーションの状態をバインドするメソッド
     private void BindAnimations()
     {
-        // ReactivePropertyを使ってアニメータの各状態を購読し、変化があるたびにAnimatorへ反映
-        isIdle.Subscribe(idle => m_Animator.SetBool("Idle", idle)).AddTo(this);
-        isWalk.Subscribe(walk => m_Animator.SetBool("Walk", walk)).AddTo(this);
-        isRun.Subscribe(run => m_Animator.SetBool("Run", run)).AddTo(this);
+        //ReactivePropertyを使ってアニメータの各状態を購読し、変化があるたびにAnimatorへ反映
+        isIdle.Subscribe(idle => m_Animator.SetBool("Idle", idle)).AddTo(this);//待機
+        isWalk.Subscribe(walk => m_Animator.SetBool("Walk", walk)).AddTo(this);//歩行
+        isRun.Subscribe(run => m_Animator.SetBool("Run", run)).AddTo(this);//走り
 
-        // 入力軸に基づくアニメーション変数もリアクティブに更新
+        //入力軸に基づくアニメーション変数もリアクティブに更新
         this.UpdateAsObservable()
             .Select(_ => Input.GetAxis("Horizontal"))
             .Subscribe(horizontal =>
@@ -171,6 +198,7 @@ public class PlayerController : NetworkBehaviour
     // プレイヤーを指定の速度で移動
     public void Move(Vector3 movement, float speed)
     {
+        //UIが開かれていたら移動を停止して、idleに
         if (MenuUIManager.instance.isOpenUI)
         {
             m_Rigidbody.velocity = Vector3.zero;
@@ -189,19 +217,23 @@ public class PlayerController : NetworkBehaviour
         Vector3 relativeMovement = movement.z * forward + movement.x * right;
 
 
-
+        //移動している場合
         if (movement != Vector3.zero)
         {
+            //ターゲットの回転を計算
             Quaternion targetRotation = Quaternion.LookRotation(relativeMovement, Vector3.up);
+            //プレイヤーの現在の回転とターゲットの回転を補完
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10);
             // 移動時の状態
             UpdateState(false, !isRun.Value, isRun.Value);
         }
         else
         {
+            //Idle状態に更新
             UpdateState(true, false, false);
         }
 
+        //指定の方向に移動
         m_Rigidbody.velocity = relativeMovement * speed;
     }
 
@@ -216,13 +248,19 @@ public class PlayerController : NetworkBehaviour
     // 地面に触れているかどうかを確認するメソッド
     bool IsGrounded()
     {
+        //レイキャストの開始地点をプレイヤーの少し上に設定
         Vector3 start = transform.position + Vector3.up * 0.1f;
+        //終了地点を開始地点から下に0.5fの位置に
         Vector3 end = start - Vector3.up * 0.5f;
-
+        //地面との衝突を確認
         bool isGrounded = Physics.Raycast(start, -Vector3.up, out RaycastHit hit, 0.5f);
+#if UNITY_EDITOR
         Debug.DrawLine(start, end, isGrounded ? Color.green : Color.red);
-        return isGrounded && hit.normal.y > 0.5;  // 地面が十分に水平であることを確認
+#endif
+        //地面が水平であることを確認
+        return isGrounded && hit.normal.y > 0.5;  
     }
+
     // コマンドパターンを定義するインターフェース
     private interface ICommand
     {
@@ -234,8 +272,8 @@ public class PlayerController : NetworkBehaviour
 
     private class WalkCommand : ICommand
     {
-        private PlayerController m_Player;
-        private Vector3 m_Direction;
+        private readonly PlayerController m_Player;
+        private readonly Vector3 m_Direction;
 
         public WalkCommand(PlayerController player, Vector3 direction)
         {
@@ -254,8 +292,8 @@ public class PlayerController : NetworkBehaviour
     // 呼び出された際にプレイヤーを指定された方向に高速で移動させる
     private class RunCommand : ICommand
     {
-        private PlayerController m_Player;
-        private Vector3 m_Direction;
+        private readonly PlayerController m_Player;
+        private readonly Vector3 m_Direction;
 
         public RunCommand(PlayerController player, Vector3 direction)
         {

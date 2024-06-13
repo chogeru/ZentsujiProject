@@ -35,11 +35,6 @@ public class ColSceneSwitcher : NetworkBehaviour
             // すべてのクライアントにプレイヤーをスポーンする
             SpawnPlayersAtStartPosition(newNetworkManager);
         }
-        else
-        {
-            // 新しいネットワークマネージャーが見つからない場合は警告を出す
-            Debug.LogWarning("New NetworkManager not found in the scene.");
-        }
     }
 
     private void SpawnPlayersAtStartPosition(NetworkManager networkManager)
@@ -52,10 +47,6 @@ public class ColSceneSwitcher : NetworkBehaviour
             {
                 GameObject player = Instantiate(playerPrefab, startPos.position, startPos.rotation);
                 NetworkServer.AddPlayerForConnection(conn, player);
-            }
-            else
-            {
-                Debug.LogError("Start position or player prefab is not set.");
             }
         }
     }

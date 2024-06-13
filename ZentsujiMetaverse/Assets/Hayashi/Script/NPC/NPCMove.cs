@@ -2,41 +2,55 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
-
+using VInspector;
+//UniTask分からない人向け
+//https://qiita.com/IShix/items/dcf86cb5ca1b587a88ad
 public class NPCMove : MonoBehaviour
 {
+    #region 各ポイント
+    [Tab("各ポイント")]
     [SerializeField, Header("待機ポイント")]
     private Transform[] m_WayPoints;
+    [EndTab]
+    #endregion
+
+    #region プロパティ
+    [Tab("プロパティ")]
     [SerializeField, Header("移動速度")]
     private float m_MoveSpeed = 3f;
     [SerializeField, Header("回転速度")]
     private float m_RotationSpeed = 5f;
-    [SerializeField, Header("移動時のブレンドシェイプインデックス")]
-    private int m_MoveBlendShapeIndex = 0;
-    [SerializeField, Header("移動停止時のブレンドシェイプインデックス")]
-    private int m_StopBlendShapeIndex = 0;
-    [SerializeField, Header("ブレンドシェイプの変化速度")]
-    private float m_BlendShapeChangesSpeed = 1f;
+    [EndTab]
+    #endregion
 
-    private int m_CurrentWayPointIndex = 0;
-    private Transform m_TargetWaypoint;
-    private CancellationTokenSource m_CancellationTokenSource;
+    #region　アニメーション
+    [Tab("アニメーション")]
+    [SerializeField, Header("アニメター")]
     private Animator m_Animator;
     [SerializeField, Header("歩行時のパラメーター名")]
     private string m_WalkParameterName = "";
+    [EndTab]
+    #endregion
 
-    private SkinnedMeshRenderer m_SkinnedMeshRenderer;
-    private float m_CurrentBlendShapeWeight = 0f;
+    //現在の移動ポイントのインデックス
+    private int m_CurrentWayPointIndex = 0;
+    //現在ターゲットのポイント
+    private Transform m_TargetWaypoint;
+    //キャンセルトークンソース
+    private CancellationTokenSource m_CancellationTokenSource;
 
     void Start()
     {
+        //アニメター所得
         m_Animator = GetComponent<Animator>();
-        m_SkinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
         if (m_WayPoints.Length == 0)
         {
+            //待機用ポイントが設定されてない場合終了
             return;
         }
+        //最初のターゲットの設定
         m_TargetWaypoint = m_WayPoints[m_CurrentWayPointIndex];
+        //非同期移動処理の開始
         MoveToNextWaypointAsync().Forget();
     }
 
@@ -49,63 +63,65 @@ public class NPCMove : MonoBehaviour
         {
             if (m_TargetWaypoint != null)
             {
+                //アニメーション開始
                 m_Animator.SetBool(m_WalkParameterName, true);
-                await ChangeBlendShapeWeight(m_MoveBlendShapeIndex, 100f, token);
+                //ターゲットウェイトポイントに移動
                 await MoveAndRotateTowards(m_TargetWaypoint, token);
+                //歩行アニメーションを停止
                 m_Animator.SetBool(m_WalkParameterName, false);
-                await ChangeBlendShapeWeight(m_StopBlendShapeIndex, 100f, token);
 
                 Waypoint waypoint = m_TargetWaypoint.GetComponent<Waypoint>();
+
                 if (!waypoint.isDoNotStop)
                 {
                     Quaternion targetRotation = Quaternion.Euler(waypoint.waitRotation);
+                    //指定された回転にスムーズに回転
                     await SmoothRotateTo(targetRotation, token);
+                    //ウェイトポイントで指定された時間待機
                     await UniTask.Delay(TimeSpan.FromSeconds(waypoint.waitTime), cancellationToken: token);
                 }
+                //次のウェイトポイントに移動
                 m_CurrentWayPointIndex = (m_CurrentWayPointIndex + 1) % m_WayPoints.Length;
                 m_TargetWaypoint = m_WayPoints[m_CurrentWayPointIndex];
             }
-
-                await UniTask.Yield(token);
+            //次のフレームまで待機
+            await UniTask.Yield(token);
         }
     }
 
+    //ターゲットに向かって移動および回転する非同期関数
     private async UniTask MoveAndRotateTowards(Transform target, CancellationToken token)
     {
         while (Vector3.Distance(transform.position, target.position) > 0.1f && !token.IsCancellationRequested)
         {
             Vector3 direction = (target.position - transform.position).normalized;
             Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * m_RotationSpeed * 0.5f); // 回転速度を半分に調整
-
+            //回転速度を半分に調整
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * m_RotationSpeed * 0.5f);
+            //移動
             transform.position = Vector3.MoveTowards(transform.position, target.position, m_MoveSpeed * Time.deltaTime);
-
             await UniTask.Yield(token);
         }
     }
 
+    //指定の回転方向にスムーズに回転する非同期関数
     private async UniTask SmoothRotateTo(Quaternion targetRotation, CancellationToken token)
     {
         while (Quaternion.Angle(transform.rotation, targetRotation) > 0.1f && !token.IsCancellationRequested)
         {
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * m_RotationSpeed * 0.5f); // 回転速度を半分に調整
-            await UniTask.DelayFrame(1, cancellationToken: token); // フレームごとに遅延を挿入して滑らかにする
+            //回転速度を半分に調整
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * m_RotationSpeed * 0.5f);
+            //フレームごとに遅延を挿入して滑らかにする
+            await UniTask.DelayFrame(1, cancellationToken: token);
         }
+        //回転を設定
         transform.rotation = targetRotation;
     }
 
-    private async UniTask ChangeBlendShapeWeight(int index, float targetWeight, CancellationToken token)
-    {
-        while(Mathf.Abs(m_CurrentBlendShapeWeight-targetWeight)>0.1f&&!token.IsCancellationRequested)
-        {
-            m_CurrentBlendShapeWeight = Mathf.MoveTowards(m_CurrentBlendShapeWeight, targetWeight, m_BlendShapeChangesSpeed * Time.deltaTime);
-            m_SkinnedMeshRenderer.SetBlendShapeWeight(index, m_CurrentBlendShapeWeight);
-            await UniTask.Yield(token);
-        }
-        m_SkinnedMeshRenderer.SetBlendShapeWeight(index, targetWeight);
-    }
     void OnDestroy()
     {
+        //オブジェクトが破壊されるときにキャンセル
         m_CancellationTokenSource?.Cancel();
+        m_CancellationTokenSource?.Dispose();
     }
 }

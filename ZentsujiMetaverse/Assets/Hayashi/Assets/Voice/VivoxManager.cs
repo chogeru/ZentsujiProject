@@ -35,7 +35,7 @@ public class VivoxManager : MonoBehaviour
         {
             if (success)
             {
-                Debug.Log("Vivox初期化が成功しました。ロビーID: " + lobbyId);
+                DebugUtility.Log("Vivox初期化が成功しました。ロビーID: " + lobbyId);
 
                 m_VivoxSetup.JoinLobbyChannel(lobbyId, channelJoined =>
                 {
@@ -47,13 +47,13 @@ public class VivoxManager : MonoBehaviour
                     }
                     else
                     {
-                        Debug.LogWarning("ロビーチャネルへの接続に失敗しました。");
+                        DebugUtility.LogWarning("ロビーチャネルへの接続に失敗しました。");
                     }
                 });
             }
             else
             {
-                Debug.LogWarning("Vivox初期化に失敗しました。");
+                DebugUtility.LogWarning("Vivox初期化に失敗しました。");
             }
         });
  
@@ -62,23 +62,23 @@ public class VivoxManager : MonoBehaviour
     private void HandleUserJoined(string username)
     {
         connectedUsers.Add(username);
-        Debug.Log("ユーザーが参加しました: " + username);
+        DebugUtility.Log("ユーザーが参加しました: " + username);
         DisplayConnectedUsers();
     }
 
     private void HandleUserLeft(string username)
     {
         connectedUsers.Remove(username);
-        Debug.Log("ユーザーが離れました: " + username);
+        DebugUtility.Log("ユーザーが離れました: " + username);
         DisplayConnectedUsers();
     }
 
     private void DisplayConnectedUsers()
     {
-        Debug.Log("接続中のユーザー:");
+        DebugUtility.Log("接続中のユーザー:");
         foreach (var user in connectedUsers)
         {
-            Debug.Log(user);
+            DebugUtility.Log(user);
         }
     }
 

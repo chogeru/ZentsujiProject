@@ -9,9 +9,11 @@ using UnityEngine.SceneManagement;
 public class BGMManager : MonoBehaviour
 {
     public static BGMManager instance;
-    private AudioSource audioSource;
+
+    private AudioSource m_AudioSource;
     [SerializeField]
-    public SQLiteConnection connection;
+    public SQLiteConnection m_Connection;
+    //シングルトンパターン
     void Awake()
     {
         if (instance == null)
@@ -24,42 +26,60 @@ public class BGMManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        audioSource = GetComponent<AudioSource>();
+        m_AudioSource = GetComponent<AudioSource>();
+        //データベースのパスを設定
         var databasePath = System.IO.Path.Combine(Application.streamingAssetsPath, "bgm_data.db").Replace("\\", "/");
-        connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
-        Debug.Log("Database path: " + databasePath);
+
         try
         {
-            connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
-            Debug.Log("Database connection established.");
+            //データベース接続の初期化
+            m_Connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
+            DebugUtility.Log("データベース接続に成功!パス: " + databasePath); 
         }
         catch (Exception ex)
         {
-            Debug.LogError("Failed to open database: " + ex.Message);
+            DebugUtility.LogError("データベースの接続に失敗しました: " + ex.Message); 
         }
     }
 
     public void PlayBGMByScene(string bgmName ,float volume)
     {
-        var query = connection.Table<BGM>().Where(x => x.BGMName == bgmName).FirstOrDefault();
+        //データベースからBGM名に一致するレコードを所得
+        var query = m_Connection.Table<BGM>().Where(x => x.BGMName == bgmName).FirstOrDefault();
+        //クエリ結果がnullでなければ
         if (query != null)
         {
-            Debug.Log(query);
-            AudioClip clip = Resources.Load<AudioClip>("BGM/" + query.BGMFileName);
-            if (clip != null)
+
+            DebugUtility.Log("BGMデータが見つかりました: " + query.BGMName);
+            try
             {
-                audioSource.clip = clip;
-                audioSource.volume = volume;
-                audioSource.Play();
+                //ResourcesフォルダからBGMファイルをロード
+                AudioClip clip = Resources.Load<AudioClip>("BGM/" + query.BGMFileName);
+
+                //クリップがnullでない場合
+                if (clip != null)
+                {
+                    //クリップを設定
+                    m_AudioSource.clip = clip;
+                    //音量も設定
+                    m_AudioSource.volume = volume;
+                    //再生
+                    m_AudioSource.Play();
+                }
+                else
+                {
+                    DebugUtility.Log("BGMファイルが見つからない " + query.BGMFileName);
+                }
             }
-            else
+            //例外発生時
+            catch(Exception ex)
             {
-                Debug.Log(query.BGMFileName);
+                DebugUtility.LogError("BGMファイルのロード時にエラー発生"+ex.Message);
             }
         }
         else
         {
-            Debug.Log("queryがnull");
+            DebugUtility.Log("指定されたBGM名に一致するレコードがデータベースに存在しない"); 
         }
     }
     // BGM情報を保持するクラス

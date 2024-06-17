@@ -1,0 +1,38 @@
+////////////////////////////////////
+/////2024.06.17_Abubu(林 建一)
+////////////////////////////////////
+
+        プラグインマニュアル
+          
+ーーーーーーーーーSQLiteーーーーーーーーー
+
+このプロジェクトではデータ管理しやすいようにSQLiteを使用している
+https://github.com/robertohuertasm/SQLite4Unity3d
+
+BGMManagerやSEManagerで20224年6月現在は使用している。
+
+基本プラグインフォルダにDLしたフォルダのプラグインの中身を入れていく形となる
+
+db(データベース)は https://forest.watch.impress.co.jp/library/software/sqldbbrowser/ を使用してレコードを挿入したりしている。
+
+仕様上ビルド設定のアーキテクチャを32bitにするとビルド後動かなくなるので64bitにしましょう。
+
+ーーーーーーーーー以下参考ーーーーーーーーーー
+https://note.com/gentle_dietes302/n/n528b429a4e8d
+https://tanisugames.com/sqlite4unity3d/
+
+これ見たら大体わかります。
+
+ーーーーーーーーーーーーーーーーーーーーーー
+
+ーーーーーーーーーCPU-DLLーーーーーーーーー
+
+CPUの使用率を所得するために作成しました
+ちなみにPerformance.csは必要な時以外は使用しないのをお勧めします。
+FPSかなり下がるので注意
+
+ーーーーーーーーー以下参考ーーーーーーーーーー
+https://blog.voidstudio.jp/develop/unity-cpu-usage
+
+
+

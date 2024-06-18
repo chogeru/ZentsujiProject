@@ -1,4 +1,4 @@
-//
+﻿//
 // Weather Maker for Unity
 // (c) 2016 Digital Ruby, LLC
 // Source code may be used for personal or commercial projects.
@@ -1192,7 +1192,6 @@ namespace DigitalRuby.WeatherMaker
                     {
                         if (Application.isPlaying)
                         {
-                            Debug.LogErrorFormat("Object of type {0} is required, please ensure it is active in the WeatherMakerPrefab", typeof(T));
                         }
                     }
                     else

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,23 +14,29 @@ public class SetBGM : MonoBehaviour
     private bool isRondomBGM;
     private void Start()
     {
-        BGMManager.instance.GetComponent<AudioSource>().clip=null;
-        if (m_BGMName != null)
+        if (BGMManager.instance != null)
         {
-            BGMManager.instance.PlayBGMByScene(m_BGMName, m_Volume);
+            BGMManager.instance.GetComponent<AudioSource>().clip = null;
+            if (m_BGMName != null)
+            {
+                BGMManager.instance.PlayBGMByScene(m_BGMName, m_Volume);
+            }
         }
     }
 
     private void Update()
     {
-        if (isRondomBGM)
+        if (BGMManager.instance != null)
         {
-            AudioSource audioSouce = BGMManager.instance.GetComponent<AudioSource>();
-            audioSouce.loop = false;
-            if(!audioSouce.isPlaying)
+            if (isRondomBGM)
             {
-                var index=Random.Range(0, m_RandomBGMNames.Length);
-                BGMManager.instance.PlayBGMByScene(m_RandomBGMNames[index],m_Volume);
+                AudioSource audioSouce = BGMManager.instance.GetComponent<AudioSource>();
+                audioSouce.loop = false;
+                if (!audioSouce.isPlaying)
+                {
+                    var index = Random.Range(0, m_RandomBGMNames.Length);
+                    BGMManager.instance.PlayBGMByScene(m_RandomBGMNames[index], m_Volume);
+                }
             }
         }
       

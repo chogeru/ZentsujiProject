@@ -17,6 +17,8 @@ public class VRMSpawner : MonoBehaviour
     private RuntimeAnimatorController m_AnimatorController;
     [SerializeField, Header("生成したNPCの移動ポイント")]
     private Transform[] m_Transfrom;
+    [SerializeField,Header("vrmサイズ")]
+    private Vector3 m_size;
     void Start()
     {
         string fullPath = Path.Combine(Application.streamingAssetsPath, m_VrmFilePath);
@@ -46,7 +48,7 @@ public class VRMSpawner : MonoBehaviour
 
         //VRMのメタデータを取得
         var meta = vrmImporter.ReadMeta();
-        Debug.Log("Meta Title: " + meta.Title);
+        DebugUtility.Log("Meta Title: " + meta.Title);
 
         //VRMを読み込んで生成
         var awaitCaller = new ImmediateCaller();
@@ -59,7 +61,7 @@ public class VRMSpawner : MonoBehaviour
         //スポーンポイントに移動
         vrmModel.transform.position = m_SpawnPoint.position;
         vrmModel.transform.rotation = m_SpawnPoint.rotation;
-
+        vrmModel.transform.localScale=m_size;
         SetVRMComponent(vrmModel);
         // シェーダーをURP用に変換
         ConvertShadersToURP(vrmModel);
@@ -99,9 +101,16 @@ public class VRMSpawner : MonoBehaviour
 
     public void SetVRMComponent(RuntimeGltfInstance vrm)
     {
-        SetAnimator(vrm);
-        SetCollider(vrm);
-        SetNPCMove(vrm);
+        if (vrm != null)
+        {
+            SetAnimator(vrm);
+            SetCollider(vrm);
+            SetNPCMove(vrm);
+        }
+        else
+        {
+            DebugUtility.Log("vrmが無いよ");
+        }
     }
     private void SetAnimator(RuntimeGltfInstance vrm)
     {

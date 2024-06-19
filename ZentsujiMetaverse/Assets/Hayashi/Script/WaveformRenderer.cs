@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,25 +15,31 @@ public class WaveformRenderer : MonoBehaviour
     {
         // BGMManagerのインスタンスを取得
         m_BgmManager = BGMManager.instance;
-        m_AudioSource = m_BgmManager.GetComponent<AudioSource>();
+        if (BGMManager.instance != null)
+        {
+            m_AudioSource = m_BgmManager.GetComponent<AudioSource>();
 
-        // LineRendererコンポーネントを取得
-        m_LineRenderer = GetComponent<LineRenderer>();
-        //ラインレンダラーの調点数をサンプル配列の長さに
-        m_LineRenderer.positionCount = m_Samples.Length;
+            // LineRendererコンポーネントを取得
+            m_LineRenderer = GetComponent<LineRenderer>();
+            //ラインレンダラーの調点数をサンプル配列の長さに
+            m_LineRenderer.positionCount = m_Samples.Length;
+        }
     }
 
     void Update()
     {
-        if (m_AudioSource.isPlaying)
+        if (BGMManager.instance != null)
         {
-            //オーディオデータを所得し、サンプル配列に格納
-            m_AudioSource.GetOutputData(m_Samples, 0);
-            //サンプル配列をもとに波形を描画
-            RenderWaveform();
+
+            if (m_AudioSource.isPlaying)
+            {
+                //オーディオデータを所得し、サンプル配列に格納
+                m_AudioSource.GetOutputData(m_Samples, 0);
+                //サンプル配列をもとに波形を描画
+                RenderWaveform();
+            }
         }
     }
-
     void RenderWaveform()
     {
         //サンプル配列のデータを使って波形を描画

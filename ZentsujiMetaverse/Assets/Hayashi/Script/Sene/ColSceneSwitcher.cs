@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,6 +28,7 @@ public class ColSceneSwitcher : NetworkBehaviour
         // 新しいシーンのロード完了を待つ
         await SceneManager.LoadSceneAsync(m_SceneName);
         LoadCanvas.instance.CloseUI();
+        
         // 新しいシーンのネットワークマネージャーを取得して初期化
         NetworkManager newNetworkManager = FindObjectOfType<NetworkManager>();
         if (newNetworkManager != null)

@@ -783,7 +783,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 75152679253466865}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &4027655403891626412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2627,7 +2627,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &8267833959024185185
 MonoBehaviour:
@@ -5420,7 +5420,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8424753312874305819}
   m_LocalRotation: {x: -0, y: 0.62901515, z: -0, w: 0.77739304}
-  m_LocalPosition: {x: -1.8874093, y: -4.12772, z: 3.2003846}
+  m_LocalPosition: {x: 0.000000059604645, y: 2, z: -1.5000002}
   m_LocalScale: {x: 999, y: 999, z: 999}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5655,6 +5655,7 @@ GameObject:
   - component: {fileID: 3516413507014893257}
   - component: {fileID: 7357922446260033203}
   - component: {fileID: 5319893383884722159}
+  - component: {fileID: 7533376093933937359}
   m_Layer: 3
   m_Name: "\u30C7\u30D0\u30C3\u30AF\u7528Player 1"
   m_TagString: Player
@@ -5812,12 +5813,12 @@ MonoBehaviour:
   m_JumpForce: 1400
   m_GravityMultiplier: 9.81
   m_Rigidbody: {fileID: 9126141871417367007}
-  m_CameraTransform: {fileID: 9126141871003576020}
+  m_CapsuleCollider: {fileID: 0}
   m_Animator: {fileID: 9126141871417367003}
+  m_CameraTransform: {fileID: 9126141871003576020}
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 63
-  capsuleCollider: {fileID: 0}
   m_MaxStepHeight: 0.3
 --- !u!114 &7645765249645539236
 MonoBehaviour:
@@ -5911,6 +5912,40 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7533376093933937359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8775794892995199873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncDirection: 1
+  syncMode: 0
+  syncInterval: 0
+  target: {fileID: 8251212825534060859}
+  syncPosition: 1
+  syncRotation: 1
+  syncScale: 0
+  onlySyncOnChange: 1
+  compressRotation: 1
+  interpolatePosition: 1
+  interpolateRotation: 1
+  interpolateScale: 1
+  coordinateSpace: 0
+  sendIntervalMultiplier: 1
+  timelineOffset: 0
+  showGizmos: 0
+  showOverlay: 0
+  overlayColor: {r: 0, g: 0, b: 0, a: 0.5}
+  onlySyncOnChangeCorrectionMultiplier: 2
+  rotationSensitivity: 0.01
+  positionPrecision: 0.01
+  scalePrecision: 0.01
 --- !u!1 &8841831213057298207
 GameObject:
   m_ObjectHideFlags: 0
@@ -6746,7 +6781,7 @@ PrefabInstance:
     - target: {fileID: 2902053178262271013, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
       propertyPath: m_Value
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3257935731679804133, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
@@ -6931,12 +6966,12 @@ PrefabInstance:
     - target: {fileID: 8712790648181584772, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.000089645386
+      value: 0.00026118755
       objectReference: {fileID: 0}
     - target: {fileID: 8712790648181584772, guid: 29e2ed117aedabb4b9015ea9ea1be048,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00030517578
+      value: 0.00018310547
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29e2ed117aedabb4b9015ea9ea1be048, type: 3}

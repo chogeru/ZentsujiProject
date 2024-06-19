@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
@@ -10,25 +10,25 @@ public class NPCMove : MonoBehaviour
     #region 各ポイント
     [Tab("各ポイント")]
     [SerializeField, Header("待機ポイント")]
-    private Transform[] m_WayPoints;
+    public Transform[] m_WayPoints;
     [EndTab]
     #endregion
 
     #region プロパティ
     [Tab("プロパティ")]
     [SerializeField, Header("移動速度")]
-    private float m_MoveSpeed = 3f;
+    public float m_MoveSpeed = 3f;
     [SerializeField, Header("回転速度")]
-    private float m_RotationSpeed = 5f;
+    public float m_RotationSpeed = 5f;
     [EndTab]
     #endregion
 
     #region　アニメーション
     [Tab("アニメーション")]
     [SerializeField, Header("アニメター")]
-    private Animator m_Animator;
+    public Animator m_Animator;
     [SerializeField, Header("歩行時のパラメーター名")]
-    private string m_WalkParameterName = "";
+    public string m_WalkParameterName = "";
     [EndTab]
     #endregion
 

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using VRM;
 using UniGLTF;
 using System.IO;
@@ -9,13 +9,17 @@ using UnityEditor;
 
 public class VRMSpawner : MonoBehaviour
 {
-    public string vrmFilePath = "test.vrm"; // VRMファイルの相対パス
-    public Transform spawnPoint; // スポーンポイント
-    public RuntimeAnimatorController animatorController; // アニメーターコントローラー
-
+    [SerializeField,Header("VRMのパス")]
+    private string m_VrmFilePath = "test.vrm";
+    [SerializeField,Header("読み込んだVRMのスポーン地点")]
+    private Transform m_SpawnPoint;
+    [SerializeField,Header("セットするAnimator")]
+    private RuntimeAnimatorController m_AnimatorController;
+    [SerializeField, Header("生成したNPCの移動ポイント")]
+    private Transform[] m_Transfrom;
     void Start()
     {
-        string fullPath = Path.Combine(Application.streamingAssetsPath, vrmFilePath);
+        string fullPath = Path.Combine(Application.streamingAssetsPath, m_VrmFilePath);
         fullPath = fullPath.Replace("\\", "/");
         Debug.Log("フルパス: " + fullPath);
 
@@ -32,38 +36,33 @@ public class VRMSpawner : MonoBehaviour
     private async void LoadVRM(string path)
     {
 
-        // VRMファイルをバイト配列として読み込む
+        //VRMファイルをバイト配列として読み込む
         byte[] vrmData = File.ReadAllBytes(path);
 
-        // VRMファイルのインポート設定
+        //VRMファイルのインポート設定
         var gltfData = new GlbLowLevelParser(path, vrmData).Parse();
         var vrmDataInstance = new VRMData(gltfData);
         var vrmImporter = new VRMImporterContext(vrmDataInstance);
 
-        // VRMのメタデータを取得
+        //VRMのメタデータを取得
         var meta = vrmImporter.ReadMeta();
         Debug.Log("Meta Title: " + meta.Title);
 
-        // VRMを読み込んで生成
+        //VRMを読み込んで生成
         var awaitCaller = new ImmediateCaller();
         var vrmModel = await vrmImporter.LoadAsync(awaitCaller);
 
-        // 読み込んだVRMをGameObjectとしてシーンに生成
+        //読み込んだVRMをGameObjectとしてシーンに生成
         vrmModel.ShowMeshes();
 
 
-        // スポーンポイントに移動
-        vrmModel.transform.position = spawnPoint.position;
-        vrmModel.transform.rotation = spawnPoint.rotation;
+        //スポーンポイントに移動
+        vrmModel.transform.position = m_SpawnPoint.position;
+        vrmModel.transform.rotation = m_SpawnPoint.rotation;
 
-        // アニメーターを追加してアニメーションコントローラーを設定
-        var animator = vrmModel.GetComponent<Animator>();
-        animator.runtimeAnimatorController = animatorController;
-        SetVRM(vrmModel);
+        SetVRMComponent(vrmModel);
         // シェーダーをURP用に変換
         ConvertShadersToURP(vrmModel);
-        //プレハブ化
-       // SetPrefabs(vrmModel);
     }
     private void ConvertShadersToURP(RuntimeGltfInstance vrmModelInstance)
     {
@@ -76,65 +75,61 @@ public class VRMSpawner : MonoBehaviour
             // 各レンダラーのマテリアルをループ
             foreach (var material in renderer.materials)
             {
-                // シェーダーが置き換え対象であるか確認
-                if (material.shader.name.Contains("UniGLTF/UniUnlit"))
+                // 元のメインテクスチャを取得
+                var mainTexture = material.GetTexture("_MainTex");
+
+                // 新しいシェーダーを割り当て
+                    material.shader = Shader.Find("lilToon");
+
+                // 新しいシェーダーにメインテクスチャを再設定
+                if (mainTexture != null)
                 {
-                    // 元のメインテクスチャを取得
-                    var mainTexture = material.GetTexture("_MainTex");
-
-                    // 新しいシェーダーを割り当て
-                    //    material.shader = Shader.Find("Universal Render Pipeline/RealToon/Version 5/Default/Default");
-
-                    // 新しいシェーダーにメインテクスチャを再設定
-                    if (mainTexture != null)
-                    {
-                        material.SetTexture("_MainTex", mainTexture);
-                    }
-
-                    // 透明マテリアルのプロパティを設定
-                    if (material.name.Contains("Brow") || material.name.Contains("Eyelash") || material.name.Contains("Eyeline"))
-                    {
-                        //変更プロパティを設定
-                    }
+                    material.SetTexture("_MainTex", mainTexture);
                 }
+
+                // 透明マテリアルのプロパティを設定
+                if (material.name.Contains("Brow") || material.name.Contains("Eyelash") || material.name.Contains("Eyeline"))
+                {
+                    //変更プロパティを設定
+                }
+
             }
         }
     }
 
-    public void SetVRM(RuntimeGltfInstance vrm)
+    public void SetVRMComponent(RuntimeGltfInstance vrm)
     {
-        vrm.AddComponent<NetworkIdentity>();
-        vrm.AddComponent<NetworkTransformUnreliable>();
-        vrm.AddComponent<Rigidbody>();
-        vrm.AddComponent<CapsuleCollider>();
-        vrm.AddComponent<PlayerController>();
+        SetAnimator(vrm);
+        SetCollider(vrm);
+        SetNPCMove(vrm);
+    }
+    private void SetAnimator(RuntimeGltfInstance vrm)
+    {
         vrm.AddComponent<Animator>();
-        vrm.AddComponent<Player>();
-
-        Rigidbody rigidbody = vrm.GetComponent<Rigidbody>();
-        rigidbody.freezeRotation = true;
+        Animator animator = vrm.GetComponent<Animator>();
+        animator.runtimeAnimatorController = m_AnimatorController;
+        animator.applyRootMotion = false;
+    }
+    private void SetCollider(RuntimeGltfInstance vrm)
+    {
+        //コライダーの追加と各コライダーの設定
+        vrm.AddComponent<CapsuleCollider>();
         CapsuleCollider capsuleCollider = vrm.GetComponent<CapsuleCollider>();
         capsuleCollider.height = 2;
         capsuleCollider.radius = 0.2f;
         capsuleCollider.center = new Vector3(0, 1, 0);
-        Animator animator = vrm.GetComponent<Animator>();
-        animator.applyRootMotion = false;
+    }
 
-    }
-    /*
-    public void SetPrefabs(RuntimeGltfInstance vrm)
+    private void SetNPCMove(RuntimeGltfInstance vrm)
     {
-        const string prefabPath = "Assets/VRMResourse/VRM.prefab";
-        GameObject vrmobj = vrm.gameObject;
-        if (vrmobj != null)
-        {
-            PrefabUtility.SaveAsPrefabAsset(vrmobj, prefabPath);
-            Debug.Log("セーブアセットやで");
-        }
-        else
-        {
-            Debug.Log("nullやで");
-        }
+        //NPCMoveをセット
+        vrm.AddComponent<NPCMove>();
+        
+        NPCMove npcMove = vrm.GetComponent<NPCMove>();
+        npcMove.m_WayPoints = m_Transfrom;
+        npcMove.m_MoveSpeed = 1;
+        npcMove.m_RotationSpeed = 7;
+        npcMove.m_Animator = npcMove.GetComponent<Animator>();
+        npcMove.m_WalkParameterName = "Walk";
     }
-    */
 }

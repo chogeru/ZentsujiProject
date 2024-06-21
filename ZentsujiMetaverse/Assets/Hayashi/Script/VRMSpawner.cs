@@ -6,6 +6,7 @@ using VRMShaders;
 using Unity.VisualScripting;
 using Mirror;
 using UnityEditor;
+using Cysharp.Threading.Tasks;
 
 public class VRMSpawner : MonoBehaviour
 {
@@ -18,7 +19,17 @@ public class VRMSpawner : MonoBehaviour
     [SerializeField, Header("生成したNPCの移動ポイント")]
     private Transform[] m_Transfrom;
     [SerializeField,Header("vrmサイズ")]
-    private Vector3 m_size;
+    private Vector3 m_VrmSize = Vector3.one;
+
+    private const float ColliderHeight = 2f;
+    private const float ColliderRadius = 0.2f;
+    private static readonly Vector3 ColliderCenter = new Vector3(0, 1, 0);
+
+    private const float NPCMoveSpeed = 1f;
+    private const float NPCRotationSpeed = 7f;
+    private const string WalkParameterName = "Walk";
+    private const string URPShaderName = "lilToon";
+
     void Start()
     {
         string fullPath = Path.Combine(Application.streamingAssetsPath, m_VrmFilePath);
@@ -35,7 +46,7 @@ public class VRMSpawner : MonoBehaviour
             Debug.LogError("VRMファイルが見つかりません: " + fullPath);
         }
     }
-    private async void LoadVRM(string path)
+    private async UniTask LoadVRM(string path)
     {
 
         //VRMファイルをバイト配列として読み込む
@@ -54,14 +65,14 @@ public class VRMSpawner : MonoBehaviour
         var awaitCaller = new ImmediateCaller();
         var vrmModel = await vrmImporter.LoadAsync(awaitCaller);
 
+        //ネイティブ配列の解放
+        gltfData.Dispose();
+
         //読み込んだVRMをGameObjectとしてシーンに生成
         vrmModel.ShowMeshes();
+        vrmModel.transform.SetPositionAndRotation(m_SpawnPoint.position, m_SpawnPoint.rotation);
+        vrmModel.transform.localScale = m_VrmSize;
 
-
-        //スポーンポイントに移動
-        vrmModel.transform.position = m_SpawnPoint.position;
-        vrmModel.transform.rotation = m_SpawnPoint.rotation;
-        vrmModel.transform.localScale=m_size;
         SetVRMComponent(vrmModel);
         // シェーダーをURP用に変換
         ConvertShadersToURP(vrmModel);
@@ -81,7 +92,7 @@ public class VRMSpawner : MonoBehaviour
                 var mainTexture = material.GetTexture("_MainTex");
 
                 // 新しいシェーダーを割り当て
-                    material.shader = Shader.Find("lilToon");
+                    material.shader = Shader.Find(URPShaderName);
 
                 // 新しいシェーダーにメインテクスチャを再設定
                 if (mainTexture != null)
@@ -92,7 +103,13 @@ public class VRMSpawner : MonoBehaviour
                 // 透明マテリアルのプロパティを設定
                 if (material.name.Contains("Brow") || material.name.Contains("Eyelash") || material.name.Contains("Eyeline"))
                 {
-                    //変更プロパティを設定
+                    material.SetFloat("_Surface", 1);
+                    material.SetFloat("_Blend", 0); 
+                    material.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                    material.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    material.SetFloat("_ZWrite", 0);
+                    material.EnableKeyword("_ALPHATEST_ON");
+                    material.SetFloat("_Cutoff", 0.5f);
                 }
 
             }
@@ -124,9 +141,9 @@ public class VRMSpawner : MonoBehaviour
         //コライダーの追加と各コライダーの設定
         vrm.AddComponent<CapsuleCollider>();
         CapsuleCollider capsuleCollider = vrm.GetComponent<CapsuleCollider>();
-        capsuleCollider.height = 2;
-        capsuleCollider.radius = 0.2f;
-        capsuleCollider.center = new Vector3(0, 1, 0);
+        capsuleCollider.height = ColliderHeight;
+        capsuleCollider.radius = ColliderRadius;
+        capsuleCollider.center = ColliderCenter;
     }
 
     private void SetNPCMove(RuntimeGltfInstance vrm)
@@ -136,9 +153,9 @@ public class VRMSpawner : MonoBehaviour
         
         NPCMove npcMove = vrm.GetComponent<NPCMove>();
         npcMove.m_WayPoints = m_Transfrom;
-        npcMove.m_MoveSpeed = 1;
-        npcMove.m_RotationSpeed = 7;
-        npcMove.m_Animator = npcMove.GetComponent<Animator>();
-        npcMove.m_WalkParameterName = "Walk";
+        npcMove.m_MoveSpeed = NPCMoveSpeed;
+        npcMove.m_RotationSpeed = NPCRotationSpeed;
+        npcMove.m_Animator = vrm.GetComponent<Animator>();
+        npcMove.m_WalkParameterName = WalkParameterName;
     }
 }

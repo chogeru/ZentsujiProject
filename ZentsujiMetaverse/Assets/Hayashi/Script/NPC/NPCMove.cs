@@ -96,6 +96,14 @@ public class NPCMove : MonoBehaviour
         {
             Vector3 direction = (target.position - transform.position).normalized;
             Quaternion lookRotation = Quaternion.LookRotation(direction);
+            RaycastHit hit;
+            if(Physics.Raycast(new Ray(transform.position+Vector3.up,direction),out hit,1.0f))
+            {
+                if(hit.collider.CompareTag("NPC"))
+                {
+
+                }
+            }
             //回転速度を半分に調整
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * m_RotationSpeed * 0.5f);
             //移動

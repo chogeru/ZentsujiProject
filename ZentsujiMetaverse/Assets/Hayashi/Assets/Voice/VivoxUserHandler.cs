@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Unity.Services.Vivox;
 using VivoxUnity;
 
@@ -32,7 +32,10 @@ namespace LobbyRelaySample.vivox
         /// </summary>
         public void Start()
         {
-            m_lobbyUserVolumeUI.DisableVoice(true);  // 音声UIを無効に設定
+            if (m_lobbyUserVolumeUI != null)
+            {
+                m_lobbyUserVolumeUI.DisableVoice(true);  // 音声UIを無効に設定
+            }
         }
 
         /// <summary>

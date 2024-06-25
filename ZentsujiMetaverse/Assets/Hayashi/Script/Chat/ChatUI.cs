@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -96,7 +96,7 @@ public class ChatUI : NetworkBehaviour
         string timestamp = DateTime.Now.ToString("HH:mm:ss");
         string prettyMessage = playerName == m_LocalPlayerName ?
             $"<color=red>{playerName}:{timestamp}:</color> {message}" :
-            $"<color=blue>{playerName}:{timestamp}:</color> {message}";
+            $"<color=Magenta>{playerName}:{timestamp}:</color> {message}";
         AppendMessage(prettyMessage);
     }
 

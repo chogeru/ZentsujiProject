@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,11 +38,11 @@ public class BGMManager : MonoBehaviour
         }
         catch (Exception ex)
         {
-            DebugUtility.LogError("データベースの接続に失敗しました: " + ex.Message); 
+            DebugUtility.LogError("データベースの接続に失敗!!: " + ex.Message); 
         }
     }
 
-    public void PlayBGMByScene(string bgmName ,float volume)
+    public void PlayBGM(string bgmName ,float volume)
     {
         //データベースからBGM名に一致するレコードを所得
         var query = m_Connection.Table<BGM>().Where(x => x.BGMName == bgmName).FirstOrDefault();

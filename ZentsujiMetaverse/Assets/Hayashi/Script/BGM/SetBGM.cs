@@ -19,7 +19,7 @@ public class SetBGM : MonoBehaviour
             BGMManager.instance.GetComponent<AudioSource>().clip = null;
             if (m_BGMName != null)
             {
-                BGMManager.instance.PlayBGMByScene(m_BGMName, m_Volume);
+                BGMManager.instance.PlayBGM(m_BGMName, m_Volume);
             }
         }
     }
@@ -35,7 +35,7 @@ public class SetBGM : MonoBehaviour
                 if (!audioSouce.isPlaying)
                 {
                     var index = Random.Range(0, m_RandomBGMNames.Length);
-                    BGMManager.instance.PlayBGMByScene(m_RandomBGMNames[index], m_Volume);
+                    BGMManager.instance.PlayBGM(m_RandomBGMNames[index], m_Volume);
                 }
             }
         }

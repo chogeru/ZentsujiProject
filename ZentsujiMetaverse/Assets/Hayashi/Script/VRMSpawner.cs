@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using Mirror;
 using UnityEditor;
 using Cysharp.Threading.Tasks;
+using System;
 
 public class VRMSpawner : MonoBehaviour
 {
@@ -48,34 +49,40 @@ public class VRMSpawner : MonoBehaviour
     }
     private async UniTask LoadVRM(string path)
     {
+        try
+        {
+            //VRMファイルをバイト配列として読み込む
+            byte[] vrmData = File.ReadAllBytes(path);
 
-        //VRMファイルをバイト配列として読み込む
-        byte[] vrmData = File.ReadAllBytes(path);
+            //VRMファイルのインポート設定
+            var gltfData = new GlbLowLevelParser(path, vrmData).Parse();
+            var vrmDataInstance = new VRMData(gltfData);
+            var vrmImporter = new VRMImporterContext(vrmDataInstance);
 
-        //VRMファイルのインポート設定
-        var gltfData = new GlbLowLevelParser(path, vrmData).Parse();
-        var vrmDataInstance = new VRMData(gltfData);
-        var vrmImporter = new VRMImporterContext(vrmDataInstance);
+            //VRMのメタデータを取得
+            var meta = vrmImporter.ReadMeta();
+            DebugUtility.Log("Meta Title: " + meta.Title);
 
-        //VRMのメタデータを取得
-        var meta = vrmImporter.ReadMeta();
-        DebugUtility.Log("Meta Title: " + meta.Title);
+            //VRMを読み込んで生成
+            var awaitCaller = new ImmediateCaller();
+            var vrmModel = await vrmImporter.LoadAsync(awaitCaller);
 
-        //VRMを読み込んで生成
-        var awaitCaller = new ImmediateCaller();
-        var vrmModel = await vrmImporter.LoadAsync(awaitCaller);
+            //ネイティブ配列の解放
+            gltfData.Dispose();
 
-        //ネイティブ配列の解放
-        gltfData.Dispose();
+            //読み込んだVRMをGameObjectとしてシーンに生成
+            vrmModel.ShowMeshes();
+            vrmModel.transform.SetPositionAndRotation(m_SpawnPoint.position, m_SpawnPoint.rotation);
+            vrmModel.transform.localScale = m_VrmSize;
 
-        //読み込んだVRMをGameObjectとしてシーンに生成
-        vrmModel.ShowMeshes();
-        vrmModel.transform.SetPositionAndRotation(m_SpawnPoint.position, m_SpawnPoint.rotation);
-        vrmModel.transform.localScale = m_VrmSize;
-
-        SetVRMComponent(vrmModel);
-        // シェーダーをURP用に変換
-        ConvertShadersToURP(vrmModel);
+            SetVRMComponent(vrmModel);
+            // シェーダーをURP用に変換
+            ConvertShadersToURP(vrmModel);
+        }
+        catch (Exception ex)
+        {
+            DebugUtility.Log("VRM読み込み中にエラー発生");
+        }
     }
     private void ConvertShadersToURP(RuntimeGltfInstance vrmModelInstance)
     {
@@ -120,6 +127,7 @@ public class VRMSpawner : MonoBehaviour
     {
         if (vrm != null)
         {
+            vrm.gameObject.tag = "NPC";
             SetAnimator(vrm);
             SetCollider(vrm);
             SetNPCMove(vrm);

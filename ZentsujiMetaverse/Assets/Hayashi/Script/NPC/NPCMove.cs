@@ -92,6 +92,11 @@ public class NPCMove : MonoBehaviour
     //ターゲットに向かって移動および回転する非同期関数
     private async UniTask MoveAndRotateTowards(Transform target, CancellationToken token)
     {
+
+        float collisionTimer = 0f;
+        const float collisionThreshold = 5f;
+        bool isStopped = false;
+
         while (Vector3.Distance(transform.position, target.position) > 0.1f && !token.IsCancellationRequested)
         {
             Vector3 direction = (target.position - transform.position).normalized;
@@ -101,7 +106,31 @@ public class NPCMove : MonoBehaviour
             {
                 if(hit.collider.CompareTag("NPC"))
                 {
-
+                    if (!isStopped)
+                    {
+                        isStopped = true;
+                        //歩行アニメーションを停止
+                        m_Animator.SetBool(m_WalkParameterName, false);
+                    }
+                    collisionTimer += Time.deltaTime;
+                    if(collisionTimer > collisionThreshold)
+                    {
+                        m_CurrentWayPointIndex = (m_CurrentWayPointIndex - 1 + m_WayPoints.Length) % m_WayPoints.Length;
+                        m_TargetWaypoint = m_WayPoints[m_CurrentWayPointIndex];
+                        return;
+                    }
+                    await UniTask.Yield(token);
+                    continue;
+                }
+            }
+            else
+            {
+                collisionTimer = 0f;
+                if (isStopped)
+                {
+                    isStopped = false;
+                    //歩行アニメーションを再開
+                    m_Animator.SetBool(m_WalkParameterName, true);
                 }
             }
             //回転速度を半分に調整

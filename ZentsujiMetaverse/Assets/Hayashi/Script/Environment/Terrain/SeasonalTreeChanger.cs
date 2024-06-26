@@ -1,24 +1,37 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using VInspector;
 
 public class SeasonalTreeChanger : MonoBehaviour
 {
+    #region 木のインデックス
+    [Tab("番号")]
     [SerializeField, Header("通常の木のインデックス")]
     private int m_NormalTreeIndex;
     [SerializeField, Header("桜の木のインデックス")]
     private int m_SakuraTreeIndex;
     [SerializeField, Header("秋の木のインデックス")]
     private int m_AutumnTreeIndex;
-
     [SerializeField, Header("入れ替える木のインデックス")]
     private int m_TreeIndex;
+    [EndTab]
+    #endregion
+
+    #region トリガー
+    [Tab("トリガー")]
     [SerializeField, Header("草のデバッグログを表示する")]
     private bool m_ShowGrassDebugLog;
+    [EndTab]
+    #endregion
 
+    #region テレイン
+    [Tab("テレイン")]
     [SerializeField, Header("植物を入れ替えるテレイン")]
     private Terrain m_Terrain;
+    [EndTab]
+    #endregion
     void Start()
     {
         // 開始時に桜や秋の木をすべて通常の木に置き換える
@@ -27,12 +40,8 @@ public class SeasonalTreeChanger : MonoBehaviour
         Terrain terrain = Terrain.activeTerrain;
         TreeInstance[] treeInstances = terrain.terrainData.treeInstances;
 
-        Debug.Log("現在の木のインスタンスとそのプロトタイプインデックス:");
-       /*
-        for (int i = 0; i < treeInstances.Length; i++)
-        {
-            Debug.Log($"木 {i}: プロトタイプインデックス = {treeInstances[i].prototypeIndex}");
-        }*/
+        DebugUtility.Log("現在の木のインスタンスとそのプロトタイプインデックス:");
+
         int currentMonth = System.DateTime.Now.Month;
         int selectedTreeIndex = m_NormalTreeIndex;
 
@@ -126,10 +135,10 @@ public class SeasonalTreeChanger : MonoBehaviour
 
         if (m_ShowGrassDebugLog)
         {
-            Debug.Log("現在の草のプロトタイプとそのドライカラー:");
+            DebugUtility.Log("現在の草のプロトタイプとそのドライカラー:");
             for (int i = 0; i < detailPrototypes.Length; i++)
             {
-                Debug.Log($"草 {i}: ドライカラー = {detailPrototypes[i].dryColor}");
+                DebugUtility.Log($"草 {i}: ドライカラー = {detailPrototypes[i].dryColor}");
             }
         }
     }

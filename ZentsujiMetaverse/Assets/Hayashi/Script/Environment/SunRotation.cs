@@ -39,8 +39,11 @@ public class SunRotation : MonoBehaviour
     #endregion
     private void Start()
     {
-        m_DaytimeObjects.SetActive(false);
-        m_NightObjects.SetActive(false);
+        if (m_DaytimeObjects != null && m_NightObjects != null)
+        {
+            m_DaytimeObjects.SetActive(false);
+            m_NightObjects.SetActive(false);
+        }
     }
     void Update()
     {

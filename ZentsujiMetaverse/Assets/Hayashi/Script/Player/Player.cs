@@ -1,10 +1,10 @@
-using Mirror;
+﻿using Mirror;
 using UnityEngine;
 
 public class Player : NetworkBehaviour
 {
-    [SyncVar]
-    public string studentId; 
+    [SyncVar,SerializeField,Header("プレイヤー名")]
+    public string m_Name; 
 
     public override void OnStartLocalPlayer()
     {

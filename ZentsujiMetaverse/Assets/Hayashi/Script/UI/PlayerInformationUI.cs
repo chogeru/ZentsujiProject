@@ -1,4 +1,4 @@
-using Mirror;
+﻿using Mirror;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -6,12 +6,13 @@ using UnityEngine;
 
 public class PlayerInformationUI : NetworkBehaviour
 {
-    public TMP_Text studentIdText;
+    public TMP_Text m_NameText;
 
-    public Player player;
+    public Player m_Player;
 
     private void Start()
     {
-        studentIdText.text = player.studentId;
+        m_Player = GetComponent<Player>();
+        m_NameText.text = m_Player.m_Name;
     }
 }

@@ -1,27 +1,33 @@
+ï»¿using SRDebugger.UI.Other;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class FootStep : MonoBehaviour
 {
-    [SerializeField, Header("ˆÚ“®ƒp[ƒeƒBƒNƒ‹")]
-    private GameObject footstepPrefab;
-    private float m_CoolTime;
     private EffectFootStepObjctPool m_EffectFootObjPool;
+
+    [SerializeField, Header("ç§»å‹•æ™‚ãƒ‘ãƒ¼ãƒ†ã‚£ã‚¯ãƒ«")]
+    private GameObject footstepPrefab;
+
+    [SerializeField, Header("è¶³éŸ³ã®é–“éš”")]
+    private float m_FootStepTIme=0.05f;
+    //çµŒéæ™‚é–“
+    private float m_ElapsedTime;
     private void Start()
     {
         m_EffectFootObjPool = EffectFootStepObjctPool.Instance;
     }
     private void Update()
     {
-        m_CoolTime += Time.deltaTime;
+        m_ElapsedTime += Time.deltaTime;
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (m_CoolTime > 0.05)
+        if (m_ElapsedTime > m_FootStepTIme)
         {
             GenerateFootstep();
-            m_CoolTime = 0;
+            m_ElapsedTime = 0;
         }
     }
 
@@ -33,9 +39,8 @@ public class FootStep : MonoBehaviour
         hitEffect.transform.rotation = Quaternion.identity;
         hitEffect.SetActive(true);
 
-      //  GameObject footstep = Instantiate(footstepPrefab, transform.position, Quaternion.identity);
         Vector3 forward = transform.forward;
-        forward.y = 0; // y²•ûŒü‚Ì‰ñ“]‚ğ–³Œø‚É‚·‚é
+        forward.y = 0; // yè»¸æ–¹å‘ã®å›è»¢ã‚’ç„¡åŠ¹ã«ã™ã‚‹
         hitEffect.transform.rotation = Quaternion.LookRotation(forward);
     }
 }

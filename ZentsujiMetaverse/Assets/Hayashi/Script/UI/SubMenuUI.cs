@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,7 +8,6 @@ public class SubMenuUI : MonoBehaviour
 {
     [SerializeField, Header("エモートUI")]
     private GameObject m_GestureUI;
-    private bool isKeyOrButtonPressed = false;
     [ReadOnly]
     public bool isOpenUI=false;
 
@@ -19,14 +18,12 @@ public class SubMenuUI : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E) || Gamepad.current?.buttonEast.isPressed == true && !isKeyOrButtonPressed)
+        if (Input.GetKeyDown(KeyCode.E) || (Gamepad.current != null && Gamepad.current.buttonEast.isPressed))
         {
-            isOpenUI = true;
-            m_GestureUI.SetActive(true);
-        }
-        if (Input.GetKeyUp(KeyCode.E) | Gamepad.current?.wasUpdatedThisFrame == true)
-        {
-            isKeyOrButtonPressed = false;
+            isOpenUI = !isOpenUI; // isOpenUIの状態を反転させる
+
+            // isOpenUIがtrueのときはUIを表示する、falseのときは非表示にする
+            m_GestureUI.SetActive(isOpenUI);
         }
     }
 }

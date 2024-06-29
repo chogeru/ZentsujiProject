@@ -15,6 +15,9 @@ public class TitleUIManager : MonoBehaviour
     private string m_UISelectSE;
     [SerializeField,Header("自身のグループ")]
     private CanvasGroup m_CanvasGroup;
+
+    // ボタンが押されたかどうかを管理するフラグ
+    private bool m_ButtonPressed = false;
     void Start()
     {
         SelectButton(m_SelectedButtonIndex);
@@ -33,9 +36,10 @@ public class TitleUIManager : MonoBehaviour
             SEManager.instance.PlaySound(m_UISelectSE);
             ChangeSelectedButton(1);
         }
-        else if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return))
+       else if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return))
         {
-            if (m_CanvasGroup.alpha >= 1)
+            // ボタンが押されておらず、UIが表示されている場合のみ処理する
+            if (!m_ButtonPressed && m_CanvasGroup.alpha >= 1)
             {
                 PressSelectedButton();
             }
@@ -44,11 +48,13 @@ public class TitleUIManager : MonoBehaviour
 
     void PressSelectedButton()
     {
-        // 選択されているボタンが存在し、インデックスが適切であることを確認
         if (m_SelectedButtonIndex >= 0 && m_SelectedButtonIndex < m_Buttons.Count)
         {
             // ボタンを取得して押す
             m_Buttons[m_SelectedButtonIndex].onClick.Invoke();
+
+            // ボタンが押されたフラグを立てる
+            m_ButtonPressed = true;
         }
     }
 

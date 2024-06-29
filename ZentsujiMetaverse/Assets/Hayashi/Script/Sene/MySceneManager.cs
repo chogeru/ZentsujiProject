@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +12,7 @@ public class MySceneManager : MonoBehaviour
     public static MySceneManager Instance { get; private set; }
     private SQLiteConnection connection;
     private string nextScene;
+    private bool isSceneLoading = false;
 
     void Awake()
     {
@@ -45,15 +46,26 @@ public class MySceneManager : MonoBehaviour
 
     private void LoadNextSceneAsync(string currentSceneName)
     {
+        if (isSceneLoading)
+        {
+            DebugUtility.LogWarning("シーンがすでにロード中");
+            return;
+        }
+
+        isSceneLoading = true;
+
         nextScene = GetNextSceneNameFromDB(currentSceneName);
+
         if (!string.IsNullOrEmpty(nextScene))
         {
             NetworkManager networkManager = NetworkManager.singleton;
             if (networkManager == null)
             {
-                Debug.LogError("");
+                DebugUtility.LogError("NetworkManagerのシングルトン無い！");
+                isSceneLoading = false;
                 return;
             }
+
             networkManager.onlineScene = nextScene;
             if (!networkManager.isNetworkActive)
             {
@@ -66,8 +78,11 @@ public class MySceneManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("");
+            DebugUtility.LogError("次のシーン名が見つからん");
+            isSceneLoading = false;
+
         }
+        isSceneLoading = false;
     }
     private string GetNextSceneNameFromDB(string currentSceneName)
     {

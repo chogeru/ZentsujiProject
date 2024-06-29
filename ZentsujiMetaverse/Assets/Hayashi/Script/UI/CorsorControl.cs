@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -16,25 +16,18 @@ public class CorsorControl : MonoBehaviour
     public void CursorUpdate()
     {
         SetCursor();
-        CloseCursor();
     }
     public void SetCursor()
     {
-       if(MenuUIManager.instance != null||m_SubMenuUI!=null)
+        if (MenuUIManager.instance != null && m_SubMenuUI != null)
         {
-           if(MenuUIManager.instance.isOpenUI==true||
-              m_SubMenuUI.isOpenUI==true)
+            bool shouldShowCursor = MenuUIManager.instance.isOpenUI || m_SubMenuUI.isOpenUI;
+
+            if (shouldShowCursor && !Cursor.visible)
             {
                 Cursor.visible = true;
             }
-        }
-    }
-    public void CloseCursor()
-    {
-        if (MenuUIManager.instance != null || m_SubMenuUI!= null)
-        {
-            if (MenuUIManager.instance.isOpenUI == false ||
-               m_SubMenuUI == false)
+            else if (!shouldShowCursor && Cursor.visible)
             {
                 Cursor.visible = false;
             }

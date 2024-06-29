@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using R3;
 using System.Collections.Generic;
@@ -38,7 +38,19 @@ public class MenuUIManager : MonoBehaviour
     private bool isKeyOrButtonPressed = false;
     public bool IsUIOpen()
     {
-        return m_PanelOpenStatus.Values.Any(status => status);
+        foreach (var pair in m_ButtonPanelMap)
+        {
+            GameObject panel = pair.Value;
+            CanvasGroup canvasGroup = m_PanelCanvasGroups[panel];
+
+            // CanvasGroupのalphaが0より大きい場合、パネルは開いていると見なす
+            if (canvasGroup.alpha > 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void Awake()
@@ -71,6 +83,8 @@ public class MenuUIManager : MonoBehaviour
 
     private void Update()
     {
+        m_OptionsButton.gameObject.SetActive(!IsUIOpen());
+
         if ((Input.GetKeyDown(KeyCode.Escape) || Gamepad.current?.startButton.isPressed == true) && !isKeyOrButtonPressed)
         {
             isKeyOrButtonPressed = true;

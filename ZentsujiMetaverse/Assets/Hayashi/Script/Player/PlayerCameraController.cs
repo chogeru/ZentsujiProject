@@ -1,10 +1,9 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using R3;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Cysharp.Threading.Tasks;
 using System;
-using R3;
 
 public class PlayerCameraController : MonoBehaviour
 {
@@ -27,7 +26,10 @@ public class PlayerCameraController : MonoBehaviour
     [SerializeField,Header("スフィアキャストの半径")]
     private float m_SphereCastRadius = 0.5f;
     [SerializeField,Header("カメラのズーム動作の滑らかさ")]
-    private float m_SmoothTime = 0.2f; 
+    private float m_SmoothTime = 0.2f;
+
+    [SerializeField,Header("ジェスチャー用キャンバス")]
+    private SubMenuUI m_SubMenuUI;
 
     private Camera m_MainCamera;
     //カメラとプレイヤー間のオフセット
@@ -48,7 +50,7 @@ public class PlayerCameraController : MonoBehaviour
 
         //UIがひらいていない時カメラの位置を変更する
         Observable.EveryUpdate()
-            .Where(_ => !MenuUIManager.instance.isOpenUI)
+            .Where(_ => !MenuUIManager.instance.isOpenUI && !m_SubMenuUI.isOpenUI)
             .Select(_ =>
             {
                 Vector2 mouseInput = new Vector2(Input.GetAxis("Mouse X") * m_Sensitivity, Input.GetAxis("Mouse Y") * m_Sensitivity);

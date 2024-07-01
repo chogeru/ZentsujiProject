@@ -6,6 +6,7 @@ using VInspector;
 using Mirror.Examples.CouchCoop;
 using System.Linq;
 using UnityEngine.InputSystem;
+using Cysharp.Threading.Tasks;
 public class MenuUIManager : MonoBehaviour
 {
     [Tab("ボタン")]
@@ -73,7 +74,7 @@ public class MenuUIManager : MonoBehaviour
     {
         InitializeButtonPanelMap();
         InitializeCanvasGroups();
-        CloseAllPanels();
+        CloseAllPanels().Forget();
         SetupButtonCallbacks();
         foreach (var pair in m_ButtonPanelMap)
         {
@@ -90,11 +91,11 @@ public class MenuUIManager : MonoBehaviour
             isKeyOrButtonPressed = true;
             if (isOpenUI)
             {
-                CloseAllPanels();
+                CloseAllPanels().Forget();
             }
             else
             {
-                ShowOnlyThisPanel(m_OptionsPanel);
+                ShowOnlyThisPanel(m_OptionsPanel).Forget();
             }
         }
         if (Input.GetKeyUp(KeyCode.Escape) || (Gamepad.current?.startButton.wasReleasedThisFrame == true))
@@ -128,13 +129,13 @@ public class MenuUIManager : MonoBehaviour
         }
     }
 
-    private void CloseAllPanels()
+    private async UniTask CloseAllPanels()
     {
         foreach (var pair in m_ButtonPanelMap)
         {
             GameObject panel = pair.Value;
             CanvasGroup canvasGroup = m_PanelCanvasGroups[panel];
-            canvasGroup.alpha = 0;
+            await FadeCanvasGroup(canvasGroup, 0, 0.15f);
             canvasGroup.blocksRaycasts = false;
             m_PanelOpenStatus[panel] = false;
         }
@@ -144,11 +145,11 @@ public class MenuUIManager : MonoBehaviour
     {
         foreach (var pair in m_ButtonPanelMap)
         {
-            pair.Key.onClick.AddListener(() => ShowOnlyThisPanel(pair.Value));
+            pair.Key.onClick.AddListener(() => ShowOnlyThisPanel(pair.Value).Forget());
         }
     }
 
-    private void ShowOnlyThisPanel(GameObject activePanel)
+    private async UniTask ShowOnlyThisPanel(GameObject activePanel)
     {
         foreach (var pair in m_ButtonPanelMap)
         {
@@ -158,16 +159,30 @@ public class MenuUIManager : MonoBehaviour
 
             if (isActive)
             {
-                canvasGroup.alpha = 1;
+                await FadeCanvasGroup(canvasGroup, 1, 0.2f);
                 canvasGroup.blocksRaycasts = true;
                 m_PanelOpenStatus[panel] = true;
             }
             else
             {
-                canvasGroup.alpha = 0;
+                await FadeCanvasGroup(canvasGroup, 0, 0f);
                 canvasGroup.blocksRaycasts = false;
                 m_PanelOpenStatus[panel] = false;
             }
         }
+    }
+
+    private async UniTask FadeCanvasGroup(CanvasGroup canvasGroup,float targetAlpha, float duration)
+    {
+        float startAlpha = canvasGroup.alpha;
+        float time = 0;
+
+        while (time < duration)
+        {
+            canvasGroup.alpha = Mathf.Lerp(startAlpha, targetAlpha, time/duration);
+            time += Time.deltaTime;
+            await UniTask.Yield(PlayerLoopTiming.Update);
+        }
+        canvasGroup.alpha = targetAlpha;
     }
 }

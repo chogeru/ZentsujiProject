@@ -1,8 +1,10 @@
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.Audio;
 using Cysharp.Threading.Tasks;
 using R3;
+using TMPro;
+using System.IO;
 
 public class AudioVolumeSetting : MonoBehaviour
 {
@@ -12,42 +14,93 @@ public class AudioVolumeSetting : MonoBehaviour
     Slider m_BGMSlider;
     [SerializeField,Header("効果音設定用スライダー")] 
     Slider m_SESlider;
+    [SerializeField, Header("BGM音量表示")]
+    TextMeshProUGUI m_BGMVolumeText;
+    [SerializeField, Header("SE音量表示")]
+    TextMeshProUGUI m_SEVolumeText;
 
-    private async void Start()
+    private string m_SavePath;
+
+    private void Start()
     {
-        //非同期に初期化処理を行う
-        await InitializeVolumeSettings();
-        //https://qiita.com/sasakitaku/items/f9fb6891a907966e3052
-        //BGMスライダーの値が変更されたときにSetBGMメソッドを呼び出す
-        m_BGMSlider.OnValueChangedAsObservable()
-            .Subscribe(SetBGM)
-            .AddTo(this);
-        //SEスライダーの値が変更されたときにSetSEメソッドを呼び出す
-        m_BGMSlider.OnValueChangedAsObservable()
-            .Subscribe(SetSE) 
-            .AddTo(this);
-    }
-    //音量設定を初期化する
-    private async UniTask InitializeVolumeSettings()
-    {
-        // udioMixerからBGMの音量を取得し、その値をBGMスライダーに設定
-        m_AudioMixer.GetFloat("BGM", out float bgmVolume);
-        m_BGMSlider.value = bgmVolume;
+        m_SavePath = Path.Combine(Application.persistentDataPath, "AudioSettings.json");
 
-        //AudioMixerからSEの音量を取得し、その値をSEスライダーに設定
-        m_AudioMixer.GetFloat("SE", out float seVolume);
-        m_SESlider.value = seVolume;
+        LoadAudioSettings();
 
-        await UniTask.Yield();
+        // スライダーのイベントリスナーを設定
+        m_BGMSlider.onValueChanged.AddListener(SetBGM);
+        m_SESlider.onValueChanged.AddListener(SetSE);
+        // 初期値を設定
+        SetBGM(m_BGMSlider.value);
+        SetSE(m_SESlider.value);
     }
-    //BGMの音量を設定するためのメソッド
+
+    // BGMの音量を設定するためのメソッド
     public void SetBGM(float volume)
     {
-        m_AudioMixer.SetFloat("BGM", volume);
+        SetVolume("BGM", volume);
+        UpdateVolumeText(m_BGMVolumeText, volume);
+        SaveAudioSettings();
     }
-    //SEの音量を設定するためのメソッド
+
+    // SEの音量を設定するためのメソッド
     public void SetSE(float volume)
     {
-        m_AudioMixer.SetFloat("SE", volume);
+        SetVolume("SE", volume);
+        UpdateVolumeText(m_SEVolumeText, volume);
+        SaveAudioSettings();
+    }
+
+    private void SetVolume(string parameterName, float volume)
+    {
+
+        // スライダーの値が0の場合、最小値を設定
+        if (volume <= 0)
+        {
+            m_AudioMixer.SetFloat(parameterName, -80f);
+            Debug.Log($"{parameterName}: -80dB (Minimum)");
+        }
+        else
+        {
+            float dB = Mathf.Log10(volume) * 20;
+            m_AudioMixer.SetFloat(parameterName, dB);
+            Debug.Log($"{parameterName}: {dB}dB");
+        }
+    }
+    private void LoadAudioSettings()
+    {
+        if (File.Exists(m_SavePath))
+        {
+            string json = File.ReadAllText(m_SavePath);
+            AudioSettings settings = JsonUtility.FromJson<AudioSettings>(json);
+            m_BGMSlider.value = settings.BGMVolume;
+            m_SESlider.value = settings.SEVolume;
+        }
+        else
+        {
+            // 初期音量を最大に設定
+            m_BGMSlider.value = 1f;
+            m_SESlider.value = 1f;
+        }
+    }
+    private void SaveAudioSettings()
+    {
+        AudioSettings settings = new AudioSettings
+        {
+            BGMVolume = m_BGMSlider.value,
+            SEVolume = m_SESlider.value
+        };
+        string json = JsonUtility.ToJson(settings);
+        File.WriteAllText(m_SavePath, json);
+    }
+    private void UpdateVolumeText(TextMeshProUGUI text, float volume)
+    {
+        text.text = volume.ToString("F2");
+    }
+    [System.Serializable]
+    private class AudioSettings
+    {
+        public float BGMVolume;
+        public float SEVolume;
     }
 }

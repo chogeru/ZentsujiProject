@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +6,14 @@ using Cysharp.Threading.Tasks;
 
 public class CloseButton : MonoBehaviour
 {
+    [SerializeField, Header("ボタン押したときのSE名")]
+    private string m_SEName;
+    [SerializeField, Header("サウンドの音量")]
+    private float m_Volume;
+
+    //自身のボタン
     private Button m_Button;
+    //閉じるキャンバス
     private CanvasGroup m_CanvasGroup;
 
     void Start()
@@ -24,6 +31,7 @@ public class CloseButton : MonoBehaviour
     {
         if (m_CanvasGroup != null)
         {
+            BGMManager.instance.PlayBGM(m_SEName,m_Volume);
             // CanvasGroupが存在する場合、透明度を0にして非表示にする
             m_CanvasGroup.alpha = 0;
             m_CanvasGroup.blocksRaycasts = false;

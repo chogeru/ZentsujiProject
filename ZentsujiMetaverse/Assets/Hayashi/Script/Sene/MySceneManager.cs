@@ -51,11 +51,8 @@ public class MySceneManager : MonoBehaviour
             DebugUtility.LogWarning("シーンがすでにロード中");
             return;
         }
-
         isSceneLoading = true;
-
         nextScene = GetNextSceneNameFromDB(currentSceneName);
-
         if (!string.IsNullOrEmpty(nextScene))
         {
             NetworkManager networkManager = NetworkManager.singleton;
@@ -65,22 +62,32 @@ public class MySceneManager : MonoBehaviour
                 isSceneLoading = false;
                 return;
             }
-
             networkManager.onlineScene = nextScene;
+
             if (!networkManager.isNetworkActive)
             {
+                // ネットワークがアクティブでない場合、ホストとして開始
                 networkManager.StartHost();
+            }
+            else if (NetworkServer.active)
+            {
+                // すでにサーバーとして動作している場合、シーンを変更
+                NetworkManager.singleton.ServerChangeScene(nextScene);
+            }
+            else if (NetworkClient.isConnected)
+            {
+                // クライアントとして接続済みの場合、何もしない（サーバーの変更を待つ）
+                DebugUtility.Log("クライアントはサーバーのシーン変更を待機中");
             }
             else
             {
+                // それ以外の場合（ネットワークはアクティブだがサーバーでもクライアントでもない）、クライアントとして接続
                 networkManager.StartClient();
-            }         
+            }
         }
         else
         {
             DebugUtility.LogError("次のシーン名が見つからん");
-            isSceneLoading = false;
-
         }
         isSceneLoading = false;
     }

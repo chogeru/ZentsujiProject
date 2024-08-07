@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using R3;
 using System.Collections.Generic;
 using VInspector;
-using Mirror.Examples.CouchCoop;
 using System.Linq;
 using UnityEngine.InputSystem;
 using Cysharp.Threading.Tasks;

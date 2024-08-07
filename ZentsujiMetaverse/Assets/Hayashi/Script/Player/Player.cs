@@ -1,40 +1,38 @@
-﻿using Mirror;
+﻿using MonobitEngine;
 using UnityEngine;
 using System.IO;
 
-public class Player : NetworkBehaviour
+public class Player : MonobitEngine.MonoBehaviour
 {
-    [SyncVar,SerializeField,Header("プレイヤー名")]
+    [SerializeField, Header("プレイヤー名")]
     public string m_Name;
     private string m_DataPath;
 
-    public override void OnStartLocalPlayer()
+    private void Start()
     {
-        base.OnStartLocalPlayer();
-        // プレイヤーがホストであるかどうかを判定
-        if (NetworkServer.active && NetworkClient.isConnected)
-        {
-            DebugUtility.Log("私ホスト");
-        }
-        else if (NetworkClient.isConnected)
+        // ローカルプレイヤーかどうかを判定
+        if (monobitView.isMine)
         {
             DebugUtility.Log("私クライアント");
-        }
-        m_DataPath = Application.persistentDataPath + "/UserName.json";
+            m_DataPath = Application.persistentDataPath + "/UserName.json";
 
-        m_Name = LoadJsonName();
-        if (string.IsNullOrEmpty(m_Name))
-        {
-            DebugUtility.LogWarning("JSONから名前を読み込めませんでした。デフォルト名を使用します。");
-            m_Name = "Player" + Random.Range(1000, 9999);
+            m_Name = LoadJsonName();
+            if (string.IsNullOrEmpty(m_Name))
+            {
+                DebugUtility.LogWarning("JSONから名前を読み込めませんでした。デフォルト名を使用します。");
+                m_Name = "Player" + Random.Range(1000, 9999);
+            }
+            monobitView.RPC("RpcSetPlayerName", MonobitTargets.AllBuffered, m_Name);
+            ChatUI.m_LocalPlayerName = m_Name;
         }
-        CmdSetPlayerName(m_Name);
     }
-    [Command]
-    void CmdSetPlayerName(string name)
+
+    [MunRPC]
+    void RpcSetPlayerName(string name)
     {
         m_Name = name;
     }
+
     private string LoadJsonName()
     {
         if (File.Exists(m_DataPath))

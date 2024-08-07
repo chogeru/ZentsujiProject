@@ -1,4 +1,4 @@
-﻿using UnityEngine.UI;
+using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.Audio;
 using Cysharp.Threading.Tasks;
@@ -20,7 +20,6 @@ public class AudioVolumeSetting : MonoBehaviour
     TextMeshProUGUI m_SEVolumeText;
 
     private string m_SavePath;
-
     private void Start()
     {
         m_SavePath = Path.Combine(Application.persistentDataPath, "AudioSettings.json");

@@ -31,11 +31,11 @@ public class MySceneManager : MonoBehaviour
         try
         {
             connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
-            Debug.Log("Database connection established.");
+            Debug.Log("データベース接続が確立されました。");
         }
         catch (Exception ex)
         {
-            Debug.LogError("Failed to open database: " + ex.Message);
+            Debug.LogError("データベースのオープンに失敗しました: " + ex.Message);
         }
     }
 
@@ -56,38 +56,36 @@ public class MySceneManager : MonoBehaviour
         if (!string.IsNullOrEmpty(nextScene))
         {
             NetworkManager networkManager = NetworkManager.singleton;
-            if (networkManager == null)
-            {
-                DebugUtility.LogError("NetworkManagerのシングルトン無い！");
-                isSceneLoading = false;
-                return;
-            }
-            networkManager.onlineScene = nextScene;
 
             if (!networkManager.isNetworkActive)
             {
                 // ネットワークがアクティブでない場合、ホストとして開始
+                Debug.Log("ホストとして開始します...");
                 networkManager.StartHost();
             }
             else if (NetworkServer.active)
             {
                 // すでにサーバーとして動作している場合、シーンを変更
-                NetworkManager.singleton.ServerChangeScene(nextScene);
+                Debug.Log("サーバーがアクティブです。シーンを変更します...");
+                NetworkServer.SendToAll(new SceneMessage { sceneName = nextScene, sceneOperation = SceneOperation.LoadAdditive });
             }
             else if (NetworkClient.isConnected)
             {
-                // クライアントとして接続済みの場合、何もしない（サーバーの変更を待つ）
-                DebugUtility.Log("クライアントはサーバーのシーン変更を待機中");
+                // クライアントとして接続済みの場合、シーンの変更を要求
+                Debug.Log("クライアントは接続済みです。シーンの変更を要求します...");
+                NetworkClient.Send(new SceneMessage { sceneName = nextScene, sceneOperation = SceneOperation.LoadAdditive });
             }
             else
             {
                 // それ以外の場合（ネットワークはアクティブだがサーバーでもクライアントでもない）、クライアントとして接続
+                Debug.Log("クライアントとして開始します...");
                 networkManager.StartClient();
             }
+
         }
         else
         {
-            DebugUtility.LogError("次のシーン名が見つからん");
+            Debug.LogError("次のシーン名が見つかりません");
         }
         isSceneLoading = false;
     }
@@ -103,7 +101,7 @@ public class MySceneManager : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("" + ex.Message);
+            Debug.LogError("データベースクエリエラー: " + ex.Message);
         }
         return null;
     }

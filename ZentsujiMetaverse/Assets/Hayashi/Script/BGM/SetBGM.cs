@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,6 +38,7 @@ public class SetBGM : MonoBehaviour
                     BGMManager.instance.PlayBGM(m_RandomBGMNames[index], m_Volume);
                 }
             }
-        }
+        }
+      
     }
 }

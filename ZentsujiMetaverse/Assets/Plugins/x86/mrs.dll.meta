@@ -1,99 +1,59 @@
 fileFormatVersion: 2
 guid: b14a57bb017ea5643ab8ddfcb515a12e
+timeCreated: 1478847406
+licenseType: Free
 PluginImporter:
-  externalObjects: {}
-  serializedVersion: 2
+  serializedVersion: 1
   iconMap: {}
   executionOrder: {}
-  defineConstraints: []
   isPreloaded: 0
-  isOverridable: 0
-  isExplicitlyReferenced: 0
-  validateReferences: 1
   platformData:
-  - first:
-      : Editor
-    second:
-      enabled: 0
-      settings:
-        CPU: x86
-        OS: Windows
-  - first:
-      : Linux
-    second:
-      enabled: 1
-      settings:
-        CPU: x86
-  - first:
-      : LinuxUniversal
-    second:
-      enabled: 1
-      settings:
-        CPU: x86
-  - first:
-      : OSXIntel
-    second:
-      enabled: 1
-      settings:
-        CPU: AnyCPU
-  - first:
-      : OSXIntel64
-    second:
-      enabled: 1
-      settings:
-        CPU: None
-  - first:
-      Android: Android
-    second:
+    Android:
       enabled: 0
       settings:
         CPU: AnyCPU
-  - first:
-      Any: 
-    second:
+    Any:
       enabled: 0
       settings: {}
-  - first:
-      Editor: Editor
-    second:
+    Editor:
       enabled: 1
       settings:
         CPU: x86
         DefaultValueInitialized: true
         OS: Windows
-  - first:
-      Standalone: Linux64
-    second:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
-  - first:
-      Standalone: OSXUniversal
-    second:
-      enabled: 0
-      settings:
-        CPU: x86
-  - first:
-      Standalone: Win
-    second:
+    Linux:
       enabled: 1
       settings:
-        CPU: AnyCPU
-  - first:
-      Standalone: Win64
-    second:
-      enabled: 0
+        CPU: x86
+    Linux64:
+      enabled: 1
       settings:
         CPU: None
-  - first:
-      Windows Store Apps: WindowsStoreApps
-    second:
+    LinuxUniversal:
       enabled: 1
       settings:
         CPU: x86
-  - first:
-      iPhone: iOS
-    second:
+    OSXIntel:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    OSXIntel64:
+      enabled: 1
+      settings:
+        CPU: None
+    OSXUniversal:
+      enabled: 1
+      settings:
+        CPU: x86
+    Win:
+      enabled: 1
+      settings:
+        CPU: AnyCPU
+    Win64:
+      enabled: 1
+      settings:
+        CPU: None
+    iOS:
       enabled: 0
       settings:
         CompileFlags: 

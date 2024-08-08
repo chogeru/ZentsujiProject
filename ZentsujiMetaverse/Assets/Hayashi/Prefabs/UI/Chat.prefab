@@ -635,7 +635,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3688093981685217320}
   - component: {fileID: 1020563208373306124}
-  - component: {fileID: 3343930652872260069}
+  - component: {fileID: 6650361514622222488}
   m_Layer: 0
   m_Name: Chat
   m_TagString: Untagged
@@ -671,11 +671,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45ac90eca0b81214a89f6d3879222f4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0
   m_ChatHistory: {fileID: 873290021659463149}
   m_Scrollbar: {fileID: 4419181485994931945}
   m_ChatMessage: {fileID: 2133986923778063903}
   m_SendButton: {fileID: 6638852598512472911}
---- !u!114 &3343930652872260069
+--- !u!114 &6650361514622222488
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -684,22 +687,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 3688093981685217322}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 277584237ad31144584195f79af03cd2, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_viewIdField: 0
-  m_IsDontDestroyOnRoom: 0
-  m_IsInstantiated: 0
-  m_ObjectStreamCheckTime: 0
-  m_ObjectStreamSendBytes: 
-  m_IsEncrypt: 1
-  InternalObservedComponents: []
-  ObservedComponents: []
-  ownerId: 0
-  group: 0
-  prefixBackup: -1
-  ownershipTransfer: 0
-  compressedStream: 0
+  sceneId: 0
+  _assetId: 359394985
+  serverOnly: 0
+  visibility: 0
+  hasSpawned: 0
 --- !u!1 &4054542297527790345
 GameObject:
   m_ObjectHideFlags: 0

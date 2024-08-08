@@ -5498,7 +5498,6 @@ GameObject:
   m_Component:
   - component: {fileID: 953861597}
   - component: {fileID: 953861598}
-  - component: {fileID: 953861599}
   m_Layer: 0
   m_Name: SpownPos
   m_TagString: Untagged
@@ -5530,37 +5529,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 953861596}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 452581102915bb741a41516882b60717, type: 3}
+  m_Script: {fileID: 11500000, guid: 41f84591ce72545258ea98cb7518d8b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SpawnPos: {fileID: 953861597}
-  m_PlayerName: {fileID: 8775794892995199873, guid: 814538e29bc6b3a478a68f129bbeb17d,
-    type: 3}
---- !u!114 &953861599
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 953861596}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 277584237ad31144584195f79af03cd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_viewIdField: 0
-  m_IsDontDestroyOnRoom: 0
-  m_IsInstantiated: 0
-  m_ObjectStreamCheckTime: 0
-  m_ObjectStreamSendBytes: 
-  m_IsEncrypt: 1
-  InternalObservedComponents: []
-  ObservedComponents: []
-  ownerId: 0
-  group: 0
-  prefixBackup: -1
-  ownershipTransfer: 0
-  compressedStream: 0
 --- !u!1 &982039001
 GameObject:
   m_ObjectHideFlags: 0

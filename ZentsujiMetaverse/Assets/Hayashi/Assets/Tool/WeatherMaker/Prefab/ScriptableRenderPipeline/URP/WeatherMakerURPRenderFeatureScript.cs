@@ -18,6 +18,7 @@ namespace DigitalRuby.WeatherMaker
 
             public ExecuteCommandBuffersPass(CameraEvent evt) : base()
             {
+                WeatherMakerFullScreenEffect.urpPass = this;
 
                 cameraEvent = evt;
 

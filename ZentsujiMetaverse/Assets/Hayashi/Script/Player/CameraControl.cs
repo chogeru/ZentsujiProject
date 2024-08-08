@@ -1,16 +1,16 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MonobitEngine;
+using Mirror;
 
-public class CameraControl : MonobitEngine.MonoBehaviour
+public class CameraControl : NetworkBehaviour
 {
     public GameObject m_CameraGameObject; // アクティブにするカメラオブジェクト
 
     private void Start()
     {
         // オンラインでかつ自身のプレイヤーである場合、カメラをアクティブにする
-        if (monobitView.isMine)
+        if (isLocalPlayer)
         {
             // カメラをアクティブにする
             m_CameraGameObject.SetActive(true);

@@ -4,10 +4,10 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using SQLite4Unity3d;
 using Cysharp.Threading.Tasks;
-using MonobitEngine;
+using Mirror;
 using System;
 
-public class MySceneManager : UnityEngine.MonoBehaviour
+public class MySceneManager : MonoBehaviour
 {
     public static MySceneManager Instance { get; private set; }
     private SQLiteConnection connection;
@@ -27,6 +27,7 @@ public class MySceneManager : UnityEngine.MonoBehaviour
         }
 
         var databasePath = System.IO.Path.Combine(Application.streamingAssetsPath, "scene_data.db").Replace("\\", "/");
+        connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
         try
         {
             connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
@@ -40,108 +41,68 @@ public class MySceneManager : UnityEngine.MonoBehaviour
 
     public void TriggerSceneLoad(string currentSceneName)
     {
-        LoadNextSceneAsync(currentSceneName).Forget();
+        LoadNextSceneAsync(currentSceneName);
     }
 
-    private async UniTaskVoid LoadNextSceneAsync(string currentSceneName)
+    private void LoadNextSceneAsync(string currentSceneName)
     {
         if (isSceneLoading)
         {
-            Debug.LogWarning("シーンがすでにロード中です");
+            DebugUtility.LogWarning("シーンがすでにロード中");
             return;
         }
         isSceneLoading = true;
-
-        if (connection == null)
+        nextScene = GetNextSceneNameFromDB(currentSceneName);
+        if (!string.IsNullOrEmpty(nextScene))
         {
-            Debug.LogError("データベース接続が確立されていません");
-            isSceneLoading = false;
-            return;
-        }
+            NetworkManager networkManager = NetworkManager.singleton;
 
-        nextScene = await GetNextSceneNameFromDBAsync(currentSceneName);
-        if (string.IsNullOrEmpty(nextScene))
-        {
-            Debug.LogError("次のシーン名が見つかりません");
-            isSceneLoading = false;
-            return;
-        }
-
-        if (MonobitNetwork.isConnect)
-        {
-            if (MonobitNetwork.inRoom)
+            if (!networkManager.isNetworkActive)
             {
-                MonobitNetwork.LeaveRoom();
-                while (MonobitNetwork.inRoom)
-                {
-                    await UniTask.Yield();
-                }
+                // ネットワークがアクティブでない場合、ホストとして開始
+                Debug.Log("ホストとして開始します...");
+                networkManager.StartHost();
             }
-            JoinOrCreateRoom(nextScene);
+            else if (NetworkServer.active)
+            {
+                // すでにサーバーとして動作している場合、シーンを変更
+                Debug.Log("サーバーがアクティブです。シーンを変更します...");
+                NetworkServer.SendToAll(new SceneMessage { sceneName = nextScene, sceneOperation = SceneOperation.LoadAdditive });
+            }
+            else if (NetworkClient.isConnected)
+            {
+                // クライアントとして接続済みの場合、シーンの変更を要求
+                Debug.Log("クライアントは接続済みです。シーンの変更を要求します...");
+                NetworkClient.Send(new SceneMessage { sceneName = nextScene, sceneOperation = SceneOperation.LoadAdditive });
+            }
+            else
+            {
+                // それ以外の場合（ネットワークはアクティブだがサーバーでもクライアントでもない）、クライアントとして接続
+                Debug.Log("クライアントとして開始します...");
+                networkManager.StartClient();
+            }
+
         }
         else
         {
-            MonobitNetwork.autoJoinLobby = true;
-            MonobitNetwork.ConnectServer("Zentuuji");
+            Debug.LogError("次のシーン名が見つかりません");
         }
         isSceneLoading = false;
     }
-
-    private void OnDestroy()
-    {
-        if (MonobitNetwork.isConnect)
-        {
-            MonobitEngine.MonobitNetwork.LeaveLobby();
-        }
-    }
-
-    private void OnJoinedLobby()
-    {
-        if (!MonobitNetwork.inRoom)
-        {
-            JoinOrCreateRoom(nextScene);
-        }
-    }
-
-    private void JoinOrCreateRoom(string sceneName)
-    {
-        RoomSettings roomSettings = new RoomSettings();
-        roomSettings.maxPlayers = 10;
-        LobbyInfo lobbyInfo = new LobbyInfo();
-        MonobitNetwork.JoinOrCreateRoom(sceneName, roomSettings, lobbyInfo);
-        Debug.Log("ルームの作成または参加を試みています: " + sceneName); // 追加
-    }
-
-    private void OnJoinedRoom()
-    {
-        Debug.Log("ルームに入室しました: " + MonobitNetwork.room.name);
-        if (!string.IsNullOrEmpty(nextScene))
-        {
-            SceneManager.LoadScene(nextScene);
-        }
-        else
-        {
-            Debug.LogError("次のシーン名が設定されていません");
-        }
-    }
-
-    private async UniTask<string> GetNextSceneNameFromDBAsync(string currentSceneName)
+    private string GetNextSceneNameFromDB(string currentSceneName)
     {
         try
         {
-            return await UniTask.RunOnThreadPool(() =>
+            var query = connection.Table<SceneTransition>().Where(x => x.CurrentScene == currentSceneName).FirstOrDefault();
+            if (query != null)
             {
-                var query = connection.Table<SceneTransition>()
-                                       .Where(x => x.CurrentScene == currentSceneName)
-                                       .FirstOrDefault();
-                return query?.NextScene;
-            });
+                return query.NextScene;
+            }
         }
         catch (System.Exception ex)
         {
-            DebugUtility.LogError(ex.Message);
+            Debug.LogError("データベースクエリエラー: " + ex.Message);
         }
-
         return null;
     }
 

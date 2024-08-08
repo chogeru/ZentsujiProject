@@ -1,5 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
-using MonobitEngine;
+using Cysharp.Threading.Tasks;
+using Mirror;
 using R3;
 using R3.Triggers;
 using UnityEngine;
@@ -22,7 +22,7 @@ Whereは、特定の条件に基づいてイベントをフィルタリングす
 Selectは、元のデータを新しい形に変換するために使う
 この処理だと、ユーザーの入力を新しいVector3オブジェクトに変換して、それを使用してプレイヤーを動かす
 
-.Share
+ .Share
 データの重複を防ぐためのもの
 観測可能なストリームを複数の場所で共有するときに、同じデータが何度も生成されるのを防ぐ
 
@@ -33,7 +33,7 @@ Selectは、元のデータを新しい形に変換するために使う
 */
 #endregion
 
-public class PlayerController : MonobitEngine.MonoBehaviour
+public class PlayerController : NetworkBehaviour
 {
     #region プレイヤー設定
     [Tab("プレイヤー設定")]
@@ -50,18 +50,18 @@ public class PlayerController : MonobitEngine.MonoBehaviour
 
     #region 各コンポーネント
     [Tab("各コンポーネント")]
-    [SerializeField, Header("プレイヤーのRigidbody")]
+    [SerializeField,Header("プレイヤーのRigidbody")]
     private Rigidbody m_Rigidbody;
     [SerializeField, Header("プレイヤーのカプセルコライダ")]
     private CapsuleCollider m_CapsuleCollider;
-    [SerializeField, Header("アニメーター")]
+    [SerializeField, Header("アニメ-ター")]
     private Animator m_Animator;
     [EndTab]
     #endregion
 
     #region カメラと衝突設定
     [Tab("カメラと衝突設定")]
-    [SerializeField, Header("自身のカメラ")]
+    [SerializeField,Header("自身のカメラ")]
     private Transform m_CameraTransform;
 
     [SerializeField, Header("衝突検出用レイヤーマスク")]
@@ -77,20 +77,19 @@ public class PlayerController : MonobitEngine.MonoBehaviour
     private ReactiveProperty<bool> isRun = new ReactiveProperty<bool>(false);
 
     // ローカルプレイヤーが開始した時に呼び出されるメソッド
-    private void Start()
+    public override void OnStartLocalPlayer()
     {
-        if (monobitView.isMine)
-        {
-            //各コンポーネントの所得
-            m_Rigidbody = GetComponent<Rigidbody>();
-            m_CapsuleCollider = GetComponent<CapsuleCollider>();
-            //衝突検出を連続的に設定
-            m_Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
-            //動きを非同期に初期化
-            InitializeMovement().Forget();
-            //アニメーションのバインド
-            BindAnimations();
-        }
+        //各コンポーネントの所得
+        m_Rigidbody = GetComponent<Rigidbody>();
+        m_CapsuleCollider = GetComponent<CapsuleCollider>();
+        //衝突検出を連続的に設定
+        m_Rigidbody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        base.OnStartLocalPlayer();
+        //動きを非同期に初期化
+        InitializeMovement().Forget();
+        //アニメーションのバインド
+        BindAnimations();
+
     }
 
     // プレイヤーの動きを非同期的に初期化(現在メニュー画面と同期)
@@ -127,8 +126,8 @@ public class PlayerController : MonobitEngine.MonoBehaviour
             .Subscribe(_ => m_Rigidbody.AddForce(new Vector3(0.0f, m_JumpForce, 0.0f)));
 
         await UniTask.Yield();
-    }
 
+    }
     void Update()
     {
         //重力の適応
@@ -136,16 +135,14 @@ public class PlayerController : MonobitEngine.MonoBehaviour
         // 段差登りを試みる
         TryStepUp();
     }
-
     private void UseGravity()
     {
         // 重力の追加
         m_Rigidbody.AddForce(Physics.gravity * m_Rigidbody.mass * m_GravityMultiplier);
     }
-
     void TryStepUp()
     {
-        if (m_Rigidbody.velocity.magnitude < 0.1f)
+        if (m_Rigidbody.velocity.magnitude<0.1f)
             return;
         //プレイヤーの前方0.3の位置から、レイキャストを設定
         Vector3 forward = transform.forward * 0.3f;
@@ -155,7 +152,7 @@ public class PlayerController : MonobitEngine.MonoBehaviour
         Vector3 rayEnd = transform.position + forward + Vector3.down * 0.1f;
 
         RaycastHit hitInfo;
-        if (Physics.Raycast(rayStart, Vector3.down, out hitInfo, m_CapsuleCollider.height * 0.6f, m_LayerMask))
+        if (Physics.Raycast(rayStart, Vector3.down, out hitInfo, m_CapsuleCollider.height * 0.6f,m_LayerMask))
         {
             // レイキャストが何かにヒットし、その高さが乗り越えられる高さならプレイヤーを移動
             float stepHeight = hitInfo.point.y - transform.position.y;
@@ -198,7 +195,6 @@ public class PlayerController : MonobitEngine.MonoBehaviour
                 m_Animator.SetFloat("走り前後", vertical);
             }).AddTo(this);
     }
-
     // プレイヤーを指定の速度で移動
     public void Move(Vector3 movement, float speed)
     {
@@ -219,6 +215,7 @@ public class PlayerController : MonobitEngine.MonoBehaviour
 
         // カメラの水平回転に基づく相対的な移動方向を計算する
         Vector3 relativeMovement = movement.z * forward + movement.x * right;
+
 
         //移動している場合
         if (movement != Vector3.zero)
@@ -261,7 +258,7 @@ public class PlayerController : MonobitEngine.MonoBehaviour
         Debug.DrawLine(start, end, isGrounded ? Color.green : Color.red);
 #endif
         //地面が水平であることを確認
-        return isGrounded && hit.normal.y > 0.5;
+        return isGrounded && hit.normal.y > 0.5;  
     }
 
     // コマンドパターンを定義するインターフェース
@@ -272,6 +269,7 @@ public class PlayerController : MonobitEngine.MonoBehaviour
     // 歩行を管理するコマンドクラス
     // このクラスはプレイヤーの歩行行動をカプセル化し、
     // 呼び出された際にプレイヤーを指定された方向と速度で移動させる
+
     private class WalkCommand : ICommand
     {
         private readonly PlayerController m_Player;
@@ -309,4 +307,5 @@ public class PlayerController : MonobitEngine.MonoBehaviour
             m_Player.Move(m_Direction, m_Player.m_RunSpeed);
         }
     }
+
 }

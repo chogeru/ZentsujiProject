@@ -1,6 +1,7 @@
 ﻿using Mirror;
 using UnityEngine;
 using System.IO;
+using AbubuResouse.Log;
 
 public class Player : NetworkBehaviour
 {

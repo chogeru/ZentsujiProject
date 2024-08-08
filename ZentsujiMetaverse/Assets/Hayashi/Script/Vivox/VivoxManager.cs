@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -7,8 +7,7 @@ using Unity.Services.Core;
 using UnityEngine;
 using Unity.Services.Vivox;
 using VivoxUnity;
-using LobbyRelaySample.vivox;
-using static UnityEngine.Rendering.DebugUI;
+using AbubuResouse.Log;
 
 public class VivoxManager : MonoBehaviour
 {

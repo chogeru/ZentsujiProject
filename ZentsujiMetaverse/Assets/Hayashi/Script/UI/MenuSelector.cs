@@ -1,11 +1,11 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine.Events;
 using UnityEngine;
-
+using AbubuResouse.Singleton;
 public class MenuSelector : MonoBehaviour
 {
-    public List<GameObject> menuItems; // ƒƒjƒ…[€–Ú‚ÌƒŠƒXƒg
-    public List<GameObject> menuPanels; // Šeƒƒjƒ…[€–Ú‚É‘Î‰‚·‚éƒpƒlƒ‹‚ÌƒŠƒXƒg
+    public List<GameObject> menuItems; // ãƒ¡ãƒ‹ãƒ¥ãƒ¼é …ç›®ã®ãƒªã‚¹ãƒˆ
+    public List<GameObject> menuPanels; // å„ãƒ¡ãƒ‹ãƒ¥ãƒ¼é …ç›®ã«å¯¾å¿œã™ã‚‹ãƒ‘ãƒãƒ«ã®ãƒªã‚¹ãƒˆ
     private int selectedItemIndex = 0;
     public UnityEvent[] actions;
 
@@ -50,7 +50,7 @@ public class MenuSelector : MonoBehaviour
     {
         for (int i = 0; i < menuItems.Count; i++)
         {
-            SEManager.instance.PlaySound("MenuSelectSE");
+            SEManager.Instance.PlaySound("MenuSelectSE",1);
             menuPanels[i].SetActive(i == selectedItemIndex);
         }
     }
@@ -60,7 +60,7 @@ public class MenuSelector : MonoBehaviour
         if (selectedItemIndex < actions.Length && actions[selectedItemIndex] != null)
         {
             actions[selectedItemIndex].Invoke();
-            SEManager.instance.PlaySound("GameStartSE");
+            SEManager.Instance.PlaySound("GameStartSE", 1);
             DisableMenuInput();
         }
         else

@@ -1,93 +1,78 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Networking;
-using SQLite4Unity3d;
+using System.Linq;
 using UnityEngine.SceneManagement;
+using AbubuResouse.Log;
 
-public class BGMManager : MonoBehaviour
+namespace AbubuResouse.Singleton
 {
-    public static BGMManager instance;
-
-    private AudioSource m_AudioSource;
-    [SerializeField]
-    public SQLiteConnection m_Connection;
-    //シングルトンパターン
-    void Awake()
+    /// <summary>
+    /// BGMの再生を管理するマネージャークラス
+    /// </summary>
+    public class BGMManager : AudioManagerBase<BGMManager>
     {
-        if (instance == null)
+
+        /// <summary>
+        /// データベース名として "bgm_data.db" を返す
+        /// </summary>
+        protected override string GetDatabaseName() => "bgm_data.db";
+
+        protected override void Awake()
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
+            base.Awake();
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        m_AudioSource = GetComponent<AudioSource>();
-        //データベースのパスを設定
-        var databasePath = System.IO.Path.Combine(Application.streamingAssetsPath, "bgm_data.db").Replace("\\", "/");
+        /// <summary>
+        /// シーンがロードされた際にBGMを停止する
+        /// </summary>
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode) => StopBGM();
 
-        try
+        /// <summary>
+        /// 指定されたBGM名と同じレコードをデータベースから検索して、BGMを再生する
+        /// </summary>
+        /// <param name="bgmName">BGM名</param>
+        /// <param name="volume">音量</param>
+        public override void PlaySound(string bgmName, float volume)
         {
-            //データベース接続の初期化
-            m_Connection = new SQLiteConnection(databasePath, SQLiteOpenFlags.ReadOnly);
-            DebugUtility.Log("データベース接続に成功!パス: " + databasePath); 
-        }
-        catch (Exception ex)
-        {
-            DebugUtility.LogError("データベースの接続に失敗!!: " + ex.Message); 
-        }
-    }
-
-    public void PlayBGM(string bgmName ,float volume)
-    {
-        //データベースからBGM名に一致するレコードを所得
-        var query = m_Connection.Table<BGM>().Where(x => x.BGMName == bgmName).FirstOrDefault();
-        //クエリ結果がnullでなければ
-        if (query != null)
-        {
-
-            DebugUtility.Log("BGMデータが見つかりました: " + query.BGMName);
-            try
+            var query = connection.Table<BGM>().FirstOrDefault(x => x.BGMName == bgmName);
+            if (query != null)
             {
-                //ResourcesフォルダからBGMファイルをロード
-                AudioClip clip = Resources.Load<AudioClip>("BGM/" + query.BGMFileName);
-
-                //クリップがnullでない場合
-                if (clip != null)
-                {
-                    //クリップを設定
-                    m_AudioSource.clip = clip;
-                    //音量も設定
-                    m_AudioSource.volume = volume;
-                    //再生
-                    m_AudioSource.Play();
-                }
-                else
-                {
-                    DebugUtility.Log("BGMファイルが見つからない " + query.BGMFileName);
-                }
+                LoadAndPlayClip($"BGM/{query.BGMFileName}", volume);
             }
-            //例外発生時
-            catch(Exception ex)
+            else
             {
-                DebugUtility.LogError("BGMファイルのロード時にエラー発生"+ex.Message);
+                DebugUtility.Log($"指定されたBGM名に一致するレコードがデータベースに存在しない: {bgmName}");
             }
         }
-        else
+
+        /// <summary>
+        /// 現在再生中のBGMを停止
+        /// </summary>
+        public void StopBGM()
         {
-            DebugUtility.Log("指定されたBGM名に一致するレコードがデータベースに存在しない"); 
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+                audioSource.clip = null;
+                DebugUtility.Log("BGM停止");
+            }
         }
-    }
-    // BGM情報を保持するクラス
-    class BGM
-    {
-        [PrimaryKey, AutoIncrement] // 主キー、自動インクリメント
-        public int Id { get; set; }
-        public string BGMName { get; set; }  // BGMの名前
-        public string BGMFileName { get; set; } // BGMファイル名
+
+        /// <summary>
+        /// シーンロードイベントを解除
+        /// </summary>
+        protected override void OnDestroy()
+        {
+            UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        /// <summary>
+        /// データベースのBGMテーブル
+        /// </summary>
+        private class BGM
+        {
+            public int Id { get; set; }
+            public string BGMName { get; set; }
+            public string BGMFileName { get; set; }
+        }
     }
 }

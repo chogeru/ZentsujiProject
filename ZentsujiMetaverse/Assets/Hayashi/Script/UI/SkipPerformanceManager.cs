@@ -1,8 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using AbubuResouse.Editor;
 public class SkipPerformanceManager : MonoBehaviour
 {
     public static SkipPerformanceManager Instance;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using VInspector;
+using AbubuResouse.Log;
 
 public class SunRotation : MonoBehaviour
 {

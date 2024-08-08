@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VInspector;
-
+using AbubuResouse.Log;
 public class SeasonalTreeChanger : MonoBehaviour
 {
     #region 木のインデックス

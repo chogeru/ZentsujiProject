@@ -1,8 +1,9 @@
-﻿using Org.BouncyCastle.Asn1.IsisMtt.X509;
+﻿using AbubuResouse.Singleton;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using AbubuResouse.Editor;
 
 public class TitleUIManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class TitleUIManager : MonoBehaviour
     private int m_SelectedButtonIndex = 0;
     [SerializeField, Header("選択SE")]
     private string m_UISelectSE;
+    [SerializeField, Header("音量")]
+    private float m_Volume;
     [SerializeField,Header("自身のグループ")]
     private CanvasGroup m_CanvasGroup;
 
@@ -28,12 +31,12 @@ public class TitleUIManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
         {
-            SEManager.instance.PlaySound(m_UISelectSE);
+            SEManager.Instance.PlaySound(m_UISelectSE,m_Volume);
             ChangeSelectedButton(-1);
         }
         else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
         {
-            SEManager.instance.PlaySound(m_UISelectSE);
+            SEManager.Instance.PlaySound(m_UISelectSE,m_Volume);
             ChangeSelectedButton(1);
         }
        else if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Return))

@@ -6,7 +6,6 @@ public class WaveformRenderer : MonoBehaviour
 {
     [SerializeField]
     private LineRenderer m_LineRenderer;
-    private BGMManager m_BgmManager;
     private AudioSource m_AudioSource;
     //オーディオデータ
     private float[] m_Samples = new float[1024];
@@ -14,10 +13,9 @@ public class WaveformRenderer : MonoBehaviour
     void Start()
     {
         // BGMManagerのインスタンスを取得
-        m_BgmManager = BGMManager.instance;
-        if (BGMManager.instance != null)
+        if (AbubuResouse.Singleton.BGMManager.Instance != null)
         {
-            m_AudioSource = m_BgmManager.GetComponent<AudioSource>();
+            m_AudioSource = AbubuResouse.Singleton.BGMManager.Instance.GetComponent<AudioSource>();
 
             // LineRendererコンポーネントを取得
             m_LineRenderer = GetComponent<LineRenderer>();
@@ -28,7 +26,7 @@ public class WaveformRenderer : MonoBehaviour
 
     void Update()
     {
-        if (BGMManager.instance != null)
+        if (AbubuResouse.Singleton.BGMManager.Instance != null)
         {
 
             if (m_AudioSource.isPlaying)

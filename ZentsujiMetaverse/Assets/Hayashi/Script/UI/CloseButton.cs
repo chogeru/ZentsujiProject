@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
+using AbubuResouse.Singleton;
 
 public class CloseButton : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class CloseButton : MonoBehaviour
     {
         if (m_CanvasGroup != null)
         {
-            BGMManager.instance.PlayBGM(m_SEName,m_Volume);
+            BGMManager.Instance.PlaySound(m_SEName,m_Volume);
             // CanvasGroupが存在する場合、透明度を0にして非表示にする
             m_CanvasGroup.alpha = 0;
             m_CanvasGroup.blocksRaycasts = false;

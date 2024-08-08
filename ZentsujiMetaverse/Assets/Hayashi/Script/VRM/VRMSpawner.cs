@@ -3,11 +3,12 @@ using VRM;
 using UniGLTF;
 using System.IO;
 using VRMShaders;
-using Unity.VisualScripting;
+using AbubuResouse.Log;
 using Mirror;
 using UnityEditor;
 using Cysharp.Threading.Tasks;
 using System;
+using Unity.VisualScripting;
 
 public class VRMSpawner : MonoBehaviour
 {
@@ -61,7 +62,7 @@ public class VRMSpawner : MonoBehaviour
 
             //VRMのメタデータを取得
             var meta = vrmImporter.ReadMeta();
-            DebugUtility.Log("Meta Title: " + meta.Title);
+            Debug.Log("Meta Title: " + meta.Title);
 
             //VRMを読み込んで生成
             var awaitCaller = new ImmediateCaller();
@@ -81,7 +82,7 @@ public class VRMSpawner : MonoBehaviour
         }
         catch (Exception ex)
         {
-            DebugUtility.Log("VRM読み込み中にエラー発生");
+            Debug.Log("VRM読み込み中にエラー発生");
         }
     }
     private void ConvertShadersToURP(RuntimeGltfInstance vrmModelInstance)
@@ -134,7 +135,7 @@ public class VRMSpawner : MonoBehaviour
         }
         else
         {
-            DebugUtility.Log("vrmが無いよ");
+            Debug.Log("vrmが無いよ");
         }
     }
     private void SetAnimator(RuntimeGltfInstance vrm)

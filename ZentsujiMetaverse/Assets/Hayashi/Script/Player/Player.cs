@@ -6,7 +6,7 @@ using AbubuResouse.Log;
 public class Player : NetworkBehaviour
 {
     [SyncVar,SerializeField,Header("プレイヤー名")]
-    public string m_Name;
+    public string m_PlayerName;
     private string m_DataPath;
 
     public override void OnStartLocalPlayer()
@@ -23,18 +23,18 @@ public class Player : NetworkBehaviour
         }
         m_DataPath = Application.persistentDataPath + "/UserName.json";
 
-        m_Name = LoadJsonName();
-        if (string.IsNullOrEmpty(m_Name))
+        m_PlayerName = LoadJsonName();
+        if (string.IsNullOrEmpty(m_PlayerName))
         {
             DebugUtility.LogWarning("JSONから名前を読み込めませんでした。デフォルト名を使用します。");
-            m_Name = "Player" + Random.Range(1000, 9999);
+            m_PlayerName = "Player" + Random.Range(1000, 9999);
         }
-        CmdSetPlayerName(m_Name);
+        CmdSetPlayerName(m_PlayerName);
     }
     [Command]
     void CmdSetPlayerName(string name)
     {
-        m_Name = name;
+        m_PlayerName = name;
     }
     private string LoadJsonName()
     {

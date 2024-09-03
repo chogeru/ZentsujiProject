@@ -13,6 +13,6 @@ public class PlayerInformationUI : NetworkBehaviour
     private void Start()
     {
         m_Player = GetComponent<Player>();
-        m_NameText.text = m_Player.m_Name;
+        m_NameText.text = m_Player.m_PlayerName;
     }
 }

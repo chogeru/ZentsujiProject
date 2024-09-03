@@ -2,11 +2,11 @@
 using Unity.Services.Vivox;
 using VivoxUnity;
 
-namespace LobbyRelaySample.vivox
+namespace LobbyRelay.vivox
 {
     /// <summary>
     /// ロビー内の1ユーザーのVivox状態の変化を監視します。
-    /// Relayを通じてではなく、既にすべてのクライアントの状態変化を伝えるVivoxサービスを介して監視します。
+    /// Relayを通じてではなく、既にすべてのクライアントの状態変化を伝えるVivoxサービスを介して監視
     /// </summary>
     public class VivoxUserHandler : MonoBehaviour
     {

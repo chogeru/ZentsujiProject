@@ -1,10 +1,13 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CharacterMover : MonoBehaviour
 {
-    public Transform[] waypoints; // 移動する目的地のリスト
-    public float moveSpeed = 2.0f; // 移動速度
-    public float rotationSpeed = 5.0f; // 回転速度
+    [SerializeField,Header("移動する目的地のリスト")]
+    public Transform[] waypoints; 
+    [SerializeField,Header("移動速度")]
+    public float moveSpeed = 2.0f; 
+    [SerializeField,Header("回転速度")]
+    public float rotationSpeed = 5.0f;
 
     private int currentWaypointIndex = 0;
     private float lastMoveTime;

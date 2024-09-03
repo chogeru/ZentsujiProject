@@ -79,7 +79,7 @@ public class ChatUI : NetworkBehaviour
     void CmdSend(string message, NetworkConnectionToClient sender = null)
     {
         if (!m_ConnNames.ContainsKey(sender))
-            m_ConnNames.Add(sender, sender.identity.GetComponent<Player>().m_Name);
+            m_ConnNames.Add(sender, sender.identity.GetComponent<Player>().m_PlayerName);
 
         if (!string.IsNullOrWhiteSpace(message))
             RpcReceive(m_ConnNames[sender], message.Trim());

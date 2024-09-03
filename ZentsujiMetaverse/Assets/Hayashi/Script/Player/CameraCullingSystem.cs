@@ -1,26 +1,25 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraCullingSystem : MonoBehaviour
 {
-    public LayerMask playerLayerMask; // ƒvƒŒƒCƒ„[ƒŒƒCƒ„[‚Ìƒ}ƒXƒN
+    public LayerMask playerLayerMask; // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒã‚¹ã‚¯
 
-    private Camera mainCamera;
-    private int defaultCullingMask; // ‰Šú‚ÌƒJƒŠƒ“ƒOƒ}ƒXƒN
+    private Camera m_MainCamera;
+    private int m_DefaultCullingMask;
 
     private void Start()
     {
-        mainCamera = GetComponent<Camera>();
-        defaultCullingMask = mainCamera.cullingMask;
+        m_MainCamera = GetComponent<Camera>();
+        m_DefaultCullingMask = m_MainCamera.cullingMask;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            // ƒvƒŒƒCƒ„[ƒIƒuƒWƒFƒNƒg‚ªƒRƒ‰ƒCƒ_[‚É“ü‚Á‚½‚Ìˆ—
-            mainCamera.cullingMask &= ~playerLayerMask; // ƒvƒŒƒCƒ„[ƒŒƒCƒ„[‚ğƒJƒƒ‰‚ÌƒJƒŠƒ“ƒOƒ}ƒXƒN‚©‚çœŠO
+            m_MainCamera.cullingMask &= ~playerLayerMask;
         }
     }
 
@@ -28,8 +27,7 @@ public class CameraCullingSystem : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            // ƒvƒŒƒCƒ„[ƒIƒuƒWƒFƒNƒg‚ªƒRƒ‰ƒCƒ_[‚©‚ço‚½‚Ìˆ—
-            mainCamera.cullingMask = defaultCullingMask; // ƒJƒŠƒ“ƒOƒ}ƒXƒN‚ğ‰Šú’l‚É–ß‚·
+            m_MainCamera.cullingMask = m_DefaultCullingMask;
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using UnityEngine;
@@ -11,53 +11,79 @@ using AbubuResouse.Log;
 
 public class VivoxManager : MonoBehaviour
 {
-    LobbyRelaySample.vivox.VivoxSetup m_VivoxSetup = new LobbyRelaySample.vivox.VivoxSetup();
-    [SerializeField]
-    List<LobbyRelaySample.vivox.VivoxUserHandler> m_vivoxUserHandlers;
-    [SerializeField]
+    [SerializeField,Header("ロビーのID")]
     private string lobbyId = "defaultLobbyId";
+    [SerializeField,Header("ユーザーハンドラのリスト")]
+    private List<LobbyRelay.vivox.VivoxUserHandler> m_vivoxUserHandlers;
+
+    private LobbyRelay.vivox.VivoxSetup m_VivoxSetup = new LobbyRelay.vivox.VivoxSetup();
+    [SerializeField,Header("接続中のユーザーリスト")]
     private List<string> connectedUsers = new List<string>();
+
 
     private async void Start()
     {
-        await UnityServices.InitializeAsync(); // Unity Servicesを初期化
-        AuthenticationService.Instance.SignedIn += OnSignedIn; // サインイン後のコールバックを登録
-        await AuthenticationService.Instance.SignInAnonymouslyAsync(); // 匿名でサインイン
+        await InitializeUnityServices();
     }
 
+    /// <summary>
+    /// Unity Servicesを初期化し、サインインする
+    /// </summary>
+    /// <returns></returns>
+    private async UniTask InitializeUnityServices()
+    {
+        await UnityServices.InitializeAsync();
+        AuthenticationService.Instance.SignedIn += OnSignedIn;
+        await AuthenticationService.Instance.SignInAnonymouslyAsync().AsUniTask();
+    }
+
+    /// <summary>
+    /// サインインが完了した際に呼び出されるコールバック
+    /// </summary>
     private void OnSignedIn()
     {
-        Debug.Log("Signed in as: " + AuthenticationService.Instance.PlayerId);
+        Debug.Log("サインイン: " + AuthenticationService.Instance.PlayerId);
         m_VivoxSetup.SetUserHandlers(m_vivoxUserHandlers);
-
-        m_VivoxSetup.Initialize(success =>
-        {
-            if (success)
-            {
-                DebugUtility.Log("Vivox初期化が成功しました。ロビーID: " + lobbyId);
-
-                m_VivoxSetup.JoinLobbyChannel(lobbyId, channelJoined =>
-                {
-                    if (channelJoined)
-                    {
-                        Debug.Log("ロビーチャネルへの接続が成功しました。");
-                        m_VivoxSetup.OnUserJoined += HandleUserJoined;
-                        m_VivoxSetup.OnUserLeft += HandleUserLeft;
-                    }
-                    else
-                    {
-                        DebugUtility.LogWarning("ロビーチャネルへの接続に失敗しました。");
-                    }
-                });
-            }
-            else
-            {
-                DebugUtility.LogWarning("Vivox初期化に失敗しました。");
-            }
-        });
- 
-
+        m_VivoxSetup.Initialize(OnVivoxInitialized);
     }
+
+    /// <summary>
+    /// Vivoxの初期化完了時に呼び出される
+    /// </summary>
+    /// <param name="success">初期化成功フラグ</param>
+    private void OnVivoxInitialized(bool success)
+    {
+        if (!success)
+        {
+            DebugUtility.LogWarning("Vivox初期化に失敗!");
+            return;
+        }
+
+        DebugUtility.Log("Vivox初期化が成功! ロビーID: " + lobbyId);
+        m_VivoxSetup.JoinLobbyChannel(lobbyId, OnLobbyChannelJoined);
+    }
+
+    /// <summary>
+    /// ロビーチャネルへの接続が完了したときに呼び出される
+    /// </summary>
+    /// <param name="channelJoined">チャネル参加成功フラグ</param>
+    private void OnLobbyChannelJoined(bool channelJoined)
+    {
+        if (!channelJoined)
+        {
+            DebugUtility.LogWarning("ロビーチャネルへの接続に失敗");
+            return;
+        }
+
+        Debug.Log("ロビーチャネルへの接続が成功");
+        m_VivoxSetup.OnUserJoined += HandleUserJoined;
+        m_VivoxSetup.OnUserLeft += HandleUserLeft;
+    }
+
+    /// <summary>
+    /// 新しいユーザーがチャネルに参加したときに呼び出される
+    /// </summary>
+    /// <param name="username">参加したユーザー名</param>
     private void HandleUserJoined(string username)
     {
         connectedUsers.Add(username);
@@ -65,6 +91,10 @@ public class VivoxManager : MonoBehaviour
         DisplayConnectedUsers();
     }
 
+    /// <summary>
+    /// ユーザーがチャネルから退出したときに呼び出される
+    /// </summary>
+    /// <param name="username">退出したユーザー名</param>
     private void HandleUserLeft(string username)
     {
         connectedUsers.Remove(username);
@@ -72,6 +102,9 @@ public class VivoxManager : MonoBehaviour
         DisplayConnectedUsers();
     }
 
+    /// <summary>
+    /// 現在接続中の全ユーザーをログに出力
+    /// </summary>
     private void DisplayConnectedUsers()
     {
         DebugUtility.Log("接続中のユーザー:");
@@ -81,10 +114,12 @@ public class VivoxManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// オブジェクトの破棄時にイベントの登録を解除
+    /// </summary>
     private void OnDestroy()
     {
         m_VivoxSetup.OnUserJoined -= HandleUserJoined;
         m_VivoxSetup.OnUserLeft -= HandleUserLeft;
     }
-
 }

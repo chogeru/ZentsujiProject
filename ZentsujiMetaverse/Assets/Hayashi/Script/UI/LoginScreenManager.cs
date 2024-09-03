@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using R3;
 using Cysharp.Threading.Tasks;
 using System;
@@ -55,7 +55,7 @@ public class LoginScreenManager : MonoBehaviour
     {
         if (m_LoginCanvasGroup == null)
         {
-            Debug.LogError("m_LoginCanvasGroupがnull");
+            Debug.LogWarning("m_LoginCanvasGroupがnull");
             return;
         }
         // 指定された遅延時間後にフェードイン処理を開始

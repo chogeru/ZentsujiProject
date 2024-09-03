@@ -7,284 +7,326 @@ using Unity.Services.Vivox;
 using AbubuResouse.Log;
 using VivoxUnity;
 
-namespace LobbyRelaySample.vivox
+namespace LobbyRelay.vivox
 {
+
     /// <summary>
-    /// ロビーに入った後、音声チャネルを設定するための処理を行います。
+    /// ロビーに入った後、音声チャネルを設定するための処理
     /// </summary>
     public class VivoxSetup
     {
-        private bool m_hasInitialized = false;  // 初期化が完了しているかを示すフラグ
-        private bool m_isMidInitialize = false;  // 初期化中であることを示すフラグ
-        private ILoginSession m_loginSession = null;  // ログインセッションのインターフェース
-        private IChannelSession m_channelSession = null;  // チャネルセッションのインターフェース
-        private List<VivoxUserHandler> m_userHandlers;  // ユーザーハンドラのリスト
+        private bool m_hasInitialized = false;               // 初期化が完了しているかを示すフラグ
+        private bool m_isMidInitialize = false;              // 初期化中であることを示すフラグ
+        private ILoginSession m_loginSession = null;         // ログインセッションのインターフェース
+        private IChannelSession m_channelSession = null;     // チャネルセッションのインターフェース
+        private List<VivoxUserHandler> m_userHandlers;       // ユーザーハンドラのリスト
 
         public event Action<string> OnUserJoined;
         public event Action<string> OnUserLeft;
+
         /// <summary>
-        /// Vivoxサービスを初期化し、音声チャネルに参加する前に呼び出します。
+        /// Vivoxサービスを初期化
         /// </summary>
         /// <param name="onComplete">ログインの成否にかかわらず呼び出されるコールバック</param>
-        public void Initialize(Action<bool> onComplete = null)
+        public void Initialize(Action<bool> onComplete)
         {
-            if (m_isMidInitialize)
-                return;  // 初期化中の場合は何もしない
-            m_isMidInitialize = true;  // 初期化中フラグをセット
+            if (m_isMidInitialize) return;
 
-             DebugUtility.Log("Vivoxサービスの初期化を開始します");
+            m_isMidInitialize = true;
+            DebugUtility.Log("Vivoxサービスの初期化を開始");
 
             if (VivoxService.Instance == null)
             {
-                DebugUtility.LogError("VivoxService.Instanceがnullです");
-                m_isMidInitialize = false;
-                onComplete?.Invoke(false);
+                HandleInitializationError("VivoxService.Instanceがnull", onComplete);
                 return;
             }
 
-            // Vivoxクライアントの初期化
             VivoxService.Instance.Initialize();
+            InitializeLoginSession(onComplete);
+        }
 
-            // クライアントの設定（ポート範囲の設定はサポートを確認）
-            var client = VivoxService.Instance.Client;
-            client.AudioOutputDevices.VolumeAdjustment = 1;  // 音声出力のボリュームを調整
-            client.AudioInputDevices.Muted = false;  // マイクのミュート設定を解除
-
-
-            DebugUtility.Log("Vivoxサービスの初期化が完了しました");
-
+        /// <summary>
+        /// ログインセッションを初期化
+        /// </summary>
+        /// <param name="onComplete">ログイン完了コールバック</param>
+        private void InitializeLoginSession(Action<bool> onComplete)
+        {
             if (AuthenticationService.Instance == null)
             {
-                DebugUtility.LogError("AuthenticationService.Instanceがnullです");
-                m_isMidInitialize = false;
-                onComplete?.Invoke(false); 
+                HandleInitializationError("AuthenticationService.Instanceがnull", onComplete);
                 return;
             }
 
-            DebugUtility.Log("プレイヤーIDを取得します");
-
-            Account account = new Account(AuthenticationService.Instance.PlayerId);  // プレイヤーIDからアカウントを作成
-
-            DebugUtility.Log("アカウント作成完了: " + AuthenticationService.Instance.PlayerId);
-
-            m_loginSession = VivoxService.Instance.Client.GetLoginSession(account);  // ログインセッションを取得
+            Account account = new Account(AuthenticationService.Instance.PlayerId);
+            m_loginSession = VivoxService.Instance.Client.GetLoginSession(account);
 
             if (m_loginSession == null)
             {
-                DebugUtility.LogError("m_loginSessionがnullです");
-                m_isMidInitialize = false;
-                onComplete?.Invoke(false);
+                HandleInitializationError("m_loginSessionがnull", onComplete);
                 return;
             }
 
-            DebugUtility.Log("ログイントークンを取得します");
-
-            string token = m_loginSession.GetLoginToken();  // ログイントークンを取得
-
-            DebugUtility.Log("ログイントークン取得完了: " + token);
             m_loginSession.PropertyChanged += OnLoginSessionPropertyChanged;
+            string token = m_loginSession.GetLoginToken();
 
             m_loginSession.BeginLogin(token, SubscriptionMode.Accept, null, null, null, result =>
             {
                 try
                 {
-                    DebugUtility.Log("Vivoxのログイン処理を開始します");
-                    m_loginSession.EndLogin(result);  // ログインを完了
-                    UnityEngine.Debug.Log(m_loginSession.State);
+                    m_loginSession.EndLogin(result);
                     CheckLoginState(onComplete);
-
-                    if (m_loginSession.State == LoginState.LoggedIn)
-                    {
-                        DebugUtility.Log("Vivoxのログインが完了しました");
-                        m_hasInitialized = true;
-                        onComplete?.Invoke(true);
-                    }
-                    else
-                    {
-                        DebugUtility.LogWarning("Vivoxのログインが完了していません");
-                        onComplete?.Invoke(false);
-                    }
-
-
                 }
                 catch (Exception ex)
                 {
-                    DebugUtility.LogWarning("Vivoxのログインに失敗しました: " + ex.Message);
-                    onComplete?.Invoke(false); // 初期化失敗
-
+                    HandleLoginError("Vivoxのログインに失敗: " + ex.Message, onComplete);
                 }
                 finally
                 {
-                    m_isMidInitialize = false;  // 初期化中フラグをリセット
+                    m_isMidInitialize = false;
                 }
             });
         }
+
+        /// <summary>
+        /// ログイン状態を確認
+        /// </summary>
+        /// <param name="onComplete">ログイン状態確認後コールバック</param>
         private async void CheckLoginState(Action<bool> onComplete)
         {
             while (m_loginSession.State != LoginState.LoggedIn)
             {
-                DebugUtility.Log("Waiting for login to complete...");
-                await Task.Delay(100); // 100ms待機
+                await Task.Delay(100);
             }
 
-            DebugUtility.Log("Vivoxのログインが完了しました");
             m_hasInitialized = true;
-            m_isMidInitialize = false;
             onComplete?.Invoke(true);
+            DebugUtility.Log("Vivoxのログインが完了");
         }
+
+        /// <summary>
+        /// 初期化エラー時の処理
+        /// </summary>
+        /// <param name="message">エラーメッセージ</param>
+        /// <param name="onComplete">エラー処理後コールバック</param>
+        private void HandleInitializationError(string message, Action<bool> onComplete)
+        {
+            DebugUtility.LogError(message);
+            m_isMidInitialize = false;
+            onComplete?.Invoke(false);
+        }
+
+        /// <summary>
+        /// ログインエラー時の処理
+        /// </summary>
+        /// <param name="message">エラーメッセージ</param>
+        /// <param name="onComplete">エラー処理後コールバック</param>
+        private void HandleLoginError(string message, Action<bool> onComplete)
+        {
+            DebugUtility.LogWarning(message);
+            onComplete?.Invoke(false);
+        }
+
+        /// <summary>
+        /// ログインセッションのプロパティが変更されたときに呼び出されるイベントハンドラ
+        /// </summary>
         private void OnLoginSessionPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "State" && m_loginSession.State == LoginState.LoggedIn)
             {
-                DebugUtility.Log("ログイン状態がLoggedInに変わりました");
+                DebugUtility.Log("ログイン状態がLoggedInに変わった");
                 m_hasInitialized = true;
             }
         }
+
         /// <summary>
-        /// ロビーに入った後、そのロビーの音声チャネルに参加します。必ずInitializeを先に完了してください。
+        /// ロビーチャネルに参加
         /// </summary>
-        /// <param name="onComplete">チャネルの参加に成功したかどうかにかかわらず呼び出されるコールバック</param>
+        /// <param name="lobbyId">ロビーID</param>
+        /// <param name="onComplete">チャネル参加完了コールバック</param>
         public void JoinLobbyChannel(string lobbyId, Action<bool> onComplete)
         {
-            UnityEngine.Debug.Log(m_loginSession.State);
-
             if (!m_hasInitialized || m_loginSession.State != LoginState.LoggedIn)
             {
-                DebugUtility.LogWarning("Vivoxのログインが完了していないため、音声チャネルに参加できません。");
+                DebugUtility.LogWarning("Vivoxのログインが完了していないので、音声チャネルに参加できない");
                 onComplete?.Invoke(false);
                 return;
             }
 
-            ChannelType channelType = ChannelType.NonPositional;  // チャネルタイプを非位置情報型に設定
-            Channel channel = new Channel(lobbyId + "_voice", channelType, null);  // ロビーチャネルを作成
-            DebugUtility.Log(lobbyId);
-            DebugUtility.Log("チャンネル"+channel+"に接続しました");
-            m_channelSession = m_loginSession.GetChannelSession(channel);  // チャネルセッションを取得
+            Channel channel = new Channel(lobbyId + "_voice", ChannelType.NonPositional, null);
+            m_channelSession = m_loginSession.GetChannelSession(channel);
+
             if (m_channelSession == null)
             {
-                DebugUtility.LogError("m_channelSessionがnullです");
+                DebugUtility.LogError("m_channelSessionがnull");
                 onComplete?.Invoke(false);
                 return;
             }
-            string token = m_channelSession.GetConnectToken();  // 接続トークンを取得
 
+            string token = m_channelSession.GetConnectToken();
             if (string.IsNullOrEmpty(token))
             {
-                DebugUtility.LogError("接続トークンが無効です");
+                DebugUtility.LogError("接続トークンが無効");
                 onComplete?.Invoke(false);
                 return;
             }
+
             m_channelSession.BeginConnect(true, false, true, token, result =>
             {
                 try
                 {
-                    DebugUtility.Log("Vivoxチャネルの接続を開始します");
-
-                    if (m_channelSession.ChannelState == ConnectionState.Disconnecting ||
-                        m_channelSession.ChannelState == ConnectionState.Disconnected)
-                    {
-                        DebugUtility.LogWarning("Vivoxチャネルが既に切断中です。チャネル接続シーケンスを終了します。");
-                        HandleEarlyDisconnect();  // 早期切断を処理
-                        return;
-                    }
-                    DebugUtility.Log("Vivoxチャネルの接続を完了します");
-                    m_channelSession.EndConnect(result);  // 接続を完了
-                    DebugUtility.Log("Vivoxチャネルの接続が成功しました");
-                    onComplete?.Invoke(true);  // 成功コールバックを呼び出す
-                    m_channelSession.Participants.AfterKeyAdded += OnParticipantAdded;
-                    m_channelSession.Participants.BeforeKeyRemoved += OnParticipantRemoved;
-                    if (m_userHandlers != null && m_userHandlers.Count > 0)
-                    {
-                        DebugUtility.Log("ユーザーハンドラにチャネル参加を通知します");
-                        foreach (VivoxUserHandler userHandler in m_userHandlers)
-                        {
-                            userHandler.OnChannelJoined(m_channelSession);  // 各ユーザーハンドラにチャネル参加を通知
-                        }
-                    }
-                    else
-                    {
-                        DebugUtility.LogWarning("ユーザーハンドラが設定されていないか、空です");
-                    }
+                    m_channelSession.EndConnect(result);
+                    onComplete?.Invoke(true);
+                    DebugUtility.Log("Vivoxチャネルの接続が成功しました!");
+                    SubscribeToChannelEvents();
                 }
                 catch (Exception ex)
                 {
-                    DebugUtility.LogWarning("Vivoxの接続に失敗しました: " + ex.Message);
-                    onComplete?.Invoke(false);  // 失敗コールバックを呼び出す
-                    m_channelSession?.Disconnect();  // チャネルを切断
+                    HandleChannelConnectionError("Vivoxの接続に失敗: " + ex.Message, onComplete);
                 }
             });
         }
 
         /// <summary>
-        /// ロビーを離れる際に呼び出します。
+        /// チャネルイベントの購読を開始
+        /// </summary>
+        private void SubscribeToChannelEvents()
+        {
+            m_channelSession.Participants.AfterKeyAdded += OnParticipantAdded;
+            m_channelSession.Participants.BeforeKeyRemoved += OnParticipantRemoved;
+            NotifyUserHandlersOnChannelJoined();
+        }
+
+        /// <summary>
+        /// ユーザーハンドラにチャネル参加を通知
+        /// </summary>
+        private void NotifyUserHandlersOnChannelJoined()
+        {
+            if (m_userHandlers == null || m_userHandlers.Count == 0)
+            {
+                DebugUtility.LogWarning("ユーザーハンドラが設定されていないか、空");
+                return;
+            }
+
+            foreach (VivoxUserHandler userHandler in m_userHandlers)
+            {
+                userHandler.OnChannelJoined(m_channelSession);
+            }
+        }
+
+        /// <summary>
+        /// チャネル接続エラー時の処理
+        /// </summary>
+        /// <param name="message">エラーメッセージ</param>
+        /// <param name="onComplete">エラー処理後コールバック</param>
+        private void HandleChannelConnectionError(string message, Action<bool> onComplete)
+        {
+            DebugUtility.LogWarning(message);
+            onComplete?.Invoke(false);
+            m_channelSession?.Disconnect();
+        }
+
+        /// <summary>
+        /// ロビーチャネルを離脱
         /// </summary>
         public void LeaveLobbyChannel()
         {
             if (m_channelSession != null)
             {
-                m_channelSession.Participants.AfterKeyAdded -= OnParticipantAdded;
-                m_channelSession.Participants.BeforeKeyRemoved -= OnParticipantRemoved;
+                UnsubscribeFromChannelEvents();
+
                 if (m_channelSession.ChannelState == ConnectionState.Connecting)
                 {
-                    DebugUtility.LogWarning("Vivoxチャネルが接続中に切断しようとしています。接続が完了するまで待機します。");
-                    HandleEarlyDisconnect();  // 早期切断を処理
+                    DebugUtility.LogWarning("Vivoxチャネルが接続中に切断しようとしている。接続が完了するまで待機します");
+                    HandleEarlyDisconnect();
                     return;
                 }
 
                 ChannelId id = m_channelSession.Channel;
-                m_channelSession?.Disconnect(
-                    (result) =>
-                    {
-                        m_loginSession.DeleteChannelSession(id);  // チャネルセッションを削除
-                        m_channelSession = null;  // チャネルセッションをリセット
-                    });
+                m_channelSession?.Disconnect(result => m_loginSession.DeleteChannelSession(id));
+                m_channelSession = null;
             }
 
-            foreach (VivoxUserHandler userHandler in m_userHandlers)
-                userHandler.OnChannelLeft();  // 各ユーザーハンドラにチャネル離脱を通知
-        }
-
-        private void HandleEarlyDisconnect()
-        {
-            DisconnectOnceConnected();  // 接続完了後に切断を処理
-        }
-
-        async void DisconnectOnceConnected()
-        {
-            while (m_channelSession?.ChannelState == ConnectionState.Connecting)
-            {
-                await Task.Delay(200);  // 接続中は200ms待機
-                return;
-            }
-
-            LeaveLobbyChannel();  // ロビーチャネルを離脱
+            NotifyUserHandlersOnChannelLeft();
         }
 
         /// <summary>
-        /// 終了時に呼び出します。これにより、開いているロビーチャネルを離れるだけでなく、Vivoxから完全に切断されます。
+        /// チャネルイベントの購読を解除
+        /// </summary>
+        private void UnsubscribeFromChannelEvents()
+        {
+            m_channelSession.Participants.AfterKeyAdded -= OnParticipantAdded;
+            m_channelSession.Participants.BeforeKeyRemoved -= OnParticipantRemoved;
+        }
+
+        /// <summary>
+        /// ユーザーハンドラにチャネル離脱を通知
+        /// </summary>
+        private void NotifyUserHandlersOnChannelLeft()
+        {
+            foreach (VivoxUserHandler userHandler in m_userHandlers)
+            {
+                userHandler.OnChannelLeft();
+            }
+        }
+
+        /// <summary>
+        /// 接続が完了するまで待機し、その後にチャネルを切断
+        /// </summary>
+        private void HandleEarlyDisconnect()
+        {
+            DisconnectOnceConnected();
+        }
+
+        /// <summary>
+        /// 接続が完了するまで待機し、その後に切断
+        /// </summary>
+        private async void DisconnectOnceConnected()
+        {
+            while (m_channelSession?.ChannelState == ConnectionState.Connecting)
+            {
+                await Task.Delay(200);
+            }
+
+            LeaveLobbyChannel();
+        }
+
+        /// <summary>
+        /// Vivoxの初期化を解除
         /// </summary>
         public void Uninitialize()
         {
-            if (!m_hasInitialized)
-                return;
-            m_loginSession.Logout();  // ログアウトを実行
+            if (!m_hasInitialized) return;
+
+            m_loginSession?.Logout();
         }
+
+        /// <summary>
+        /// ユーザーハンドラを設定
+        /// </summary>
+        /// <param name="userHandlers">ユーザーハンドラのリスト</param>
         public void SetUserHandlers(List<VivoxUserHandler> userHandlers)
         {
             m_userHandlers = userHandlers;
         }
+
+        /// <summary>
+        /// 参加者が追加されたときに呼び出されるイベントハンドラ
+        /// </summary>
+        /// <param name="e">参加したユーザーのイベント引数</param>
         private void OnParticipantAdded(object sender, KeyEventArg<string> e)
         {
-            string participantName = e.Key;
-            DebugUtility.Log("参加者が参加しました: " + participantName);
-            OnUserJoined?.Invoke(participantName);
+            OnUserJoined?.Invoke(e.Key);
+            DebugUtility.Log("参加しました: " + e.Key);
         }
 
+        /// <summary>
+        /// 参加者が削除されたときに呼び出されるイベントハンドラ
+        /// </summary>
+        /// <param name="e">削除されたユーザーのイベント引数</param>
         private void OnParticipantRemoved(object sender, KeyEventArg<string> e)
         {
-            string participantName = e.Key;
-            DebugUtility.Log("参加者が離れました: " + participantName);
-            OnUserLeft?.Invoke(participantName);
+            OnUserLeft?.Invoke(e.Key);
+            DebugUtility.Log("参加者が離れました: " + e.Key);
         }
     }
 }
